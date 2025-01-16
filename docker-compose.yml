@@ -1,6 +1,7 @@
 services:
-  db:
+  mysql:
     image: mysql:9.1.0
+    container_name: "mysql-container"
     env_file:
       - mysql.env
     networks:
@@ -12,6 +13,7 @@ services:
 
   hanjari:
     image: hanjari-dev:latest
+    container_name: "hanjari-container"
     env_file:
       - .env
     networks:
