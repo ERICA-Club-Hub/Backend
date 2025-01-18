@@ -19,7 +19,7 @@ services:
     networks:
       - dev-db-network
     depends_on:
-      - db
+      - mysql
     ports:
       - "8080:8080"
 
