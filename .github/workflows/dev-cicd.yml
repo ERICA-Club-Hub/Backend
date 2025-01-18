@@ -44,6 +44,9 @@ jobs:
         with:
           name: hanjari-dev
 
+      - name: Move Artifact
+        run: mv hanjari-dev/.jar ./
+
       - name: Generate .env
         run: |
           echo "${{ secrets.DEV_ENV }}" > .env
