@@ -45,7 +45,7 @@ jobs:
           name: hanjari-dev
 
       - name: Move Artifact
-        run: mv hanjari-dev/*.jar ./
+        run: mv hanjari-dev/**/*.jar ./
 
       - name: Generate .env
         run: |
