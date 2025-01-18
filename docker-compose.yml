@@ -1,0 +1,34 @@
+services:
+  mysql:
+    image: mysql:9.1.0
+    container_name: "mysql-container"
+    env_file:
+      - mysql.env
+    networks:
+      - dev-db-network
+    volumes:
+      - hanjari-db-dev:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  hanjari:
+    image: hanjari-dev:latest
+    container_name: "hanjari-container"
+    env_file:
+      - .env
+    networks:
+      - dev-db-network
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+networks:
+  dev-db-network:
+    external: true
+
+volumes:
+  hanjari-db-dev:
+    external: true
+
+
