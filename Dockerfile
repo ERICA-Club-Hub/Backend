@@ -5,7 +5,7 @@ FROM openjdk:21
 WORKDIR /app
 
 # 빌드 경로
-ARG JAR_PATH=build/libs/
+ARG JAR_PATH=build/libs
 
 # 빌드 파일 복사
 COPY ${JAR_PATH}/*.jar hanjari.jar
