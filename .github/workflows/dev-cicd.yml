@@ -5,7 +5,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  integration:
+  dev-integration:
 
     runs-on: ubuntu-latest
     permissions:
@@ -32,8 +32,8 @@ jobs:
         path: build/libs/*.jar
         retention-days: 1
 
-  deployment:
-
+  dev-deployment:
+    needs: dev-integration
     runs-on: ubuntu-latest
 
     steps:
