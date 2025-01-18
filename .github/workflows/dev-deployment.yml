@@ -2,7 +2,7 @@ name: Dev Deployment
 
 on:
   workflow_run:
-    workflows: ["Dev-Integration"]
+    workflows: ["Dev Integration"]
     types:
       - completed
     
