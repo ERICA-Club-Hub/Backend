@@ -83,6 +83,7 @@ jobs:
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
             docker compose down
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_REPO }}:latest
+            docker tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_REPO }}:latest ${{ secrets.DOCKER_DEV_REPO }}:latest
             docker compose up -d
 
   dependency-submission:
