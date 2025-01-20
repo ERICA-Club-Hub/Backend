@@ -3,6 +3,7 @@ package kr.hanjari.backend.web.dto.club;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class ClubRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ClubDetailDTO {
+        @Schema(description = "동아리 모집 상태", example = "UPCOMING")
+        private RecruitmentStatus recruitmentStatus;
         @Schema(description = "동아리 대표 이름", example = "홍길동")
         private String ownerName;
         @Schema(description = "동아리 대표 전화번호", example = "010-1234-5678")
@@ -25,6 +28,8 @@ public class ClubRequestDTO {
         private String activities;
         @Schema(description = "동아리 SNS URL", example = "https://www.instagram.com/hanjari")
         private String snsUrl;
+        @Schema(description = "동아리 지원 URL", example = "https://www.naver.com")
+        private String applyUrl;
     }
 
     @Getter
