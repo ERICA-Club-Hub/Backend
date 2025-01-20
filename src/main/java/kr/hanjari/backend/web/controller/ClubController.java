@@ -1,8 +1,11 @@
 package kr.hanjari.backend.web.controller;
 
+import static kr.hanjari.backend.web.dto.club.ClubResponseDTO.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +35,7 @@ public class ClubController {
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             """)
     @GetMapping("")
-    public ApiResponse<?> getClubsByCondition(
+    public ApiResponse<ClubSearchDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status,
@@ -49,7 +52,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}")
-    public ApiResponse<?> getSpecificClub(@PathVariable Long clubId) {
+    public ApiResponse<ClubDetailDTO> getSpecificClub(@PathVariable Long clubId) {
         return null;
     }
 
@@ -105,7 +108,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/schedules")
-    public ApiResponse<?> getClubSchedules(@PathVariable Long clubId) {
+    public ApiResponse<ClubActivityDTO> getClubSchedules(@PathVariable Long clubId) {
         return null;
     }
 
@@ -156,7 +159,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/introduction")
-    public ApiResponse<?> getClubIntroduction(@PathVariable Long clubId) {
+    public ApiResponse<ClubIntroductionDTO> getClubIntroduction(@PathVariable Long clubId) {
         return null;
     }
 
@@ -212,7 +215,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/recruitment")
-    public ApiResponse<?> getClubRecruitment(@PathVariable Long clubId) {
+    public ApiResponse<ClubRecruitmentDTO> getClubRecruitment(@PathVariable Long clubId) {
         return null;
     }
 
