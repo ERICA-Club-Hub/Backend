@@ -5,6 +5,7 @@ import static kr.hanjari.backend.web.dto.club.ClubResponseDTO.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,13 +65,15 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
-            - **name**: 동아리 대표자 이름 (string) \n
-            - **phone**: 동아리 대표자 연락처 (string) \n
+            - **ownerName**: 동아리 대표자 이름 (string) \n
+            - **ownerPhone**: 동아리 대표자 연락처 (string) \n
             - **activities**: 정기 모임 일정 (string) \n
-            - **sns**: SNS 링크 (string) \n
+            - **snsUrl**: SNS 링크 (string) \n
             """)
     @PostMapping("/{clubId}")
-    public ApiResponse<?> postSpecificClub() {
+    public ApiResponse<?> postSpecificClub(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubDetailDTO clubDetailDTO) {
         return null;
     }
 
@@ -80,13 +84,15 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
-            - **name**: 동아리 대표자 이름 (string) \n
-            - **phone**: 동아리 대표자 연락처 (string) \n
+            - **ownerName**: 동아리 대표자 이름 (string) \n
+            - **ownerPhone**: 동아리 대표자 연락처 (string) \n
             - **activities**: 정기 모임 일정 (string) \n
-            - **sns**: SNS 링크 (string) \n
+            - **snsUrl**: SNS 링크 (string) \n
             """)
     @PatchMapping("/{clubId}")
-    public ApiResponse<?> patchSpecificClub(@PathVariable Long clubId) {
+    public ApiResponse<?> patchSpecificClub(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubDetailDTO clubDetailDTO) {
         return null;
     }
 
@@ -123,7 +129,9 @@ public class ClubController {
             - **activity**: 활동 내용 (string, 30자 미만) \n
             """)
     @PostMapping("/{clubId}/schedules")
-    public ApiResponse<?> postClubSchedules(@PathVariable Long clubId) {
+    public ApiResponse<?> postClubSchedules(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubActivityDTO clubActivityDTO) {
         return null;
     }
 
@@ -138,7 +146,9 @@ public class ClubController {
             - **activity**: 활동 내용 (string, 30자 미만) \n
             """)
     @PatchMapping("/{clubId}/schedules")
-    public ApiResponse<?> patchClubSchedules(@PathVariable Long clubId) {
+    public ApiResponse<?> patchClubSchedules(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubActivityDTO clubActivityDTO) {
         return null;
     }
 
@@ -175,7 +185,9 @@ public class ClubController {
             - **recruitment**: 원하는 동아리 원 설명 (string, 500자 미만) \n
             """)
     @PostMapping("/{clubId}/introduction")
-    public ApiResponse<?> postClubIntroduction(@PathVariable Long clubId) {
+    public ApiResponse<?> postClubIntroduction(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubIntroductionDTO clubIntroductionDTO) {
         return null;
     }
 
@@ -192,7 +204,9 @@ public class ClubController {
             """)
 
     @PatchMapping("/{clubId}/introduction")
-    public ApiResponse<?> patchClubIntroduction(@PathVariable Long clubId) {
+    public ApiResponse<?> patchClubIntroduction(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubIntroductionDTO clubIntroductionDTO) {
         return null;
     }
 
@@ -231,7 +245,9 @@ public class ClubController {
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
     @PostMapping("/{clubId}/recruitment")
-    public ApiResponse<?> postClubRecruitment(@PathVariable Long clubId) {
+    public ApiResponse<?> postClubRecruitment(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubRecruitmentDTO clubRecruitmentDTO) {
         return null;
     }
 
@@ -247,7 +263,9 @@ public class ClubController {
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
     @PatchMapping("/{clubId}/recruitment")
-    public ApiResponse<?> patchClubRecruitment(@PathVariable Long clubId) {
+    public ApiResponse<?> patchClubRecruitment(
+            @PathVariable Long clubId,
+            @RequestBody ClubRequestDTO.ClubRecruitmentDTO clubRecruitmentDTO) {
         return null;
     }
 
