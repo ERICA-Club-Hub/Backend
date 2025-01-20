@@ -1,8 +1,13 @@
 package kr.hanjari.backend.web.controller;
 
+import static kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementResponseDTO.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO.CreateServiceAnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +22,10 @@ public class ServiceAnnouncementController {
     // 모든 서비스 공지사항 조회
     @Tag(name = "서비스 공지사항", description = "서비스 공지사항 관련 API")
     @Operation(summary = "[서비스 공지사항] 모든 서비스 공지사항 조회", description = """
-            모든 서비스 공지사항을 조회합니다. 제목과 작성 일자만 반환합니다.
+            모든 서비스 공지사항을 조회합니다. 제목, 내용, 작성 일자를 반환합니다.
             """)
     @GetMapping
-    public ApiResponse<?> getAllServiceAnnouncements() {
+    public ApiResponse<ServiceAnnouncementSearchDTO> getAllServiceAnnouncements() {
         return null;
     }
 
@@ -32,7 +37,7 @@ public class ServiceAnnouncementController {
             - **id** : 조회 할 서비스 공지사항 ID
             """)
     @GetMapping("/{id}")
-    public ApiResponse<?> getServiceAnnouncement(@PathVariable Long id) {
+    public ApiResponse<ServiceAnnouncementDetailDTO> getServiceAnnouncement(@PathVariable Long id) {
         return null;
     }
 
@@ -45,7 +50,8 @@ public class ServiceAnnouncementController {
             - **content** : 내용
             """)
     @PostMapping
-    public ApiResponse<?> createServiceAnnouncement() {
+    public ApiResponse<?> createServiceAnnouncement(
+            @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
         return null;
     }
 
@@ -60,7 +66,9 @@ public class ServiceAnnouncementController {
             - **content** : 내용
             """)
     @PatchMapping("/{id}")
-    public ApiResponse<?> updateServiceAnnouncement(@PathVariable Long id) {
+    public ApiResponse<?> updateServiceAnnouncement(
+            @PathVariable Long id,
+            @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
         return null;
     }
 
