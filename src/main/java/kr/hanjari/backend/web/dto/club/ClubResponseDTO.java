@@ -39,10 +39,11 @@ public class ClubResponseDTO {
     public static class ClubDetailDTO {
         private ClubDTO club;
         private String profileImageUrl;
-        private String ownerName;
-        private String ownerPhone;
+        private String leaderName;
+        private String leaderPhone;
         private String activities;
         private String snsUrl;
+        private String applicationUrl;
     }
 
     @Builder

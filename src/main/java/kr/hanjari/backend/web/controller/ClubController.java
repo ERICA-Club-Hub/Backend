@@ -66,11 +66,11 @@ public class ClubController {
             
             ### Request Body
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
-            - **ownerName**: 동아리 대표자 이름 (string) \n
-            - **ownerPhone**: 동아리 대표자 연락처 (string) \n
+            - **leaderName**: 동아리 대표자 이름 (string) \n
+            - **leaderPhone**: 동아리 대표자 연락처 (string) \n
             - **activities**: 정기 모임 일정 (string) \n
             - **snsUrl**: SNS 링크 (string) \n
-            - **applyUrl**: 동아리 지원 링크 (string) \n
+            - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/{clubId}")
     public ApiResponse<?> postSpecificClub(
@@ -87,11 +87,11 @@ public class ClubController {
             
             ### Request Body
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
-            - **ownerName**: 동아리 대표자 이름 (string) \n
-            - **ownerPhone**: 동아리 대표자 연락처 (string) \n
+            - **leaderName**: 동아리 대표자 이름 (string) \n
+            - **leaderPhone**: 동아리 대표자 연락처 (string) \n
             - **activities**: 정기 모임 일정 (string) \n
             - **snsUrl**: SNS 링크 (string) \n
-            - **applyUrl**: 동아리 지원 링크 (string) \n
+            - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PatchMapping("/{clubId}")
     public ApiResponse<?> patchSpecificClub(

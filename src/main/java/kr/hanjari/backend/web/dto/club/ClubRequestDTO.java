@@ -21,15 +21,15 @@ public class ClubRequestDTO {
         @Schema(description = "동아리 모집 상태", example = "UPCOMING")
         private RecruitmentStatus recruitmentStatus;
         @Schema(description = "동아리 대표 이름", example = "홍길동")
-        private String ownerName;
+        private String leaderName;
         @Schema(description = "동아리 대표 전화번호", example = "010-1234-5678")
-        private String ownerPhone;
+        private String leaderPhone;
         @Schema(description = "동아리 활동내용", example = "매주 금요일 18시에 모여서 활동합니다.")
         private String activities;
         @Schema(description = "동아리 SNS URL", example = "https://www.instagram.com/hanjari")
         private String snsUrl;
         @Schema(description = "동아리 지원 URL", example = "https://www.naver.com")
-        private String applyUrl;
+        private String applicationUrl;
     }
 
     @Getter
