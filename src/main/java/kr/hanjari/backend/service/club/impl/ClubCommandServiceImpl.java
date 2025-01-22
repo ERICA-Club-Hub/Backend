@@ -1,6 +1,14 @@
 package kr.hanjari.backend.service.club.impl;
 
 
+import kr.hanjari.backend.domain.Club;
+import kr.hanjari.backend.domain.Introduction;
+import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.exception.handler.ClubHandler;
+import kr.hanjari.backend.repository.ClubRepository;
+import kr.hanjari.backend.repository.IntroductionRepository;
+import kr.hanjari.backend.repository.RecruitmentRepository;
+import kr.hanjari.backend.repository.ScheduleRepository;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubActivityDTO;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubDetailDTO;
@@ -17,19 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
 
+    private final ClubRepository clubRepository;
+    private final IntroductionRepository introductionRepository;
+    private final RecruitmentRepository recruitmentRepository;
+    private final ScheduleRepository scheduleRepository;
+
     @Override
-    public Long saveClubDetail(ClubDetailDTO clubDetailDTO) {
+    public Long saveClubDetail(Long clubId, ClubDetailDTO clubDetailDTO) {
         return 0;
-    }
-
-    @Override
-    public Long updateClubDetail(Long clubId, ClubDetailDTO clubDetailDTO) {
-        return 0;
-    }
-
-    @Override
-    public void deleteClubDetail(Long clubId) {
-
     }
 
     @Override
@@ -53,27 +56,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long updateClubIntroduction(Long clubId, ClubIntroductionDTO introduction) {
-        return 0;
-    }
-
-    @Override
-    public void deleteClubIntroduction(Long clubId) {
-
-    }
-
-    @Override
     public Long saveClubRecruitment(Long clubId, ClubRecruitmentDTO recruitment) {
         return 0;
-    }
-
-    @Override
-    public Long updateClubRecruitment(Long clubId, ClubRecruitmentDTO recruitment) {
-        return 0;
-    }
-
-    @Override
-    public void deleteClubRecruitment(Long clubId) {
-
     }
 }
