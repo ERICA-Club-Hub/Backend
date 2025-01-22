@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubActivityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +31,8 @@ public class Activity {
     @Column(name = "content")
     private String content;
 
+    public void updateActivity(ClubActivityDTO clubActivityDTO) {
+        this.month = clubActivityDTO.getMonth();
+        this.content = clubActivityDTO.getActivity();
+    }
 }
