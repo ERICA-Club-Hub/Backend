@@ -5,6 +5,8 @@ import static kr.hanjari.backend.web.dto.club.ClubResponseDTO.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.service.club.ClubCommandService;
+import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ClubController {
+
+    private final ClubQueryService clubQueryService;
+    private final ClubCommandService clubCommandService;
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
     @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
@@ -67,16 +72,17 @@ public class ClubController {
             ### Request Body
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
+            - **leaderEmail**: 동아리 대표자 이메일 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
             - **activities**: 정기 모임 일정 (string) \n
             - **snsUrl**: SNS 링크 (string) \n
             - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/{clubId}")
-    public ApiResponse<?> postSpecificClub(
+    public ApiResponse<Long> postSpecificClub(
             @PathVariable Long clubId,
             @RequestBody ClubRequestDTO.ClubDetailDTO clubDetailDTO) {
-        return null;
+        return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
 
     /*--------------------------- 동아리 월 별 일정 ---------------------------*/

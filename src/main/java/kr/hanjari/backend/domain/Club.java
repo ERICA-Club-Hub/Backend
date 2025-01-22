@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubDetailDTO;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Table(name = "club")
 @NoArgsConstructor
@@ -25,6 +28,9 @@ public class Club extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private ClubCategory category;
+
+    @Column(name = "leader_name", nullable = false)
+    private String leaderName;
 
     @Column(name = "leader_email", nullable = false)
     private String leaderEmail;
@@ -57,5 +63,16 @@ public class Club extends BaseEntity {
     public void updateClubImage(File imageFile) {
         this.imageFile = imageFile;
     }
+
+    public void updateClubDetails(ClubDetailDTO detail) {
+        this.recruitmentStatus = detail.getRecruitmentStatus();
+        this.leaderName = detail.getLeaderName();
+        this.leaderEmail = detail.getLeaderEmail();
+        this.leaderPhone = detail.getLeaderPhone();
+        this.meetingSchedule = detail.getActivities();
+        this.snsUrl = detail.getSnsUrl();
+        this.applicationUrl = detail.getApplicationUrl();
+    }
+
 
 }

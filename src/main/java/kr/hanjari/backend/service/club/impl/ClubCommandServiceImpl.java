@@ -1,10 +1,13 @@
 package kr.hanjari.backend.service.club.impl;
 
 
+import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
+import kr.hanjari.backend.domain.Schedule;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.handler.ClubHandler;
+import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
 import kr.hanjari.backend.repository.RecruitmentRepository;
@@ -28,16 +31,19 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ClubRepository clubRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final ActivityRepository activityRepository;
 
     @Override
     public Long saveClubDetail(Long clubId, ClubDetailDTO clubDetailDTO) {
-        return 0;
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        club.updateClubDetails(clubDetailDTO);
+        Club saved = clubRepository.save(club);
+        return saved.getId();
     }
 
     @Override
     public Long saveClubActivity(Long clubId, ClubActivityDTO clubActivityDTO) {
-        return 0;
+
     }
 
     @Override
