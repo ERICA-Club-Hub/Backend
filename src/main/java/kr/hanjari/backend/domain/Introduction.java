@@ -1,11 +1,17 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
+@Builder
 @Table(name = "introduction")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Introduction {
 
     @Id

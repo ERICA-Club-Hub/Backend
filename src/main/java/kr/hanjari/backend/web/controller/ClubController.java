@@ -172,7 +172,7 @@ public class ClubController {
     public ApiResponse<?> postClubIntroduction(
             @PathVariable Long clubId,
             @RequestBody ClubRequestDTO.ClubIntroductionDTO clubIntroductionDTO) {
-        return null;
+        return ApiResponse.onSuccess(clubCommandService.saveClubIntroduction(clubId, clubIntroductionDTO));
     }
 
     /*----------------------------- 동아리 모집 안내 ------------------------------*/
