@@ -86,39 +86,35 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public Long saveClubIntroduction(Long clubId, ClubIntroductionDTO clubIntroductionDTO) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+        }
 
-        // 동아리 소개가 이미 존재한다면 삭제
-        introductionRepository.findById(clubId).ifPresent(introductionRepository::delete);
+        // 기존 Introduction 조회
+        Introduction introduction = introductionRepository.findById(clubId)
+                .orElseGet(() -> Introduction.builder().clubId(clubId).build());
 
-        Introduction introduction = Introduction.builder()
-                .clubId(clubId)
-                .club(club)
-                .content1(clubIntroductionDTO.getIntroduction())
-                .content2(clubIntroductionDTO.getActivity())
-                .content3(clubIntroductionDTO.getRecruitment())
-                .build();
+        // Introduction 내용 업데이트
+        introduction.updateIntroduction(clubIntroductionDTO);
 
-        Introduction save = introductionRepository.save(introduction);
+        // 저장
+        Introduction saved = introductionRepository.save(introduction);
 
-        return save.getClubId();
+        return saved.getClubId();
     }
+
 
     @Override
     public Long saveClubRecruitment(Long clubId, ClubRecruitmentDTO clubRecruitmentDTO) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+        }
 
-        // 동아리 모집 안내가 이미 존재한다면 삭제
-        recruitmentRepository.findById(clubId).ifPresent(recruitmentRepository::delete);
+        Recruitment recruitment = recruitmentRepository.findById(clubId)
+                .orElseGet(() -> Recruitment.builder().clubId(clubId).build());
 
-        Recruitment recruitment = Recruitment.builder()
-                .clubId(clubId)
-                .club(club)
-                .content1(clubRecruitmentDTO.getDue())
-                .content2(clubRecruitmentDTO.getNotice())
-                .content3(clubRecruitmentDTO.getEtc())
-                .build();
+        recruitment.updateRecruitment(clubRecruitmentDTO);
 
         Recruitment save = recruitmentRepository.save(recruitment);
 

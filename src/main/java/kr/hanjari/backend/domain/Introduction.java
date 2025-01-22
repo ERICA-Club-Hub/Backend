@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubIntroductionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,11 @@ public class Introduction {
 
     @Column(name = "content3")
     private String content3;
+
+    public void updateIntroduction(ClubIntroductionDTO requestDTO) {
+        this.content1 = requestDTO.getIntroduction();
+        this.content2 = requestDTO.getActivity();
+        this.content3 = requestDTO.getRecruitment();
+    }
 
 }
