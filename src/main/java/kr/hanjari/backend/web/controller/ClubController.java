@@ -201,6 +201,6 @@ public class ClubController {
     public ApiResponse<?> postClubRecruitment(
             @PathVariable Long clubId,
             @RequestBody ClubRequestDTO.ClubRecruitmentDTO clubRecruitmentDTO) {
-        return null;
+        return ApiResponse.onSuccess(clubCommandService.saveClubRecruitment(clubId, clubRecruitmentDTO));
     }
 }

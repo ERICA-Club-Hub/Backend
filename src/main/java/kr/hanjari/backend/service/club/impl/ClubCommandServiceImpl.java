@@ -4,6 +4,7 @@ package kr.hanjari.backend.service.club.impl;
 import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
+import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.handler.ActivityHandler;
 import kr.hanjari.backend.payload.exception.handler.ClubHandler;
@@ -104,7 +105,23 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubRecruitment(Long clubId, ClubRecruitmentDTO recruitment) {
-        return 0;
+    public Long saveClubRecruitment(Long clubId, ClubRecruitmentDTO clubRecruitmentDTO) {
+
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+
+        // 동아리 모집 안내가 이미 존재한다면 삭제
+        recruitmentRepository.findById(clubId).ifPresent(recruitmentRepository::delete);
+
+        Recruitment recruitment = Recruitment.builder()
+                .clubId(clubId)
+                .club(club)
+                .content1(clubRecruitmentDTO.getDue())
+                .content2(clubRecruitmentDTO.getNotice())
+                .content3(clubRecruitmentDTO.getEtc())
+                .build();
+
+        Recruitment save = recruitmentRepository.save(recruitment);
+
+        return save.getClubId();
     }
 }
