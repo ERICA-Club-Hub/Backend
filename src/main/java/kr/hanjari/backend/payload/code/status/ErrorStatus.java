@@ -20,7 +20,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
 
     _ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "ACTIVITY404", "활동을 찾을 수 없습니다."),
-    _ACITVITY_IS_NOT_BELONG_TO_CLUB(HttpStatus.BAD_REQUEST, "ACTIVITY400", "해당 동아리에 속한 활동이 아닙니다."),;
+    _ACITVITY_IS_NOT_BELONG_TO_CLUB(HttpStatus.BAD_REQUEST, "ACTIVITY400", "해당 동아리에 속한 활동이 아닙니다."),
+
+    _INTRODUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "소개를 찾을 수 없습니다."),;
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

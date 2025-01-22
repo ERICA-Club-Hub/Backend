@@ -3,6 +3,8 @@ package kr.hanjari.backend.web.dto.club;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.hanjari.backend.domain.Activity;
+import kr.hanjari.backend.domain.Introduction;
+import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
@@ -91,6 +93,21 @@ public class ClubResponseDTO {
         private String due;
         private String notice;
         private String etc;
+
+        public static ClubRecruitmentDTO of(Recruitment recruitment) {
+            return ClubRecruitmentDTO.builder()
+                    .club(ClubDTO.builder()
+                            .id(recruitment.getClub().getId())
+                            .name(recruitment.getClub().getName())
+                            .description(recruitment.getClub().getBriefIntroduction())
+                            .category(recruitment.getClub().getCategory())
+                            .recruitmentStatus(recruitment.getClub().getRecruitmentStatus())
+                            .build())
+                    .due(recruitment.getContent1())
+                    .notice(recruitment.getContent2())
+                    .etc(recruitment.getContent3())
+                    .build();
+        }
     }
 
     @Builder
@@ -102,6 +119,21 @@ public class ClubResponseDTO {
         private String introduction;
         private String activity;
         private String recruitment;
+
+        public static ClubIntroductionDTO of(Introduction introduction){
+            return ClubIntroductionDTO.builder()
+                    .club(ClubDTO.builder()
+                            .id(introduction.getClub().getId())
+                            .name(introduction.getClub().getName())
+                            .description(introduction.getClub().getBriefIntroduction())
+                            .category(introduction.getClub().getCategory())
+                            .recruitmentStatus(introduction.getClub().getRecruitmentStatus())
+                            .build())
+                    .introduction(introduction.getContent1())
+                    .activity(introduction.getContent2())
+                    .recruitment(introduction.getContent3())
+                    .build();
+        }
     }
 
 }

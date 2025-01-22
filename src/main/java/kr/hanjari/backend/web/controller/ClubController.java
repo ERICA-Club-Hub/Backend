@@ -154,7 +154,7 @@ public class ClubController {
             """)
     @GetMapping("/{clubId}/introduction")
     public ApiResponse<ClubIntroductionDTO> getClubIntroduction(@PathVariable Long clubId) {
-        return null;
+        return ApiResponse.onSuccess(clubQueryService.findClubIntroduction(clubId));
     }
 
     @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
@@ -183,7 +183,7 @@ public class ClubController {
             """)
     @GetMapping("/{clubId}/recruitment")
     public ApiResponse<ClubRecruitmentDTO> getClubRecruitment(@PathVariable Long clubId) {
-        return null;
+        return ApiResponse.onSuccess(clubQueryService.findClubRecruitment(clubId));
     }
 
     @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
