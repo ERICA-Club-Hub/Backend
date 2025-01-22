@@ -159,7 +159,7 @@ public class ClubController {
 
     @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 소개 입력 및 수정", description = """
-            ## 동아리 소개글을 입력합니다.
+            ## 동아리 소개글을 입력 및 수정합니다. 입력된 동아리 소개글이 없을 경우 새로 생성됩니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
             
@@ -188,7 +188,7 @@ public class ClubController {
 
     @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
     @Operation(summary = "[동아리 모집 안내] 동아리 모집 안내 입력 및 수정", description = """
-            ## 동아리 모집 안내를 입력합니다.
+            ## 동아리 모집 안내를 입력 및 수정합니다. 입력된 동아리 모집 안내가 없을 경우 새로 생성됩니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
             
