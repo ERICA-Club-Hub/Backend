@@ -3,6 +3,7 @@ package kr.hanjari.backend.web.dto.club;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.hanjari.backend.domain.Activity;
+import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.enums.ClubCategory;
@@ -34,6 +35,33 @@ public class ClubResponseDTO {
         private String description;
         private ClubCategory category;
         private RecruitmentStatus recruitmentStatus;
+        private String profileImageUrl;
+        private String activities;
+        private String leaderName;
+        private String leaderEmail;
+        private String leaderPhone;
+        private Integer membershipFee;
+        private String snsUrl;
+        private String applicationUrl;
+
+        public static ClubDTO of(Club club) {
+            return ClubDTO.builder()
+                    .id(club.getId())
+                    .name(club.getName())
+                    .description(club.getBriefIntroduction())
+                    .category(club.getCategory())
+                    .recruitmentStatus(club.getRecruitmentStatus())
+                    //.profileImageUrl(club.getImageFile().getFileKey())
+                    .activities(club.getMeetingSchedule())
+                    .leaderName(club.getLeaderName())
+                    .leaderEmail(club.getLeaderEmail())
+                    .leaderPhone(club.getLeaderPhone())
+                    .membershipFee(club.getMembershipFee())
+                    .snsUrl(club.getSnsUrl())
+                    .applicationUrl(club.getApplicationUrl())
+                    .build();
+        }
+
     }
 
     @Builder
@@ -46,9 +74,6 @@ public class ClubResponseDTO {
         private String leaderName;
         private String leaderEmail;
         private String leaderPhone;
-        private String activities;
-        private String snsUrl;
-        private String applicationUrl;
     }
 
     @Builder
@@ -94,15 +119,9 @@ public class ClubResponseDTO {
         private String notice;
         private String etc;
 
-        public static ClubRecruitmentDTO of(Recruitment recruitment) {
+        public static ClubRecruitmentDTO of(Recruitment recruitment, Club club) {
             return ClubRecruitmentDTO.builder()
-                    .club(ClubDTO.builder()
-                            .id(recruitment.getClub().getId())
-                            .name(recruitment.getClub().getName())
-                            .description(recruitment.getClub().getBriefIntroduction())
-                            .category(recruitment.getClub().getCategory())
-                            .recruitmentStatus(recruitment.getClub().getRecruitmentStatus())
-                            .build())
+                    .club(ClubDTO.of(club))
                     .due(recruitment.getContent1())
                     .notice(recruitment.getContent2())
                     .etc(recruitment.getContent3())
@@ -120,15 +139,9 @@ public class ClubResponseDTO {
         private String activity;
         private String recruitment;
 
-        public static ClubIntroductionDTO of(Introduction introduction){
+        public static ClubIntroductionDTO of(Introduction introduction, Club club){
             return ClubIntroductionDTO.builder()
-                    .club(ClubDTO.builder()
-                            .id(introduction.getClub().getId())
-                            .name(introduction.getClub().getName())
-                            .description(introduction.getClub().getBriefIntroduction())
-                            .category(introduction.getClub().getCategory())
-                            .recruitmentStatus(introduction.getClub().getRecruitmentStatus())
-                            .build())
+                    .club(ClubDTO.of(club))
                     .introduction(introduction.getContent1())
                     .activity(introduction.getContent2())
                     .recruitment(introduction.getContent3())

@@ -46,25 +46,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubDetailDTO findClubDetail(Long clubId) {
+    public ClubDTO findClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
 
-        return ClubDetailDTO.builder()
-                .club(ClubDTO.builder()
-                        .id(club.getId())
-                        .name(club.getName())
-                        .description(club.getBriefIntroduction())
-                        .category(club.getCategory())
-                        .recruitmentStatus(club.getRecruitmentStatus())
-                        .build())
-                //.profileImageUrl(club.getProfileImageUrl())
-                .leaderName(club.getLeaderName())
-                .leaderPhone(club.getLeaderPhone())
-                .leaderEmail(club.getLeaderEmail())
-                .activities(club.getMeetingSchedule())
-                .snsUrl(club.getSnsUrl())
-                .applicationUrl(club.getApplicationUrl())
-                .build();
+        return ClubDTO.of(club);
     }
 
     @Override
@@ -87,11 +72,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
             throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
         }
 
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+
         Introduction introduction = introductionRepository.findByClubId(clubId)
                 .orElseThrow(() -> new ClubHandler(ErrorStatus._INTRODUCTION_NOT_FOUND));
 
 
-        return ClubIntroductionDTO.of(introduction);
+        return ClubIntroductionDTO.of(introduction, club);
     }
 
     @Override
@@ -100,10 +87,12 @@ public class ClubQueryServiceImpl implements ClubQueryService {
             throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
         }
 
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
                 .orElseThrow(() -> new ClubHandler(ErrorStatus._INTRODUCTION_NOT_FOUND));
 
 
-        return ClubRecruitmentDTO.of(recruitment);
+        return ClubRecruitmentDTO.of(recruitment, club);
     }
 }

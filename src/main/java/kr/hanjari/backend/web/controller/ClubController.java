@@ -59,7 +59,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}")
-    public ApiResponse<ClubDetailDTO> getSpecificClub(@PathVariable Long clubId) {
+    public ApiResponse<ClubDTO> getSpecificClub(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
     }
 
