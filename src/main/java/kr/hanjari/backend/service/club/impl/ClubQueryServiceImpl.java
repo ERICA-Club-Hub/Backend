@@ -1,5 +1,8 @@
 package kr.hanjari.backend.service.club.impl;
 
+import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubActivityDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubDetailDTO;
@@ -18,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
-    public ClubSearchDTO findClubsByCondition(String name, String category, String status, String sortBy, int page,
+    public ClubSearchDTO findClubsByCondition(String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
                                               int size) {
         return null;
     }
@@ -29,7 +32,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubActivityDTO findAllClubActivities(Long clubId, int page, int size) {
+    public ClubActivityDTO findAllClubActivities(Long clubId) {
         return null;
     }
 
