@@ -40,6 +40,7 @@ public class ClubResponseDTO {
         private ClubDTO club;
         private String profileImageUrl;
         private String leaderName;
+        private String leaderEmail;
         private String leaderPhone;
         private String activities;
         private String snsUrl;

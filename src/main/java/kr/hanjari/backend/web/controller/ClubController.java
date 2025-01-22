@@ -60,7 +60,7 @@ public class ClubController {
             """)
     @GetMapping("/{clubId}")
     public ApiResponse<ClubDetailDTO> getSpecificClub(@PathVariable Long clubId) {
-        return null;
+        return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
     }
 
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
