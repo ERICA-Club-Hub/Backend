@@ -1,6 +1,8 @@
 package kr.hanjari.backend.web.dto.club;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
@@ -53,7 +55,7 @@ public class ClubResponseDTO {
     @AllArgsConstructor
     public static class ClubActivityDTO {
         private List<ActivityDTO> activities;
-        private Long totalElements;
+        private Integer totalElements;
 
         @Builder
         @Getter
@@ -61,8 +63,22 @@ public class ClubResponseDTO {
         @AllArgsConstructor
         private static class ActivityDTO {
             private Long id;
-            private String date;
+            private Integer month;
             private String content;
+        }
+
+
+        public static ClubActivityDTO of(List<Activity> activities) {
+            return ClubActivityDTO.builder()
+                    .activities(activities.stream()
+                            .map(activity -> ActivityDTO.builder()
+                                    .id(activity.getId())
+                                    .month(activity.getMonth())
+                                    .content(activity.getContent())
+                                    .build())
+                            .collect(Collectors.toList()))
+                    .totalElements(activities.size())
+                    .build();
         }
     }
 

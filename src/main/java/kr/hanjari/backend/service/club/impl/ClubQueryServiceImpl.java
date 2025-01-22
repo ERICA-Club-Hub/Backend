@@ -1,10 +1,13 @@
 package kr.hanjari.backend.service.club.impl;
 
+import java.util.List;
+import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.exception.handler.ActivityHandler;
 import kr.hanjari.backend.payload.exception.handler.ClubHandler;
 import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
@@ -64,7 +67,16 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubActivityDTO findAllClubActivities(Long clubId) {
-        return null;
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+        }
+
+        List<Activity> activities = activityRepository.findAllByClubId(clubId);
+
+        if (activities.isEmpty()) {
+            throw new ActivityHandler(ErrorStatus._ACTIVITY_NOT_FOUND);
+        }
+        return ClubActivityDTO.of(activities);
     }
 
     @Override

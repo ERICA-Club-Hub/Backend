@@ -93,7 +93,7 @@ public class ClubController {
             """)
     @GetMapping("/{clubId}/activities")
     public ApiResponse<ClubActivityDTO> getClubSchedules(@PathVariable Long clubId) {
-        return null;
+        return ApiResponse.onSuccess(clubQueryService.findAllClubActivities(clubId));
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
