@@ -25,14 +25,10 @@ public class Activity {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @Column(name = "month")
-    private Integer month;
+    @Column(name = "date")
+    private LocalDate date;
 
     @Column(name = "content")
     private String content;
 
-    public void updateActivity(ClubActivityDTO clubActivityDTO) {
-        this.month = clubActivityDTO.getMonth();
-        this.content = clubActivityDTO.getActivity();
-    }
 }
