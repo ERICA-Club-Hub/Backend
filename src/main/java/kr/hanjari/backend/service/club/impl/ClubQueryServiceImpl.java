@@ -9,8 +9,7 @@ import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.payload.exception.handler.ActivityHandler;
-import kr.hanjari.backend.payload.exception.handler.ClubHandler;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
@@ -47,7 +46,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubDTO findClubDetail(Long clubId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         return ClubDTO.of(club);
     }
@@ -55,13 +54,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubActivityDTO findAllClubActivities(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
-            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
         List<Activity> activities = activityRepository.findAllByClubId(clubId);
 
         if (activities.isEmpty()) {
-            throw new ActivityHandler(ErrorStatus._ACTIVITY_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND);
         }
         return ClubActivityDTO.of(activities);
     }
@@ -69,13 +68,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubIntroductionDTO findClubIntroduction(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
-            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Introduction introduction = introductionRepository.findByClubId(clubId)
-                .orElseThrow(() -> new ClubHandler(ErrorStatus._INTRODUCTION_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_NOT_FOUND));
 
 
         return ClubIntroductionDTO.of(introduction, club);
@@ -84,13 +83,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubRecruitmentDTO findClubRecruitment(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
-            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
-                .orElseThrow(() -> new ClubHandler(ErrorStatus._INTRODUCTION_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_NOT_FOUND));
 
 
         return ClubRecruitmentDTO.of(recruitment, club);

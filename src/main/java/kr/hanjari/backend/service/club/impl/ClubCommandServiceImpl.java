@@ -6,8 +6,7 @@ import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.payload.exception.handler.ActivityHandler;
-import kr.hanjari.backend.payload.exception.handler.ClubHandler;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
@@ -35,7 +34,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public Long saveClubDetail(Long clubId, ClubDetailDTO clubDetailDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubDetails(clubDetailDTO);
         Club saved = clubRepository.save(club);
         return saved.getId();
@@ -43,7 +42,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public Long saveClubActivity(Long clubId, ClubActivityDTO clubActivityDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Activity activity = Activity.builder()
                 .month(clubActivityDTO.getMonth())
@@ -57,12 +56,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public Long updateClubActivity(Long clubId, Long activityId, ClubActivityDTO clubActivityDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
-        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new ActivityHandler(ErrorStatus._ACTIVITY_NOT_FOUND));
+        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
         if (!club.getId().equals(activity.getClub().getId())) {
-            throw new ActivityHandler(ErrorStatus._ACITVITY_IS_NOT_BELONG_TO_CLUB);
+            throw new GeneralException(ErrorStatus._ACITVITY_IS_NOT_BELONG_TO_CLUB);
         }
 
         activity.updateActivity(clubActivityDTO);
@@ -72,12 +71,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public void deleteClubActivity(Long clubId, Long activityId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new ClubHandler(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
-        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new ActivityHandler(ErrorStatus._ACTIVITY_NOT_FOUND));
+        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
         if (!club.getId().equals(activity.getClub().getId())) {
-            throw new ActivityHandler(ErrorStatus._ACITVITY_IS_NOT_BELONG_TO_CLUB);
+            throw new GeneralException(ErrorStatus._ACITVITY_IS_NOT_BELONG_TO_CLUB);
         }
 
         activityRepository.delete(activity);
@@ -87,7 +86,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public Long saveClubIntroduction(Long clubId, ClubIntroductionDTO clubIntroductionDTO) {
 
         if (!clubRepository.existsById(clubId)) {
-            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
         // 기존 Introduction 조회
@@ -108,7 +107,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public Long saveClubRecruitment(Long clubId, ClubRecruitmentDTO clubRecruitmentDTO) {
 
         if (!clubRepository.existsById(clubId)) {
-            throw new ClubHandler(ErrorStatus._CLUB_NOT_FOUND);
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
         Recruitment recruitment = recruitmentRepository.findById(clubId)
