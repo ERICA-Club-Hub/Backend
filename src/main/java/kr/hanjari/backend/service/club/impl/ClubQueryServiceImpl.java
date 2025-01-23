@@ -79,9 +79,6 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubRecruitmentDTO findClubRecruitment(Long clubId) {
-        if (!clubRepository.existsById(clubId)) {
-            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
 
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
