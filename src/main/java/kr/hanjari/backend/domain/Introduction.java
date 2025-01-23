@@ -33,10 +33,10 @@ public class Introduction {
     @Column(name = "content3")
     private String content3;
 
-    public void updateIntroduction(ClubIntroductionDTO requestDTO) {
-        this.content1 = requestDTO.getIntroduction();
-        this.content2 = requestDTO.getActivity();
-        this.content3 = requestDTO.getRecruitment();
+    public void updateIntroduction(String content1, String content2, String content3 ) {
+        this.content1 = content1;
+        this.content2 = content2;
+        this.content3 = content3;
     }
 
 }

@@ -135,7 +135,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .orElseGet(() -> Introduction.builder().clubId(clubId).build());
 
         // Introduction 내용 업데이트
-        introduction.updateIntroduction(clubIntroductionDTO);
+        introduction.updateIntroduction(clubIntroductionDTO.getIntroduction(),
+                clubIntroductionDTO.getActivity(), clubIntroductionDTO.getRecruitment());
 
         // 저장
         Introduction saved = introductionRepository.save(introduction);
