@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.web.dto.announcement.AnnouncementRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/announcement")
@@ -15,12 +16,14 @@ public class AnnouncementController {
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 생성", description = """
             총동연 공지사항을 생성합니다.
             ### RequestBody
-            - **thumbnail**: 썸네일 이미지
             - **title**: 공지사항 제목
             - **url**: 링크 url
+            ### RequestPart
+            - **thumbnail**: 썸네일 이미지
             """)
     @PostMapping("/")
-    public void createAnnouncement(@RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement) {
+    public void createAnnouncement(@RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+                                   @RequestPart MultipartFile thumbnail) {
         return;
     }
 
@@ -39,13 +42,15 @@ public class AnnouncementController {
             ### PathVariable
             - **id**: 수정을 희망하는 공지사항의 id
             ### RequestBody
-            - **thumbnail**: 썸네일 이미지
             - **title**: 공지사항 제목
             - **url**: 링크 url
+            ### RequestPart
+            - **thumbnail**: 썸네일 이미지
             """)
     @PatchMapping("/{announcementId}")
     public void updateAnnouncement(@PathVariable Long announcementId,
-                                   @RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement) {
+                                   @RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+                                   @RequestPart MultipartFile thumbnail) {
         return;
     }
 
