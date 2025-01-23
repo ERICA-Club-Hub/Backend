@@ -103,7 +103,7 @@ public class ClubController {
             
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
-            - **activity**: 활동 내용 (string, 30자 미만) \n
+            - **content**: 활동 내용 (string, 30자 미만) \n
             """)
     @PostMapping("/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
@@ -127,12 +127,12 @@ public class ClubController {
             - **monthToChange**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
             """)
-    @PatchMapping("/{clubId}/schedules")
+    @PatchMapping("/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> patchClubSchedules(
             @PathVariable Long clubId,
-            @RequestParam Integer month,
+            @PathVariable Long scheduleId,
             @RequestBody ClubRequestDTO.ClubScheduleDTO clubScheduleDTO) {
-        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, month, clubScheduleDTO));
+        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, scheduleId, clubScheduleDTO));
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
@@ -141,11 +141,11 @@ public class ClubController {
             - **clubId**: 삭제할 동아리의 ID
             - **month**: 삭제할 활동의 월
             """)
-    @DeleteMapping("/{clubId}/schedules")
+    @DeleteMapping("/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> deleteClubSchedules(
             @PathVariable Long clubId,
-            @RequestParam Integer month) {
-        clubCommandService.deleteClubSchedule(clubId, month);
+            @PathVariable Long scheduleId) {
+        clubCommandService.deleteClubSchedule(clubId, scheduleId);
         return ApiResponse.onSuccess();
     }
 

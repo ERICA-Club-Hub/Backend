@@ -43,7 +43,7 @@ public class ClubRequestDTO {
     public static class ClubScheduleDTO {
         @Schema(description = "입력 및 변경 하려는 활동의 월", example = "10")
         @Min(1) @Max(12)
-        private Integer monthToChange;
+        private Integer month;
         @Schema(description = "활동 내용", example = "스터디 시작")
         private String content;
 

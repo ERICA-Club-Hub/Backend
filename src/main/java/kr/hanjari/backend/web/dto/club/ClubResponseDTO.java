@@ -88,10 +88,18 @@ public class ClubResponseDTO {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        private static class ScheduleDTO {
+        public static class ScheduleDTO {
             private Long id;
             private Integer month;
             private String content;
+
+            public static ScheduleDTO of(Schedule schedule) {
+                return ScheduleDTO.builder()
+                        .id(schedule.getId())
+                        .month(schedule.getMonth())
+                        .content(schedule.getContent())
+                        .build();
+            }
         }
 
 
@@ -99,8 +107,8 @@ public class ClubResponseDTO {
             return ClubScheduleDTO.builder()
                     .activities(schedules.stream()
                             .map(schedule -> ScheduleDTO.builder()
-                                    .id(schedule.getId().getClubId())
-                                    .month(schedule.getId().getMonth())
+                                    .id(schedule.getId())
+                                    .month(schedule.getMonth())
                                     .content(schedule.getContent())
                                     .build())
                             .collect(Collectors.toList()))
