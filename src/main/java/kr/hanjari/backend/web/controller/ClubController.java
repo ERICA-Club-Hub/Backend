@@ -25,6 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ClubController {
 
+    @PostMapping("/")
+    public void createNewClub() {
+        return;
+    }
+
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
     @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
