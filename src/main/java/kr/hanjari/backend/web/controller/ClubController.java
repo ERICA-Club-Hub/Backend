@@ -88,6 +88,7 @@ public class ClubController {
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정", description = """
             ## 동아리 월 별 일정을 전체 조회합니다. 
+            ### Path Variable
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/schedules")
@@ -115,16 +116,12 @@ public class ClubController {
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 수정", description = """
             ## 동아리 월 별 일정을 수정합니다. 
-            ex) 10월 일정을 11월로 변경하고 싶을 때, 10월 일정을 삭제하고 11월 일정을 추가하는 방식으로 동작합니다. 
-            위 경우 `month -> 10, monthToChange -> 11` 를 입력하시면 됩니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
-            
-            ### Query Parameter
-            - **month**: 변경 대상 일정의 월(해당 동아리의 "어떤 월에 해당하는 일정"을 변경 하고 싶은지 입력) (month) (integer) \n
+            - **scheduleId**: 수정할 활동의 ID  \n
             
             ### Request Body
-            - **monthToChange**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
+            - **month**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
             """)
     @PatchMapping("/{clubId}/schedules/{scheduleId}")
@@ -138,8 +135,9 @@ public class ClubController {
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 삭제", description = """
             ## 동아리 월 별 일정을 삭제합니다. 
+            ### Path Variable
             - **clubId**: 삭제할 동아리의 ID
-            - **month**: 삭제할 활동의 월
+            - **scheduleId**: 삭제할 활동의 ID
             """)
     @DeleteMapping("/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> deleteClubSchedules(
