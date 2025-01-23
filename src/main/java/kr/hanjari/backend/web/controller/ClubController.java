@@ -8,7 +8,6 @@ import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO;
-import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -91,8 +90,8 @@ public class ClubController {
             ## 동아리 월 별 일정을 전체 조회합니다. 
             - **clubId**: 조회할 동아리의 ID
             """)
-    @GetMapping("/{clubId}/activities")
-    public ApiResponse<ClubActivityDTO> getClubSchedules(@PathVariable Long clubId) {
+    @GetMapping("/{clubId}/schedules")
+    public ApiResponse<ClubScheduleDTO> getClubSchedules(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findAllClubActivities(clubId));
     }
 
@@ -106,43 +105,47 @@ public class ClubController {
             - **month**: 월 (integer, 1~12 사이) \n
             - **activity**: 활동 내용 (string, 30자 미만) \n
             """)
-    @PostMapping("/{clubId}/activities")
+    @PostMapping("/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
-            @RequestBody ClubRequestDTO.ClubActivityDTO clubActivityDTO) {
-        return ApiResponse.onSuccess(clubCommandService.saveClubActivity(clubId, clubActivityDTO));
+            @RequestBody ClubRequestDTO.ClubScheduleDTO clubActivityDTO) {
+        return ApiResponse.onSuccess(clubCommandService.saveClubSchedule(clubId, clubActivityDTO));
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 수정", description = """
             ## 동아리 월 별 일정을 수정합니다. 
+            ex) 10월 일정을 11월로 변경하고 싶을 때, 10월 일정을 삭제하고 11월 일정을 추가하는 방식으로 동작합니다. 
+            위 경우 `month -> 10, monthToChange -> 11` 를 입력하시면 됩니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
-            - **activityId**: 수정할 활동의 ID  \n
+            
+            ### Query Parameter
+            - **month**: 변경 대상 일정의 월(해당 동아리의 "어떤 월에 해당하는 일정"을 변경 하고 싶은지 입력) (month) (integer) \n
             
             ### Request Body
-            - **month**: 월 (integer) \n
-            - **activity**: 활동 내용 (string, 30자 미만) \n
+            - **monthToChange**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
+            - **content**: 활동 내용 (string, 30자 미만) \n
             """)
-    @PatchMapping("/{clubId}/activities/{activityId}")
+    @PatchMapping("/{clubId}/schedules")
     public ApiResponse<?> patchClubSchedules(
             @PathVariable Long clubId,
-            @PathVariable Long activityId,
-            @RequestBody ClubRequestDTO.ClubActivityDTO clubActivityDTO) {
-        return ApiResponse.onSuccess(clubCommandService.updateClubActivity(clubId, activityId, clubActivityDTO));
+            @RequestParam Integer month,
+            @RequestBody ClubRequestDTO.ClubScheduleDTO clubScheduleDTO) {
+        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, month, clubScheduleDTO));
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 삭제", description = """
             ## 동아리 월 별 일정을 삭제합니다. 
             - **clubId**: 삭제할 동아리의 ID
-            - **activityId**: 삭제할 활동의 ID
+            - **month**: 삭제할 활동의 월
             """)
-    @DeleteMapping("/{clubId}/activities/{activityId}")
+    @DeleteMapping("/{clubId}/schedules")
     public ApiResponse<?> deleteClubSchedules(
             @PathVariable Long clubId,
-            @PathVariable Long activityId) {
-        clubCommandService.deleteClubActivity(clubId, activityId);
+            @RequestParam Integer month) {
+        clubCommandService.deleteClubSchedule(clubId, month);
         return ApiResponse.onSuccess();
     }
 

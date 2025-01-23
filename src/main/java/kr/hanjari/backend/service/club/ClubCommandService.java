@@ -1,9 +1,10 @@
 package kr.hanjari.backend.service.club;
 
-import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubActivityDTO;
+import kr.hanjari.backend.domain.key.ScheduleId;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubDetailDTO;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubIntroductionDTO;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubRecruitmentDTO;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubScheduleDTO;
 
 public interface ClubCommandService {
 
@@ -11,9 +12,9 @@ public interface ClubCommandService {
     Long saveClubDetail(Long clubId, ClubDetailDTO clubDetailDTO);
 
     // 동아리 월 별 일정
-    Long saveClubActivity(Long clubId, ClubActivityDTO clubActivityDTO);
-    Long updateClubActivity(Long clubId, Long activityId, ClubActivityDTO clubActivityDTO);
-    void deleteClubActivity(Long clubId, Long activityId);
+    ScheduleId saveClubSchedule(Long clubId, ClubScheduleDTO clubActivityDTO);
+    ScheduleId updateClubSchedule(Long clubId, Integer month, ClubScheduleDTO clubActivityDTO);
+    void deleteClubSchedule(Long clubId, Integer month);
 
     // 동아리 소개
     Long saveClubIntroduction(Long clubId, ClubIntroductionDTO introduction);

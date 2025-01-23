@@ -5,7 +5,6 @@ import static kr.hanjari.backend.web.dto.club.ClubResponseDTO.*;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
-import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubSearchDTO;
 
 public interface ClubQueryService {
@@ -19,7 +18,7 @@ public interface ClubQueryService {
     ClubDTO findClubDetail(Long clubId);
 
     // 동아리 월 별 일정 조회
-    ClubActivityDTO findAllClubActivities(Long clubId);
+    ClubScheduleDTO findAllClubActivities(Long clubId);
 
     // 동아리 소개 조회
     ClubIntroductionDTO findClubIntroduction(Long clubId);

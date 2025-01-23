@@ -1,23 +1,22 @@
 package kr.hanjari.backend.service.club.impl;
 
 import java.util.List;
-import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
+import kr.hanjari.backend.domain.Schedule;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
 import kr.hanjari.backend.repository.RecruitmentRepository;
+import kr.hanjari.backend.repository.ScheduleRepository;
 import kr.hanjari.backend.service.club.ClubQueryService;
-import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubActivityDTO;
+import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubScheduleDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubDTO;
-import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubDetailDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubIntroductionDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubRecruitmentDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO.ClubSearchDTO;
@@ -35,7 +34,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final ClubRepository clubRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
-    private final ActivityRepository activityRepository;
+    private final ScheduleRepository scheduleRepository;
 
 
     @Override
@@ -52,14 +51,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubActivityDTO findAllClubActivities(Long clubId) {
+    public ClubScheduleDTO findAllClubActivities(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
-        List<Activity> activities = activityRepository.findAllByClubId(clubId);
+        List<Schedule> schedules = scheduleRepository.findAllByClubId(clubId);
 
-        return ClubActivityDTO.of(activities);
+        return ClubScheduleDTO.of(schedules);
     }
 
     @Override
