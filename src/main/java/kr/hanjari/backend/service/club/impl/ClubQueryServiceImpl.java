@@ -59,9 +59,6 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
         List<Activity> activities = activityRepository.findAllByClubId(clubId);
 
-        if (activities.isEmpty()) {
-            throw new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND);
-        }
         return ClubActivityDTO.of(activities);
     }
 
