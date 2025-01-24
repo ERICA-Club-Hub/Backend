@@ -21,9 +21,9 @@ public class AnnouncementController {
             ### RequestPart
             - **thumbnail**: 썸네일 이미지
             """)
-    @PostMapping("/")
-    public void createAnnouncement(@RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
-                                   @RequestPart MultipartFile thumbnail) {
+    @PostMapping(value = "/", consumes = {"application/json", "multipart/form-data"})
+    public void createAnnouncement(@RequestPart(name = "body") AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+                                   @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
         return;
     }
 
@@ -47,10 +47,10 @@ public class AnnouncementController {
             ### RequestPart
             - **thumbnail**: 썸네일 이미지
             """)
-    @PatchMapping("/{announcementId}")
+    @PatchMapping(value = "/{announcementId}", consumes = {"application/json", "multipart/form-data"})
     public void updateAnnouncement(@PathVariable Long announcementId,
-                                   @RequestBody AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
-                                   @RequestPart MultipartFile thumbnail) {
+                                   @RequestPart(name = "body") AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+                                   @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
         return;
     }
 
