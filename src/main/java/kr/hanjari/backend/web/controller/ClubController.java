@@ -8,16 +8,8 @@ import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.web.dto.club.ClubRequestDTO;
 import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin
 @RequestMapping("/api/clubs")
@@ -25,8 +17,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ClubController {
 
+    @Tag(name = "동아리 기본", description = "동아리 기본 API")
+    @Operation(summary = "[동아리 기본] 동아리 등록 요청", description = """
+            ## 동아리 등록을 요청합니다.
+            ### RequestBody
+            - **name**: 동아리명
+            - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
+            - **category**: 동아리 카테고리(SPORTS, ART)
+            - **oneLiner**: 동아리 한줄소개
+            - **briefIntroduction**: 동아리 간단소개
+            ### Multipart/form-data
+            - **image**: 동아리 대표 사진
+            """)
     @PostMapping("/")
-    public void createNewClub() {
+    public void createNewClub(@RequestPart ClubRequestDTO.CommonClubDTO request,
+                              @RequestPart MultipartFile image) {
+        return;
+    }
+
+    @Tag(name = "동아리 기본", description = "동아리 기본 API")
+    @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
+            ## 동아리 기본 정보를 수정합니다.
+            ### RequestBody
+            - **name**: 동아리명
+            - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
+            - **category**: 동아리 카테고리(SPORTS, ART)
+            - **oneLiner**: 동아리 한줄소개
+            - **briefIntroduction**: 동아리 간단소개
+            ### Multipart/form-data
+            - **image**: 동아리 대표 사진
+            """)
+    public void updateClubInfo(@RequestPart ClubRequestDTO.CommonClubDTO request,
+                               @RequestPart MultipartFile image) {
         return;
     }
 

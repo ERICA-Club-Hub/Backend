@@ -3,6 +3,7 @@ package kr.hanjari.backend.web.dto.club;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class ClubRequestDTO {
+
+    public static class CommonClubDTO {
+        private String clubName;
+        private String leaderEmail;
+        private ClubCategory category;
+        private String oneLiner;
+        private String briefIntroduction;
+    }
 
     @Getter
     @Setter
