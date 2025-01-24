@@ -1,11 +1,18 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubIntroductionDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
+@Builder
 @Table(name = "introduction")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Introduction {
 
     @Id
@@ -25,5 +32,11 @@ public class Introduction {
 
     @Column(name = "content3")
     private String content3;
+
+    public void updateIntroduction(String content1, String content2, String content3 ) {
+        this.content1 = content1;
+        this.content2 = content2;
+        this.content3 = content3;
+    }
 
 }

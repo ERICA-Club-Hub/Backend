@@ -3,6 +3,7 @@ package kr.hanjari.backend.web.dto.club;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import kr.hanjari.backend.domain.Schedule;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,8 @@ public class ClubRequestDTO {
         private RecruitmentStatus recruitmentStatus;
         @Schema(description = "동아리 대표 이름", example = "홍길동")
         private String leaderName;
+        @Schema(description = "동아리 대표 이메일", example = "test@gmail.com")
+        private String leaderEmail;
         @Schema(description = "동아리 대표 전화번호", example = "010-1234-5678")
         private String leaderPhone;
         @Schema(description = "동아리 활동내용", example = "매주 금요일 18시에 모여서 활동합니다.")
@@ -37,12 +40,13 @@ public class ClubRequestDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ClubActivityDTO {
-        @Schema(description = "활동 월", example = "10")
+    public static class ClubScheduleDTO {
+        @Schema(description = "입력 및 변경 하려는 활동의 월", example = "10")
         @Min(1) @Max(12)
         private Integer month;
         @Schema(description = "활동 내용", example = "스터디 시작")
-        private String activity;
+        private String content;
+
     }
 
     @Getter
