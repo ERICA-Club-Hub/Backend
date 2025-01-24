@@ -23,9 +23,15 @@ public class ServiceAnnouncementController {
     @Tag(name = "서비스 공지사항", description = "서비스 공지사항 관련 API")
     @Operation(summary = "[서비스 공지사항] 모든 서비스 공지사항 조회", description = """
             모든 서비스 공지사항을 조회합니다. 제목, 내용, 작성 일자를 반환합니다.
+            ### Query Parameters
+            - **page** : 페이지 번호 (0부터 시작)
+            - **size** : 한 페이지에 보여질 아이템 개수
             """)
     @GetMapping
-    public ApiResponse<ServiceAnnouncementSearchDTO> getAllServiceAnnouncements() {
+    public ApiResponse<ServiceAnnouncementSearchDTO> getAllServiceAnnouncements(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+    ) {
         return null;
     }
 
