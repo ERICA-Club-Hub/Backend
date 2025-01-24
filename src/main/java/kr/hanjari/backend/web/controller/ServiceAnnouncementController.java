@@ -5,6 +5,8 @@ import static kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncement
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementCommandService;
+import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementQueryService;
 import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO;
 import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO.CreateServiceAnnouncementRequestDTO;
 import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementResponseDTO;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class ServiceAnnouncementController {
+
+    private final ServiceAnnouncementQueryService serviceAnnouncementQueryService;
+    private final ServiceAnnouncementCommandService serviceAnnouncementCommandService;
 
     /* ----------------------------- 서비스 공지사항 ---------------------------------*/
 
@@ -32,7 +37,7 @@ public class ServiceAnnouncementController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size
     ) {
-        return null;
+        return ApiResponse.onSuccess(serviceAnnouncementQueryService.getAllServiceAnnouncements(page, size));
     }
 
     // 특정 서비스 공지사항 조회
@@ -44,7 +49,7 @@ public class ServiceAnnouncementController {
             """)
     @GetMapping("/{id}")
     public ApiResponse<ServiceAnnouncementDetailDTO> getServiceAnnouncement(@PathVariable Long id) {
-        return null;
+        return ApiResponse.onSuccess(serviceAnnouncementQueryService.getServiceAnnouncement(id));
     }
 
     // 서비스 공지사항 생성
@@ -58,7 +63,7 @@ public class ServiceAnnouncementController {
     @PostMapping
     public ApiResponse<?> createServiceAnnouncement(
             @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
-        return null;
+        return ApiResponse.onSuccess(serviceAnnouncementCommandService.createServiceAnnouncement(requestDTO));
     }
 
     // 특정 서비스 공지사항 수정
@@ -75,7 +80,7 @@ public class ServiceAnnouncementController {
     public ApiResponse<?> updateServiceAnnouncement(
             @PathVariable Long id,
             @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
-        return null;
+        return ApiResponse.onSuccess(serviceAnnouncementCommandService.updateServiceAnnouncement(id, requestDTO));
     }
 
     // 특정 서비스 공지사항 삭제
@@ -87,6 +92,7 @@ public class ServiceAnnouncementController {
             """)
     @DeleteMapping("/{id}")
     public ApiResponse<?> deleteServiceAnnouncement(@PathVariable Long id) {
-        return null;
+        serviceAnnouncementCommandService.deleteServiceAnnouncement(id);
+        return ApiResponse.onSuccess();
     }
 }

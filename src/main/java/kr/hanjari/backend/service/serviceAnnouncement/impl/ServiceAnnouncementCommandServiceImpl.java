@@ -33,7 +33,7 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
     @Override
     public Long updateServiceAnnouncement(Long id, CreateServiceAnnouncementRequestDTO requestDTO) {
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 
         serviceAnnouncement.update(requestDTO.getTitle(), requestDTO.getContent());
 
@@ -44,7 +44,7 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
     @Override
     public void deleteServiceAnnouncement(Long id) {
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 
         serviceAnnouncementRepository.delete(serviceAnnouncement);
     }
