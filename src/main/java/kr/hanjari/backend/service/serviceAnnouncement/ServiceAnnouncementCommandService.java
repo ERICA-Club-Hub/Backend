@@ -6,7 +6,7 @@ public interface ServiceAnnouncementCommandService {
 
     Long createServiceAnnouncement(CreateServiceAnnouncementRequestDTO requestDTO);
 
-    void updateServiceAnnouncement(Long id, CreateServiceAnnouncementRequestDTO requestDTO);
+    Long updateServiceAnnouncement(Long id, CreateServiceAnnouncementRequestDTO requestDTO);
 
     void deleteServiceAnnouncement(Long id);
 }
