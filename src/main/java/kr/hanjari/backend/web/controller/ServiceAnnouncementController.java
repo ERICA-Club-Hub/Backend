@@ -27,7 +27,8 @@ public class ServiceAnnouncementController {
     // 모든 서비스 공지사항 조회
     @Tag(name = "서비스 공지사항", description = "서비스 공지사항 관련 API")
     @Operation(summary = "[서비스 공지사항] 모든 서비스 공지사항 조회", description = """
-            모든 서비스 공지사항을 조회합니다. 제목, 내용, 작성 일자를 반환합니다.
+            모든 서비스 공지사항을 페이징 조회합니다. 제목, 내용, 작성 일자를 반환합니다.
+            공지사항 작성 일자를 기준으로 내림차순 정렬합니다. (최근 생성한 공지사항이 먼저 반환)
             ### Query Parameters
             - **page** : 페이지 번호 (0부터 시작)
             - **size** : 한 페이지에 보여질 아이템 개수
