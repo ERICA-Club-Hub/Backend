@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/document")
+@RequestMapping("/api/documents")
 public class DocumentController {
 
     @Tag(name = "자료실", description = "자료실 관련 API")

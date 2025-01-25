@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/activity")
+@RequestMapping("api/activities")
 public class ActivityController {
 
     @Tag(name = "활동로그", description = "활동로그 관련 API")
