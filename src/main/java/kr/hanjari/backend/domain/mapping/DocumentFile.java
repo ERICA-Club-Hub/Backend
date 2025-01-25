@@ -4,11 +4,16 @@ import jakarta.persistence.*;
 import kr.hanjari.backend.domain.Document;
 import kr.hanjari.backend.domain.File;
 import kr.hanjari.backend.domain.key.DocumentFileId;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "document_file")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class DocumentFile {
 
     @EmbeddedId

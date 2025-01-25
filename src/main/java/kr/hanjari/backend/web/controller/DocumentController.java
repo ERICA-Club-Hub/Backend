@@ -2,7 +2,10 @@ package kr.hanjari.backend.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.service.document.DocumentService;
 import kr.hanjari.backend.web.dto.document.DocumentRequestDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
+@RequiredArgsConstructor
 public class DocumentController {
+
+    private final DocumentService documentService;
 
     @Tag(name = "자료실", description = "자료실 관련 API")
     @Operation(summary = "[자료실] 자료실 업로드", description = """
@@ -20,10 +26,12 @@ public class DocumentController {
             ### Multipart/form-data
             - **files**: 업로드하려는 파일 리스트
             """)
-    @PostMapping("/")
-    public void postNewDocument(@RequestPart DocumentRequestDTO.CommonDocumentDTO request,
-                                @RequestPart List<MultipartFile> files) {
-        return;
+    @PostMapping(name = "/", consumes = {"application/json", "multipart/form-data"})
+    public ApiResponse<Long> postNewDocument(@RequestPart DocumentRequestDTO.CommonDocumentDTO commonDocumentDTO,
+                                             @RequestPart List<MultipartFile> files) {
+
+        Long result = documentService.createDocument(commonDocumentDTO, files);
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "자료실", description = "자료실 관련 API")
