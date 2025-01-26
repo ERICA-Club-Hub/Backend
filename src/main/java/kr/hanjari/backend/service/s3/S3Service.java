@@ -4,6 +4,8 @@ import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Operations;
 import jakarta.transaction.Transactional;
 import kr.hanjari.backend.domain.File;
+import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +45,7 @@ public class S3Service {
 
             File newFile = File.builder()
                     .name(fileName)
-                    .file_key(fileKey)
+                    .fileKey(fileKey)
                     .extension(fileExtension)
                     .size(file.getSize())
                     .build();
@@ -50,7 +53,14 @@ public class S3Service {
             return fileRepository.save(newFile);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO: 예외 추가
         }
+    }
+
+    public String downloadFile(Long fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
+
+        return s3Operations.createSignedGetURL(bucket, file.getFileKey(), Duration.ofHours(1)).toString();
     }
 }

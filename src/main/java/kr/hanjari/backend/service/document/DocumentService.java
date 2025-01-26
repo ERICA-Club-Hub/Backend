@@ -8,7 +8,9 @@ import kr.hanjari.backend.domain.mapping.DocumentFile;
 import kr.hanjari.backend.repository.DocumentFileRepository;
 import kr.hanjari.backend.repository.DocumentRepository;
 import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.document.DocumentDTO;
 import kr.hanjari.backend.web.dto.document.DocumentRequestDTO;
+import kr.hanjari.backend.web.dto.document.DocumentResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,5 +46,16 @@ public class DocumentService {
         }
 
         return newDocument.getId();
+    }
+
+    public DocumentResponseDTO.GetAllDocuments getAllDocuments() {
+
+        List<Document> documents = documentRepository.findAll();
+
+        List<DocumentDTO> documentDTOs = documents.stream()
+                .map(DocumentDTO::from)
+                .toList();
+
+        return DocumentResponseDTO.GetAllDocuments.of(documentDTOs);
     }
 }

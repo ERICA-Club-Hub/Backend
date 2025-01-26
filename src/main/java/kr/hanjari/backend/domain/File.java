@@ -22,7 +22,7 @@ public class File {
     private String name;
 
     @Column(name = "file_key", nullable = false)
-    private String file_key;
+    private String fileKey;
 
     @Column(name = "extension", nullable = false)
     private String extension;

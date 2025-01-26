@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.document.DocumentService;
 import kr.hanjari.backend.web.dto.document.DocumentRequestDTO;
+import kr.hanjari.backend.web.dto.document.DocumentResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,8 +40,10 @@ public class DocumentController {
             ## 자료실에 업로드된 파일을 전부 조회합니다.
             """)
     @GetMapping("/")
-    public void getAllDocuments() {
-        return;
+    public ApiResponse<DocumentResponseDTO.GetAllDocuments> getAllDocuments() {
+
+        DocumentResponseDTO.GetAllDocuments result = documentService.getAllDocuments();
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "자료실", description = "자료실 관련 API")
