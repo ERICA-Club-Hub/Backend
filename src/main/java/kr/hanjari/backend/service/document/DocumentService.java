@@ -78,4 +78,19 @@ public class DocumentService {
 
         return DocumentResponseDTO.GetDocumentFiles.of(fileDTOs);
     }
+
+    public void deleteDocument(Long documentId) {
+
+        List<DocumentFile> documentFiles = documentFileRepository.findAllByDocumentId(documentId);
+        documentFileRepository.deleteAll(documentFiles);
+        documentRepository.deleteById(documentId);
+
+        documentFiles.stream()
+                .map(DocumentFile::getFile)
+                .forEach(file -> {
+                    s3Service.deleteFile(file.getId());
+                });
+
+
+    }
 }

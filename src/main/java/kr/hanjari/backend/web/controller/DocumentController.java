@@ -81,8 +81,11 @@ public class DocumentController {
             - documentId: 삭제를 희망하는 자료의 id
             """)
     @DeleteMapping("/{documentId}")
-    public void deleteDocument(@PathVariable Long documentId) {
-        return;
+    public ApiResponse<Void> deleteDocument(@PathVariable Long documentId) {
+
+        documentService.deleteDocument(documentId);
+
+        return ApiResponse.onSuccess();
     }
 
 
