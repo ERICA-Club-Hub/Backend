@@ -30,16 +30,18 @@ public class DocumentService {
         Document newDocument = request.toEntity();
         documentRepository.save(newDocument);
 
-        files.forEach(file -> {
-            File newFile = s3Service.uploadFile(file);
-            DocumentFileId documentFileId = new DocumentFileId();
-            DocumentFile documentFile = DocumentFile.builder()
-                    .id(documentFileId)
-                    .document(newDocument)
-                    .file(newFile)
-                    .build();
-            documentFileRepository.save(documentFile);
-        });
+        if (!files.isEmpty()) {
+            files.forEach(file -> {
+                File newFile = s3Service.uploadFile(file);
+                DocumentFileId documentFileId = new DocumentFileId();
+                DocumentFile documentFile = DocumentFile.builder()
+                        .id(documentFileId)
+                        .document(newDocument)
+                        .file(newFile)
+                        .build();
+                documentFileRepository.save(documentFile);
+            });
+        }
 
         return newDocument.getId();
     }
