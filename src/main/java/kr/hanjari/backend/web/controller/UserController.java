@@ -3,6 +3,9 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.service.user.UserCommandService;
+import kr.hanjari.backend.web.dto.user.UserResponseDTO;
+import kr.hanjari.backend.web.dto.user.UserResponseDTO.UserCodeDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
+
+    private final UserCommandService userCommandService;
 
     // 로그인
     @Operation(summary = "[로그인] 로그인", description = """
@@ -43,8 +48,8 @@ public class UserController {
             - **clubName**: 동아리 이름
             """)
     @PostMapping("/reissue-code")
-    public ApiResponse<?> reissueCode(@RequestParam String clubName) {
-        return null;
+    public ApiResponse<UserCodeDTO> reissueCode(@RequestParam String clubName) {
+        return ApiResponse.onSuccess(userCommandService.createCode(clubName));
     }
 
 }

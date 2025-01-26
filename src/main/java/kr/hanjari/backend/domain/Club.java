@@ -18,6 +18,9 @@ public class Club extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code")
+    private String code;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_file_id")
     private File imageFile;
@@ -72,6 +75,10 @@ public class Club extends BaseEntity {
         this.meetingSchedule = detail.getActivities();
         this.snsUrl = detail.getSnsUrl();
         this.applicationUrl = detail.getApplicationUrl();
+    }
+
+    public void updateCode(String code) {
+        this.code = code;
     }
 
 
