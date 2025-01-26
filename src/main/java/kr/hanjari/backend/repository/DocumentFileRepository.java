@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface DocumentFileRepository extends JpaRepository<DocumentFile, DocumentFileId> {
     List<DocumentFile> findAllByDocumentId(Long documentId);
+    void deleteByFileId(Long fileId);
 }

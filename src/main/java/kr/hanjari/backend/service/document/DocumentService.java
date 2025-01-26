@@ -5,6 +5,8 @@ import kr.hanjari.backend.domain.Document;
 import kr.hanjari.backend.domain.File;
 import kr.hanjari.backend.domain.key.DocumentFileId;
 import kr.hanjari.backend.domain.mapping.DocumentFile;
+import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.DocumentFileRepository;
 import kr.hanjari.backend.repository.DocumentRepository;
 import kr.hanjari.backend.service.s3.S3Service;
@@ -91,6 +93,30 @@ public class DocumentService {
                     s3Service.deleteFile(file.getId());
                 });
 
+    }
 
+    public void updateDocument(Long documentId, DocumentRequestDTO.UpdateDocumentDTO request, List<MultipartFile> files) {
+
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
+
+        document.updateTitle(request.getTitle());
+
+        request.getRemovedFileList()
+                .forEach(fileId -> {
+                    documentFileRepository.deleteByFileId(fileId);
+                    s3Service.deleteFile(fileId);
+                });
+
+        files.forEach(file -> {
+            File newFile = s3Service.uploadFile(file);
+            DocumentFileId documentFileId = new DocumentFileId();
+            DocumentFile documentFile = DocumentFile.builder()
+                    .id(documentFileId)
+                    .document(document)
+                    .file(newFile)
+                    .build();
+            documentFileRepository.save(documentFile);
+        });
     }
 }

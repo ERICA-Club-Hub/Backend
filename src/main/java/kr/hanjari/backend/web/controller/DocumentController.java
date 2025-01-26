@@ -68,10 +68,12 @@ public class DocumentController {
             - **files**: 업로드하려는 파일 리스트
             """)
     @PatchMapping("/{documentId}")
-    public void updateDocument(@PathVariable Long documentId,
-                               @RequestBody DocumentRequestDTO.CommonDocumentDTO request,
+    public ApiResponse<Void> updateDocument(@PathVariable Long documentId,
+                               @RequestPart DocumentRequestDTO.UpdateDocumentDTO request,
                                @RequestPart List<MultipartFile> files) {
-        return;
+
+        documentService.updateDocument(documentId, request, files);
+        return ApiResponse.onSuccess();
     }
 
     @Tag(name = "자료실", description = "자료실 관련 API")
@@ -84,7 +86,6 @@ public class DocumentController {
     public ApiResponse<Void> deleteDocument(@PathVariable Long documentId) {
 
         documentService.deleteDocument(documentId);
-
         return ApiResponse.onSuccess();
     }
 

@@ -19,4 +19,7 @@ public class Document extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
 }
