@@ -11,6 +11,7 @@ import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.document.DocumentDTO;
 import kr.hanjari.backend.web.dto.document.DocumentRequestDTO;
 import kr.hanjari.backend.web.dto.document.DocumentResponseDTO;
+import kr.hanjari.backend.web.dto.file.FileDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,5 +58,24 @@ public class DocumentService {
                 .toList();
 
         return DocumentResponseDTO.GetAllDocuments.of(documentDTOs);
+    }
+
+    public DocumentResponseDTO.GetDocumentFiles getDocumentFiles(Long documentId) {
+
+        List<DocumentFile> documentFiles = documentFileRepository.findAllByDocumentId(documentId);
+
+        List<File> files = documentFiles.stream()
+                .map(DocumentFile::getFile)
+                .toList();
+
+        List<FileDTO> fileDTOs = files.stream()
+                .map(file -> {
+                    String fileName = file.getName();
+                    String downloadUrl = s3Service.getDownloadUrl(file.getId());
+                    return FileDTO.of(fileName, downloadUrl);
+                })
+                .toList();
+
+        return DocumentResponseDTO.GetDocumentFiles.of(fileDTOs);
     }
 }

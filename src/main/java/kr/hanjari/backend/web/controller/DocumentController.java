@@ -53,8 +53,10 @@ public class DocumentController {
             - documentId: 조회를 희망하는 자료의 id
             """)
     @GetMapping("/{documentId}")
-    public void getDocumentDetail(@PathVariable Long documentId) {
-        return;
+    public ApiResponse<DocumentResponseDTO.GetDocumentFiles> getDocumentDetail(@PathVariable Long documentId) {
+
+        DocumentResponseDTO.GetDocumentFiles result = documentService.getDocumentFiles(documentId);
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "자료실", description = "자료실 관련 API")
