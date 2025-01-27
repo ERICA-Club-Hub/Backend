@@ -16,6 +16,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON402", "금지된 요청입니다."),
 
+    // 사용자 관련
+    _TOKEN_ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "USER400", "이미 로그아웃 처리된 토큰입니다."),
+
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
     _INVALID_CODE(HttpStatus.BAD_REQUEST, "CLUB400", "유효하지 않은 코드입니다."),
