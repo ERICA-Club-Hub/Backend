@@ -1,23 +1,18 @@
 package kr.hanjari.backend.web.controller;
 
-import static kr.hanjari.backend.web.dto.user.UserResponseDTO.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.user.UserCommandService;
-import kr.hanjari.backend.web.dto.user.UserRequestDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO.UserCodeDTO;
+import kr.hanjari.backend.web.dto.user.request.UserLoginRequestDTO;
+import kr.hanjari.backend.web.dto.user.response.UserCodeResponseDTO;
+import kr.hanjari.backend.web.dto.user.response.UserLoginResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +32,7 @@ public class UserController {
             - **code**: 동아리 별 인증 코드
             """)
     @PostMapping("/login")
-    public ApiResponse<UserLoginDTO> login(@RequestBody UserRequestDTO.UserLoginDTO request) {
+    public ApiResponse<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO request) {
         return ApiResponse.onSuccess(userCommandService.login(request));
     }
 
@@ -58,7 +53,7 @@ public class UserController {
             - **clubName**: 동아리 이름
             """)
     @PostMapping("/reissue-code")
-    public ApiResponse<UserCodeDTO> reissueCode(@RequestParam String clubName) {
+    public ApiResponse<UserCodeResponseDTO> reissueCode(@RequestParam String clubName) {
         return ApiResponse.onSuccess(userCommandService.createCode(clubName));
     }
 }

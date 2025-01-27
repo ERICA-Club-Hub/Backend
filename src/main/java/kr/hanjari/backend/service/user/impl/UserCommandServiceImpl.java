@@ -8,12 +8,11 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.service.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.user.UserCommandService;
-import kr.hanjari.backend.web.dto.user.UserRequestDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO.UserCodeDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO.UserLoginDTO;
+import kr.hanjari.backend.web.dto.user.request.UserLoginRequestDTO;
+import kr.hanjari.backend.web.dto.user.response.UserCodeResponseDTO;
+import kr.hanjari.backend.web.dto.user.response.UserLoginResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,7 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final SecureRandom random = new SecureRandom();
 
     @Override
-    public UserCodeDTO createCode(String clubName) {
+    public UserCodeResponseDTO createCode(String clubName) {
         Club club = clubRepository.findByName(clubName).orElseThrow(
                 () -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
@@ -49,17 +48,17 @@ public class UserCommandServiceImpl implements UserCommandService {
         club.updateCode(code);
         clubRepository.save(club);
 
-        return UserCodeDTO.of(code, clubName);
+        return UserCodeResponseDTO.of(code, clubName);
     }
 
     @Override
-    public UserLoginDTO login(UserRequestDTO.UserLoginDTO request) {
-        Club club = clubRepository.findByCode(request.getCode()).orElseThrow(
+    public UserLoginResponseDTO login(UserLoginRequestDTO request) {
+        Club club = clubRepository.findByCode(request.code()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._INVALID_CODE));
 
         String accessToken = jwtTokenProvider.createToken(club.getName());
 
-        return UserLoginDTO.of(accessToken, club.getName(), request.getCode());
+        return UserLoginResponseDTO.of(accessToken, club.getName(), request.code());
     }
 
     @Override

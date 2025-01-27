@@ -1,18 +1,16 @@
 package kr.hanjari.backend.service.user;
 
-import static kr.hanjari.backend.web.dto.user.UserResponseDTO.*;
-
-import kr.hanjari.backend.web.dto.user.UserRequestDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO;
-import kr.hanjari.backend.web.dto.user.UserResponseDTO.UserLoginDTO;
+import kr.hanjari.backend.web.dto.user.request.UserLoginRequestDTO;
+import kr.hanjari.backend.web.dto.user.response.UserCodeResponseDTO;
+import kr.hanjari.backend.web.dto.user.response.UserLoginResponseDTO;
 
 public interface UserCommandService {
 
     // 동아리 별 인증 코드 생성
-    UserCodeDTO createCode(String clubName);
+    UserCodeResponseDTO createCode(String clubName);
 
     // 인증 코드를 통한 로그인
-    UserLoginDTO login(UserRequestDTO.UserLoginDTO code);
+    UserLoginResponseDTO login(UserLoginRequestDTO code);
 
     // 로그아웃
     void logout(String authorizationHeader);
