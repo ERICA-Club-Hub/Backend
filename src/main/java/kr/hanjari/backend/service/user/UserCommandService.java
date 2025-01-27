@@ -20,6 +20,4 @@ public interface UserCommandService {
     // 토큰이 블랙리스트에 있는지 확인
     boolean isContainToken(String token);
 
-    // 토큰으로 동아리 이름 조회
-    String getClubNameFromToken(String token);
 }

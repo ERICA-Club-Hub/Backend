@@ -61,11 +61,4 @@ public class UserController {
     public ApiResponse<UserCodeDTO> reissueCode(@RequestParam String clubName) {
         return ApiResponse.onSuccess(userCommandService.createCode(clubName));
     }
-
-    @GetMapping("/test")
-    public ApiResponse<String> test(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization").substring(7);
-        return ApiResponse.onSuccess(userCommandService.getClubNameFromToken(authorizationHeader));
-    }
-
 }

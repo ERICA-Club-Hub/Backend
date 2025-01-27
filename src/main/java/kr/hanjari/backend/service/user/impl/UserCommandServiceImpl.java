@@ -57,7 +57,6 @@ public class UserCommandServiceImpl implements UserCommandService {
         Club club = clubRepository.findByCode(request.getCode()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._INVALID_CODE));
 
-        // TODO: JWT 토큰 발급
         String accessToken = jwtTokenProvider.createToken(club.getName());
 
         return UserLoginDTO.of(accessToken, club.getName(), request.getCode());
@@ -83,10 +82,6 @@ public class UserCommandServiceImpl implements UserCommandService {
         return redisTemplate.opsForSet().isMember(BLACKLIST_KEY, token);
     }
 
-    @Override
-    public String getClubNameFromToken(String token) {
-        return jwtTokenProvider.getClubNameFromToken(token);
-    }
 
     private String generateRandomCode() {
         StringBuilder codeBuilder = new StringBuilder(CODE_LENGTH);
