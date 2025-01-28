@@ -11,8 +11,10 @@ import kr.hanjari.backend.repository.DocumentFileRepository;
 import kr.hanjari.backend.repository.DocumentRepository;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.document.DocumentDTO;
-import kr.hanjari.backend.web.dto.document.DocumentRequestDTO;
-import kr.hanjari.backend.web.dto.document.DocumentResponseDTO;
+import kr.hanjari.backend.web.dto.document.request.CreateDocumentRequest;
+import kr.hanjari.backend.web.dto.document.request.UpdateDocumentRequest;
+import kr.hanjari.backend.web.dto.document.response.GetAllDocumentsResponse;
+import kr.hanjari.backend.web.dto.document.response.GetDocumentFilesResponse;
 import kr.hanjari.backend.web.dto.file.FileDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class DocumentService {
     private final DocumentFileRepository documentFileRepository;
     private final S3Service s3Service;
 
-    public Long createDocument(DocumentRequestDTO.CommonDocumentDTO request,
+    public Long createDocument(CreateDocumentRequest request,
                                List<MultipartFile> files) {
 
         Document newDocument = request.toEntity();
@@ -51,26 +53,26 @@ public class DocumentService {
         return newDocument.getId();
     }
 
-    public DocumentResponseDTO.GetAllDocuments getAllDocuments() {
+    public GetAllDocumentsResponse getAllDocuments() {
 
-        List<Document> documents = documentRepository.findAll();
+        List<Document> documentList = documentRepository.findAll();
 
-        List<DocumentDTO> documentDTOs = documents.stream()
+        List<DocumentDTO> documentDTOList = documentList.stream()
                 .map(DocumentDTO::from)
                 .toList();
 
-        return DocumentResponseDTO.GetAllDocuments.of(documentDTOs);
+        return new GetAllDocumentsResponse(documentDTOList);
     }
 
-    public DocumentResponseDTO.GetDocumentFiles getDocumentFiles(Long documentId) {
+    public GetDocumentFilesResponse getDocumentFiles(Long documentId) {
 
-        List<DocumentFile> documentFiles = documentFileRepository.findAllByDocumentId(documentId);
+        List<DocumentFile> documentFileList = documentFileRepository.findAllByDocumentId(documentId);
 
-        List<File> files = documentFiles.stream()
+        List<File> fileList = documentFileList.stream()
                 .map(DocumentFile::getFile)
                 .toList();
 
-        List<FileDTO> fileDTOs = files.stream()
+        List<FileDTO> fileDTOList = fileList.stream()
                 .map(file -> {
                     String fileName = file.getName();
                     String downloadUrl = s3Service.getDownloadUrl(file.getId());
@@ -78,7 +80,7 @@ public class DocumentService {
                 })
                 .toList();
 
-        return DocumentResponseDTO.GetDocumentFiles.of(fileDTOs);
+        return new GetDocumentFilesResponse(fileDTOList);
     }
 
     public void deleteDocument(Long documentId) {
@@ -95,14 +97,14 @@ public class DocumentService {
 
     }
 
-    public void updateDocument(Long documentId, DocumentRequestDTO.UpdateDocumentDTO request, List<MultipartFile> files) {
+    public void updateDocument(Long documentId, UpdateDocumentRequest request, List<MultipartFile> files) {
 
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
 
-        document.updateTitle(request.getTitle());
+        document.updateTitle(request.title());
 
-        request.getRemovedFileList()
+        request.removedFileIdList()
                 .forEach(fileId -> {
                     documentFileRepository.deleteByFileId(fileId);
                     s3Service.deleteFile(fileId);
