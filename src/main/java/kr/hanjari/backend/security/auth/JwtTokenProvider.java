@@ -1,4 +1,4 @@
-package kr.hanjari.backend.service.auth;
+package kr.hanjari.backend.security.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

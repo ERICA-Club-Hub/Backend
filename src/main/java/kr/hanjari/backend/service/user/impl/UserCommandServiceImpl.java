@@ -6,7 +6,7 @@ import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.service.auth.JwtTokenProvider;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.user.UserCommandService;
 import kr.hanjari.backend.web.dto.user.request.UserLoginRequestDTO;
 import kr.hanjari.backend.web.dto.user.response.UserCodeResponseDTO;
