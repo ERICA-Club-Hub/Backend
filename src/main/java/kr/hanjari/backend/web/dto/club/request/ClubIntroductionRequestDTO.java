@@ -1,6 +1,6 @@
 package kr.hanjari.backend.web.dto.club.request;
 
-public record ClubIntroductionDTO(
+public record ClubIntroductionRequestDTO(
         String introduction,
         String activities,
         String recruitment

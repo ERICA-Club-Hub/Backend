@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubDetailDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -67,14 +67,14 @@ public class Club extends BaseEntity {
         this.imageFile = imageFile;
     }
 
-    public void updateClubDetails(ClubDetailDTO detail) {
-        this.recruitmentStatus = detail.getRecruitmentStatus();
-        this.leaderName = detail.getLeaderName();
-        this.leaderEmail = detail.getLeaderEmail();
-        this.leaderPhone = detail.getLeaderPhone();
-        this.meetingSchedule = detail.getActivities();
-        this.snsUrl = detail.getSnsUrl();
-        this.applicationUrl = detail.getApplicationUrl();
+    public void updateClubDetails(ClubDetailRequestDTO detail) {
+        this.recruitmentStatus = detail.recruitmentStatus();
+        this.leaderName = detail.leaderName();
+        this.leaderEmail = detail.leaderEmail();
+        this.leaderPhone = detail.leaderPhone();
+        this.meetingSchedule = detail.activities();
+        this.snsUrl = detail.snsUrl();
+        this.applicationUrl = detail.applicationUrl();
     }
 
     public void updateCode(String code) {

@@ -1,8 +1,6 @@
 package kr.hanjari.backend.web.dto.club.response;
 
-import kr.hanjari.backend.web.dto.club.ClubResponseDTO;
-
-public record ClubDetailDTO(
+public record ClubDetailResponseDTO(
         ClubResponseDTO.ClubDTO club,
         String profileImage,
         String leaderName,
