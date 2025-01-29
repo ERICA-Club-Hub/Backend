@@ -1,7 +1,7 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
-import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubRecruitmentDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,9 +33,9 @@ public class Recruitment {
     @Column(name = "content3")
     private String content3;
 
-    public void updateRecruitment(ClubRecruitmentDTO clubRecruitmentDTO) {
-        this.content1 = clubRecruitmentDTO.getDue();
-        this.content2 = clubRecruitmentDTO.getNotice();
-        this.content3 = clubRecruitmentDTO.getEtc();
+    public void updateRecruitment(ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+        this.content1 = clubRecruitmentDTO.due();
+        this.content2 = clubRecruitmentDTO.notice();
+        this.content3 = clubRecruitmentDTO.etc();
     }
 }

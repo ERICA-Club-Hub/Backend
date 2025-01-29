@@ -1,7 +1,6 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
-import kr.hanjari.backend.web.dto.club.ClubRequestDTO.ClubIntroductionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

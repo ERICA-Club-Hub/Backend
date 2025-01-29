@@ -1,6 +1,6 @@
 package kr.hanjari.backend.service.serviceAnnouncement;
 
-import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO.CreateServiceAnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.request.CreateServiceAnnouncementRequestDTO;
 
 public interface ServiceAnnouncementCommandService {
 

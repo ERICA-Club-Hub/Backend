@@ -1,13 +1,22 @@
 package kr.hanjari.backend.web.controller;
 
-import static kr.hanjari.backend.web.dto.club.ClubResponseDTO.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
-import kr.hanjari.backend.web.dto.club.ClubRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +43,7 @@ public class ClubController {
             - **image**: 동아리 대표 사진
             """)
     @PostMapping("/")
-    public void createNewClub(@RequestPart ClubRequestDTO.CommonClubDTO request,
+    public void createNewClub(@RequestPart CommonClubDTO request,
                               @RequestPart MultipartFile image) {
         return;
     }
@@ -51,7 +60,7 @@ public class ClubController {
             ### Multipart/form-data
             - **image**: 동아리 대표 사진
             """)
-    public void updateClubInfo(@RequestPart ClubRequestDTO.CommonClubDTO request,
+    public void updateClubInfo(@RequestPart CommonClubDTO request,
                                @RequestPart MultipartFile image) {
         return;
     }
@@ -68,12 +77,13 @@ public class ClubController {
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             """)
     @GetMapping("")
-    public ApiResponse<ClubSearchDTO> getClubsByCondition(
+    public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String sortBy
     ) {
+        // TODO
         return null;
     }
 
@@ -85,7 +95,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}")
-    public ApiResponse<ClubDTO> getSpecificClub(@PathVariable Long clubId) {
+    public ApiResponse<ClubResponseDTO> getSpecificClub(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
     }
 
@@ -107,7 +117,7 @@ public class ClubController {
     @PostMapping("/{clubId}")
     public ApiResponse<Long> postSpecificClub(
             @PathVariable Long clubId,
-            @RequestBody ClubRequestDTO.ClubDetailDTO clubDetailDTO) {
+            @RequestBody ClubDetailRequestDTO clubDetailDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
 
@@ -119,7 +129,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/schedules")
-    public ApiResponse<ClubScheduleDTO> getClubSchedules(@PathVariable Long clubId) {
+    public ApiResponse<ClubScheduleResponseDTO> getClubSchedules(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findAllClubActivities(clubId));
     }
 
@@ -136,7 +146,7 @@ public class ClubController {
     @PostMapping("/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
-            @RequestBody ClubRequestDTO.ClubScheduleDTO clubActivityDTO) {
+            @RequestBody ClubScheduleRequestDTO clubActivityDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubSchedule(clubId, clubActivityDTO));
     }
 
@@ -155,7 +165,7 @@ public class ClubController {
     public ApiResponse<?> patchClubSchedules(
             @PathVariable Long clubId,
             @PathVariable Long scheduleId,
-            @RequestBody ClubRequestDTO.ClubScheduleDTO clubScheduleDTO) {
+            @RequestBody ClubScheduleRequestDTO clubScheduleDTO) {
         return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, scheduleId, clubScheduleDTO));
     }
 
@@ -181,7 +191,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/introduction")
-    public ApiResponse<ClubIntroductionDTO> getClubIntroduction(@PathVariable Long clubId) {
+    public ApiResponse<ClubIntroductionResponseDTO> getClubIntroduction(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroduction(clubId));
     }
 
@@ -199,7 +209,7 @@ public class ClubController {
     @PostMapping("/{clubId}/introduction")
     public ApiResponse<?> postClubIntroduction(
             @PathVariable Long clubId,
-            @RequestBody ClubRequestDTO.ClubIntroductionDTO clubIntroductionDTO) {
+            @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubIntroduction(clubId, clubIntroductionDTO));
     }
 
@@ -210,7 +220,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/recruitment")
-    public ApiResponse<ClubRecruitmentDTO> getClubRecruitment(@PathVariable Long clubId) {
+    public ApiResponse<ClubRecruitmentResponseDTO> getClubRecruitment(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubRecruitment(clubId));
     }
 
@@ -228,7 +238,7 @@ public class ClubController {
     @PostMapping("/{clubId}/recruitment")
     public ApiResponse<?> postClubRecruitment(
             @PathVariable Long clubId,
-            @RequestBody ClubRequestDTO.ClubRecruitmentDTO clubRecruitmentDTO) {
+            @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitment(clubId, clubRecruitmentDTO));
     }
 }

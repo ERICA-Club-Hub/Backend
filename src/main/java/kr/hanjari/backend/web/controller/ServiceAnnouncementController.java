@@ -1,15 +1,14 @@
 package kr.hanjari.backend.web.controller;
 
-import static kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementResponseDTO.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementCommandService;
 import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementQueryService;
-import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO;
-import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO.CreateServiceAnnouncementRequestDTO;
-import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementResponseDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.request.CreateServiceAnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.response.ServiceAnnouncementDetailDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.response.ServiceAnnouncementSearchDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
