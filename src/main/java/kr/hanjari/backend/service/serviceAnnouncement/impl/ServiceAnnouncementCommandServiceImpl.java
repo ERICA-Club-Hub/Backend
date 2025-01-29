@@ -5,7 +5,7 @@ import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ServiceAnnouncementRepository;
 import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementCommandService;
-import kr.hanjari.backend.web.dto.serviceAnnouncement.ServiceAnnouncementRequestDTO.CreateServiceAnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.serviceAnnouncement.request.CreateServiceAnnouncementRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,8 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
     @Override
     public Long createServiceAnnouncement(CreateServiceAnnouncementRequestDTO requestDTO) {
         ServiceAnnouncement serviceAnnouncement = ServiceAnnouncement.builder()
-                .title(requestDTO.getTitle())
-                .content(requestDTO.getContent())
+                .title(requestDTO.title())
+                .content(requestDTO.content())
                 .build();
 
         ServiceAnnouncement save = serviceAnnouncementRepository.save(serviceAnnouncement);
@@ -35,7 +35,7 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 
-        serviceAnnouncement.update(requestDTO.getTitle(), requestDTO.getContent());
+        serviceAnnouncement.update(requestDTO.title(), requestDTO.content());
 
         ServiceAnnouncement save = serviceAnnouncementRepository.save(serviceAnnouncement);
         return save.getId();
