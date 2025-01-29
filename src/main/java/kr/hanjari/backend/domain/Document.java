@@ -2,11 +2,14 @@ package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "document")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class Document extends BaseEntity {
 
     @Id
@@ -16,4 +19,7 @@ public class Document extends BaseEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
 }
