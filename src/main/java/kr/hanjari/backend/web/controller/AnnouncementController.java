@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/announcements")
 @RequiredArgsConstructor
-@Tag(name = "총동연 공지사항", description = "📢 총동연 공지사항 관련 API")
+@Tag(name = "📢 총동연 공지사항", description = "총동연 공지사항 관련 API")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
@@ -67,7 +67,7 @@ public class AnnouncementController {
         ## 🛠 총동연 공지사항을 수정합니다.
 
         ### 🔹 PathVariable
-        - **announcementId**: 수정할 공지사항의 ID
+        #### 📌 announcementId: 수정할 공지사항의 ID
 
         ### 🔹 Request
         #### 📌 requestBody (JSON)
@@ -91,7 +91,7 @@ public class AnnouncementController {
         ## 🗑 총동연 공지사항을 삭제합니다.
 
         ### 🔹 PathVariable
-        - **announcementId**: 삭제할 공지사항의 ID
+        #### 📌 announcementId: 삭제할 공지사항의 ID
         """
     )
     @DeleteMapping("/{announcementId}")
