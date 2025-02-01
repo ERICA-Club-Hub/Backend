@@ -2,7 +2,11 @@ package kr.hanjari.backend.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.service.announcement.AnnouncementService;
 import kr.hanjari.backend.web.dto.announcement.CommonAnnouncement;
+import kr.hanjari.backend.web.dto.announcement.request.CommonAnnouncementRequest;
+import kr.hanjari.backend.web.dto.announcement.response.GetAllAnnouncementResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/announcements")
 @RequiredArgsConstructor
 public class AnnouncementController {
+
+    private final AnnouncementService announcementService;
 
     @Tag(name = "총동연 공지사항", description = "총동연 공지사항 관련 API")
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 생성", description = """
@@ -22,9 +28,11 @@ public class AnnouncementController {
             - **thumbnail**: 썸네일 이미지
             """)
     @PostMapping(value = "/", consumes = {"application/json", "multipart/form-data"})
-    public void createAnnouncement(@RequestPart(name = "body") CommonAnnouncement requestBody,
-                                   @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
-        return;
+    public ApiResponse<Long> postNewAnnouncement(@RequestPart(name = "body") CommonAnnouncementRequest requestBody,
+                                                 @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
+
+        Long result = announcementService.createAnnouncement(requestBody, thumbnail);
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "총동연 공지사항", description = "총동연 공지사항 관련 API")
@@ -32,8 +40,10 @@ public class AnnouncementController {
             총동연 공지사항을 전부 조회합니다.
             """)
     @GetMapping("/")
-    public void getAllAnnouncement() {
-        return;
+    public ApiResponse<GetAllAnnouncementResponse> getAllAnnouncement() {
+
+        GetAllAnnouncementResponse result = announcementService.getAllAnnouncement();
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "총동연 공지사항", description = "총동연 공지사항 관련 API")
@@ -48,10 +58,12 @@ public class AnnouncementController {
             - **thumbnail**: 썸네일 이미지
             """)
     @PatchMapping(value = "/{announcementId}", consumes = {"application/json", "multipart/form-data"})
-    public void updateAnnouncement(@PathVariable Long announcementId,
-                                   @RequestPart(name = "body") CommonAnnouncement requestBody,
+    public ApiResponse<Void> updateAnnouncement(@PathVariable Long announcementId,
+                                   @RequestPart(name = "body") CommonAnnouncementRequest requestBody,
                                    @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
-        return;
+
+        announcementService.updateAnnouncement(announcementId, requestBody, thumbnail);
+        return ApiResponse.onSuccess();
     }
 
     @Tag(name = "총동연 공지사항", description = "총동연 공지사항 관련 API")
@@ -61,8 +73,10 @@ public class AnnouncementController {
             - **id**: 삭제를 희망하는 공지사항의 id
             """)
     @DeleteMapping("/{announcementId}")
-    public void deleteAnnouncement(@PathVariable Long announcementId) {
-        return;
+    public ApiResponse<Void> deleteAnnouncement(@PathVariable Long announcementId) {
+
+        announcementService.deleteAnnouncement(announcementId);
+        return ApiResponse.onSuccess();
     }
 
 

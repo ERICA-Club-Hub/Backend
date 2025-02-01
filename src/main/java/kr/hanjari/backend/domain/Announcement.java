@@ -1,12 +1,19 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import kr.hanjari.backend.domain.common.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "announcement")
 @NoArgsConstructor
-public class Announcement {
+@AllArgsConstructor
+@Builder
+@Getter
+public class Announcement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +31,10 @@ public class Announcement {
 
     public void updateThumbnailImage(File imageFile) {
         this.thumbnailImage = imageFile;
+    }
+
+    public void updateTitleAndUrl(String title, String url) {
+        this.title = title;
+        this.url = url;
     }
 }

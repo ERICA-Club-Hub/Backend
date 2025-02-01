@@ -1,8 +1,8 @@
-package kr.hanjari.backend.web.dto.announcement;
+package kr.hanjari.backend.web.dto.announcement.request;
 
 import kr.hanjari.backend.domain.Announcement;
 
-public record CommonAnnouncement(
+public record CommonAnnouncementRequest(
         String title,
         String url
 ) {
