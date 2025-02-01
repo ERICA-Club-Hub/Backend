@@ -2,7 +2,7 @@ package kr.hanjari.backend.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hanjari.backend.web.dto.announcement.AnnouncementRequestDTO;
+import kr.hanjari.backend.web.dto.announcement.CommonAnnouncement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +22,7 @@ public class AnnouncementController {
             - **thumbnail**: 썸네일 이미지
             """)
     @PostMapping(value = "/", consumes = {"application/json", "multipart/form-data"})
-    public void createAnnouncement(@RequestPart(name = "body") AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+    public void createAnnouncement(@RequestPart(name = "body") CommonAnnouncement requestBody,
                                    @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
         return;
     }
@@ -49,7 +49,7 @@ public class AnnouncementController {
             """)
     @PatchMapping(value = "/{announcementId}", consumes = {"application/json", "multipart/form-data"})
     public void updateAnnouncement(@PathVariable Long announcementId,
-                                   @RequestPart(name = "body") AnnouncementRequestDTO.CommonAnnouncement commonAnnouncement,
+                                   @RequestPart(name = "body") CommonAnnouncement requestBody,
                                    @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
         return;
     }
