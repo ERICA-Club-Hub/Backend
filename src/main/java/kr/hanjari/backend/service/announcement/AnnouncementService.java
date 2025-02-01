@@ -1,6 +1,5 @@
 package kr.hanjari.backend.service.announcement;
 
-import kr.hanjari.backend.web.dto.announcement.CommonAnnouncement;
 import kr.hanjari.backend.web.dto.announcement.request.CommonAnnouncementRequest;
 import kr.hanjari.backend.web.dto.announcement.response.GetAllAnnouncementResponse;
 import org.springframework.web.multipart.MultipartFile;

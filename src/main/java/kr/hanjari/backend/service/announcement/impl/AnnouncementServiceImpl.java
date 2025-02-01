@@ -7,7 +7,6 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.AnnouncementRepository;
 import kr.hanjari.backend.service.announcement.AnnouncementService;
 import kr.hanjari.backend.service.s3.S3Service;
-import kr.hanjari.backend.web.dto.announcement.CommonAnnouncement;
 import kr.hanjari.backend.web.dto.announcement.request.CommonAnnouncementRequest;
 import kr.hanjari.backend.web.dto.announcement.response.AnnouncementDTO;
 import kr.hanjari.backend.web.dto.announcement.response.GetAllAnnouncementResponse;
