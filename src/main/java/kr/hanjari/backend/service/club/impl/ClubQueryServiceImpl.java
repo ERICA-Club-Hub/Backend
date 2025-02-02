@@ -48,7 +48,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
             String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size) {
 
-        if (sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
+        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
             Page<Club> clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, status, PageRequest.of(page, size));
             return ClubSearchResponseDTO.of(clubs);
         }
