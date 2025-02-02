@@ -2,13 +2,13 @@ package kr.hanjari.backend.domain.enums;
 
 import lombok.Getter;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 @Getter
 public enum SortBy {
     NAME_ASC(Sort.by(Sort.Direction.ASC, "name")),
-    NAME_DESC(Sort.by(Sort.Direction.DESC, "name")),
-    RECRUITMENT_STATUS_ASC(Sort.by(Sort.Direction.ASC, "recruitmentStatus")
-            .and(Sort.by(Sort.Direction.ASC, "name"))); // 같은 상태에서는 name 기준 오름차순 정렬
+    CATEGORY_ASC(Sort.by(Direction.ASC, "category")),
+    RECRUITMENT_STATUS_ASC(Sort.by(Sort.Direction.ASC, "recruitmentStatus"));
 
     private final Sort sort;
 
