@@ -103,12 +103,4 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
         return ClubRecruitmentResponseDTO.of(recruitment, club);
     }
-
-    private Comparator<RecruitmentStatus> recruitmentStatusComparator =
-            Comparator.comparingInt(status -> switch (status) {
-                case OPEN -> 0;
-                case UPCOMING -> 1;
-                case CLOSED -> 2;
-            });
-
 }
