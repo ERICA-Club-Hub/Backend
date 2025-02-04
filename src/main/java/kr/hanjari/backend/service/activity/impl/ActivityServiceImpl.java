@@ -60,4 +60,20 @@ public class ActivityServiceImpl implements ActivityService {
 
         return newActivity.getId();
     }
+
+    @Override
+    public void deleteActivity(Long activityId) { // TODO: clubId 검사
+        if (!activityRepository.existsById(activityId)) {
+            throw new GeneralException(ErrorStatus._BAD_REQUEST);
+        }
+
+        List<ActivityImage> activityImages = activityImageRepository.findAllByActivityId(activityId);
+        activityImages.forEach(
+                activityImage -> {
+                    s3Service.deleteFile(activityImage.getImageFile().getId());
+                    activityImageRepository.delete(activityImage);
+                }
+        );
+        activityRepository.deleteById(activityId);
+    }
 }

@@ -6,6 +6,7 @@ import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.web.dto.activity.ActivityRequestDTO;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/activities")
+@RequiredArgsConstructor
 @Tag(name = "활동로그", description = "활동로그 관련 API")
 public class ActivityController {
 
@@ -36,7 +38,7 @@ public class ActivityController {
         - **생성된 activity의 ID**
         """)
     @PostMapping("/{clubId}")
-    public ApiResponse<Long> postNewActivity(@PathVariable Long clubId,
+    public ApiResponse<Long> postNewActivity(@PathVariable Long clubId, // TODO: token으로 치환
                                              @RequestPart CreateActivityRequest requestBody,
                                              @RequestPart List<MultipartFile> images) {
 
@@ -82,13 +84,16 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 삭제", description = """
-            ## 활동로그 하나를 삭제합니다.
-            ### PathVariable
-            - **activityId**: 삭제를 희망하는 활동로그의 id
+            ## 🗑 활동로그를 삭제합니다.
+
+            ### 🔹 PathVariable
+            #### 📌 activityId: 삭제할 activity의 ID
             """)
     @DeleteMapping("/{activityId}")
-    public void deleteActivity(@PathVariable Long activityId) {
-        return;
+    public ApiResponse<Void> deleteActivity(@PathVariable Long activityId) {
+
+        activityService.deleteActivity(activityId);
+        return ApiResponse.onSuccess();
     }
 
 }

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ActivityService {
     Long createActivity(Long clubId, CreateActivityRequest createActivityRequest, List<MultipartFile> images);
+    void deleteActivity(Long activityId);
 }
