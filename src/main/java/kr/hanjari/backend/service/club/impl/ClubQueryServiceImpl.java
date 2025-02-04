@@ -1,5 +1,6 @@
 package kr.hanjari.backend.service.club.impl;
 
+import java.util.Comparator;
 import java.util.List;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
@@ -14,6 +15,7 @@ import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
 import kr.hanjari.backend.repository.RecruitmentRepository;
 import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.specification.ClubSpecifications;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
@@ -22,6 +24,10 @@ import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +44,19 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
 
     @Override
-    public ClubSearchResponseDTO findClubsByCondition(String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
-                                                      int size) {
-        return null;
+    public ClubSearchResponseDTO findClubsByCondition(
+            String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
+            int size) {
+
+        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
+            Page<Club> clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, status, PageRequest.of(page, size));
+            return ClubSearchResponseDTO.of(clubs);
+        }
+
+        Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Club> clubs = clubRepository.findAll(ClubSpecifications.findByCondition(name, category, status), pageable);
+        return ClubSearchResponseDTO.of(clubs);
     }
 
     @Override

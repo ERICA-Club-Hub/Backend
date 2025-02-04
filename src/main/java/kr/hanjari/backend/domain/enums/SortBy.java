@@ -1,7 +1,19 @@
 package kr.hanjari.backend.domain.enums;
 
-public enum SortBy {
+import lombok.Getter;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
-    // 가나다, 카테고리, 모집기준
-    NAME_ASC, CATEGORY_ASC, RECRUITMENT_STATUS_ASC,
+@Getter
+public enum SortBy {
+    NAME_ASC(Sort.by(Sort.Direction.ASC, "name")),
+    CATEGORY_ASC(Sort.by(Direction.ASC, "category")),
+    RECRUITMENT_STATUS_ASC(Sort.by(Sort.Direction.ASC, "recruitmentStatus"));
+
+    private final Sort sort;
+
+    SortBy(Sort sort) {
+        this.sort = sort;
+    }
+
 }

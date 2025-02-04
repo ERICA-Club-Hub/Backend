@@ -3,6 +3,9 @@ package kr.hanjari.backend.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
@@ -75,16 +78,18 @@ public class ClubController {
             - **sortBy**: 정렬 기준 \n
             
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
+            아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
     @GetMapping("")
     public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String sortBy
+            @RequestParam(required = false) ClubCategory category,
+            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) SortBy sortBy,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        // TODO
-        return null;
+        return ApiResponse.onSuccess(clubQueryService.findClubsByCondition(keyword, category, status, sortBy, page, size));
     }
 
     /*----------------------------- 동아리 상세 -----------------------------*/
