@@ -82,7 +82,7 @@ public class ActivityController {
         ### 🔹 Response
         - **thumbnailUrlList**: 각 활동로그 대표 사진의 url 리스트
         """)
-    @GetMapping("/{clubId}")
+    @GetMapping("/club/{clubId}")
     public ApiResponse<GetAllActivityResponse> getAllActivity(@PathVariable Long clubId) {
 
         GetAllActivityResponse result = activityService.getAllActivity(clubId);

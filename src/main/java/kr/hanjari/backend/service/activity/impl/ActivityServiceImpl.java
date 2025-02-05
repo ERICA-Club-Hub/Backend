@@ -16,6 +16,7 @@ import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.request.UpdateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.response.ActivityImageDTO;
+import kr.hanjari.backend.web.dto.activity.response.ActivityThumbnailDTO;
 import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
 import kr.hanjari.backend.web.dto.activity.response.GetSpecificActivityResponse;
 import lombok.RequiredArgsConstructor;
@@ -106,14 +107,15 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public GetAllActivityResponse getAllActivity(Long clubId) {
         List<Activity> activityList = activityRepository.findAllByClubId(clubId);
-        List<String> thumbnailUrlList = activityList.stream()
+        List<ActivityThumbnailDTO> activityThumbnailDTOList = activityList.stream()
                 .map(activity -> {
                     File thumbnail = activityImageRepository.findFirstByActivityIdOrderByIdAsc(activity.getId())
                             .get().getImageFile();
-                    return s3Service.getDownloadUrl(thumbnail.getId());
+                    String thumbnailUrl = s3Service.getDownloadUrl(thumbnail.getId());
+                    return ActivityThumbnailDTO.of(activity.getId(), thumbnailUrl);
                 }).toList();
 
-        return GetAllActivityResponse.of(thumbnailUrlList);
+        return GetAllActivityResponse.of(activityThumbnailDTOList);
     }
 
     @Override
