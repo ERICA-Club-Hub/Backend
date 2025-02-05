@@ -6,6 +6,9 @@ import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.web.dto.activity.ActivityRequestDTO;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
+import kr.hanjari.backend.web.dto.activity.request.UpdateActivityRequest;
+import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
+import kr.hanjari.backend.web.dto.activity.response.GetSpecificActivityResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,48 +50,64 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 수정", description = """
-            ## 활동로그를 수정합니다.
-            ### PathVariable
-            - **activityId**: 수정을 희망하는 활동로그의 id
-            ### RequestBody
-            - **date**: 날짜
-            - **title**: 제목
-            ### Multipart/form-data
-            - **images**: 업로드하려는 이미지 리스트
-            """)
+        ## ✏️ 활동로그를 수정합니다.
+        
+        ### 🔹 PathVariable
+        #### 📌 activityId: 수정할 activity의 ID
+
+        ### 🔹 Request
+        #### 📌 requestBody (JSON)
+        - **content**: 수정할 내용
+        - **date**: 수정할 날짜
+        - **changedImageIDList**: 삭제할 파일 ID 리스트
+
+        #### 📌 files (multipart/form-data 리스트)
+        - **새롭게 추가할 파일 리스트(필수 x, 있는 경우에만 입력)**
+        """)
     @PatchMapping("/{activityId}")
-    public void updateActivity(@PathVariable Long activityId,
-                               @RequestPart ActivityRequestDTO.CommonActivityDTO request,
+    public ApiResponse<Void> updateActivity(@PathVariable Long activityId,   // TODO: token 검증
+                               @RequestPart UpdateActivityRequest requestBody,
                                @RequestPart List<MultipartFile> images) {
-        return;
+
+        activityService.updateActivity(activityId, requestBody, images);
+        return ApiResponse.onSuccess();
     }
 
     @Operation(summary = "[활동로그] 활동로그 조회", description = """
-            ## 동아리의 활동로그를 모두 조회합니다.
-            ### PathVariable
-            - **clubId**: 활동로그 조회를 희망한는 동아리의 id
-            """)
+        ## 📄 동아리의 활동로그를 모두 조회합니다.
+        
+        ### 🔹 PathVariable
+        #### 📌 clubId: 활동로그를 조회할 club의 ID
+        
+        ### 🔹 Response
+        - **thumbnailUrlList**: 각 활동로그 대표 사진의 url 리스트
+        """)
     @GetMapping("/{clubId}")
-    public void getAllActivity(@PathVariable Long clubId) {
-        return;
+    public ApiResponse<GetAllActivityResponse> getAllActivity(@PathVariable Long clubId) {
+
+        GetAllActivityResponse result = activityService.getAllActivity(clubId);
+        return ApiResponse.onSuccess(result);
     }
 
     @Operation(summary = "[활동로그] 활동로그 상세 조회", description = """
-            ## 활동로그 하나를 상세조회합니다.
-            ### PathVariable
-            - **activityId**: 조회를 희망하는 활동로그의 id
-            """)
+        ## 📄 활동로그 하나를 상세조회합니다.
+        
+        ### 🔹 PathVariable
+        #### 📌 activityId: 상세조회할 activity의 ID
+        """)
     @GetMapping("/{activityId}")
-    public void getActivityDetail(@PathVariable Long activityId) {
-        return;
+    public ApiResponse<GetSpecificActivityResponse> getSpecificActivity(@PathVariable Long activityId) {
+
+        GetSpecificActivityResponse result = activityService.getSpecificActivity(activityId);
+        return ApiResponse.onSuccess(result);
     }
 
     @Operation(summary = "[활동로그] 활동로그 삭제", description = """
-            ## 🗑 활동로그를 삭제합니다.
+        ## 🗑 활동로그를 삭제합니다.
 
-            ### 🔹 PathVariable
-            #### 📌 activityId: 삭제할 activity의 ID
-            """)
+        ### 🔹 PathVariable
+        #### 📌 activityId: 삭제할 activity의 ID
+        """)
     @DeleteMapping("/{activityId}")
     public ApiResponse<Void> deleteActivity(@PathVariable Long activityId) {
 

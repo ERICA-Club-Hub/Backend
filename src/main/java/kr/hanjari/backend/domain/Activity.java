@@ -28,4 +28,8 @@ public class Activity {
     @Column(name = "content")
     private String content;
 
+    public void updateContentAndDate(String content, LocalDate date) {
+        this.content = content;
+        this.date = date;
+    }
 }

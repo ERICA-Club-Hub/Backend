@@ -26,4 +26,12 @@ public class ActivityImage {
     @OneToOne
     @JoinColumn(name = "image_file_id")
     private File imageFile;
+
+    @Column(name = "order_index", nullable = false)
+    private Integer orderIndex;
+
+    public void updateImageFile(File imageFile) {
+        this.imageFile = imageFile;
+    }
+
 }
