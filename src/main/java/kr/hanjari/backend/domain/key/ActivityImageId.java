@@ -16,7 +16,4 @@ public class ActivityImageId implements Serializable {
     @Column(name = "image_file_id", nullable = false)
     private Long imageFileId;
 
-    public void updateImageFileId(Long imageFileId) {
-        this.imageFileId = imageFileId;
-    }
 }

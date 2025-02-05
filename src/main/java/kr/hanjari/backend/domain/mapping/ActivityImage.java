@@ -30,9 +30,4 @@ public class ActivityImage {
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
-    public void updateImageFile(File imageFile) {
-        this.imageFile = imageFile;
-        this.id.updateImageFileId(imageFile.getId());
-    }
-
 }
