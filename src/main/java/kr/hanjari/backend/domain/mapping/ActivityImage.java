@@ -32,6 +32,7 @@ public class ActivityImage {
 
     public void updateImageFile(File imageFile) {
         this.imageFile = imageFile;
+        this.id.updateImageFileId(imageFile.getId());
     }
 
 }

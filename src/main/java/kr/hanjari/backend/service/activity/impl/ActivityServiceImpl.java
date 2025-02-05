@@ -78,12 +78,20 @@ public class ActivityServiceImpl implements ActivityService {
                 int orderIndex = orderIndexList.get(i);
                 File newImageFile = s3Service.uploadFile(images.get(i));
 
-                ActivityImage activityImage = activityImageList.get(orderIndex);
-                File imageFileForRemove = activityImage.getImageFile();
+                ActivityImage oldActivityImage = activityImageList.get(orderIndex);
+                File oldImageFile = oldActivityImage.getImageFile();
 
-                activityImage.updateImageFile(newImageFile);
+                ActivityImageId newActivityImageId = new ActivityImageId();
+                ActivityImage newActivityImage = ActivityImage.builder()
+                        .id(newActivityImageId)
+                        .activity(activity)
+                        .imageFile(newImageFile)
+                        .orderIndex(orderIndex)
+                        .build();
+                activityImageRepository.save(newActivityImage);
 
-                s3Service.deleteFile(imageFileForRemove.getId());
+                activityImageRepository.delete(oldActivityImage);
+                s3Service.deleteFile(oldImageFile.getId());
             });
         }
     }
