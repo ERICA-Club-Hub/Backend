@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.activity.ActivityService;
-import kr.hanjari.backend.web.dto.activity.ActivityRequestDTO;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.request.UpdateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
@@ -34,8 +33,8 @@ public class ActivityController {
         - **content**: 제목
         - **date**: 날짜
 
-        #### 📌 files (multipart/form-data 리스트)
-        - **업로드할 파일 리스트**
+        #### 📌 images (multipart/form-data 리스트)
+        - **업로드할 이미지 리스트**
 
         ### 🔹 Response
         - **생성된 activity의 ID**
@@ -59,10 +58,12 @@ public class ActivityController {
         #### 📌 requestBody (JSON)
         - **content**: 수정할 내용
         - **date**: 수정할 날짜
-        - **changedImageIDList**: 삭제할 파일 ID 리스트
+        - **changedActivityImageOrderIndexList**: 이미지를 교체할 activityImage의 orderIndex 리스트
 
         #### 📌 files (multipart/form-data 리스트)
-        - **새롭게 추가할 파일 리스트(필수 x, 있는 경우에만 입력)**
+        - **새롭게 추가할 이미지 리스트(필수 x, 있는 경우에만 입력, orderIndex 순서로)**
+        
+        #### changedActivityImageOrderIndexList와 files의 크기는 동일해야 함
         """)
     @PatchMapping("/{activityId}")
     public ApiResponse<Void> updateActivity(@PathVariable Long activityId,   // TODO: token 검증
@@ -80,7 +81,9 @@ public class ActivityController {
         #### 📌 clubId: 활동로그를 조회할 club의 ID
         
         ### 🔹 Response
-        - **thumbnailUrlList**: 각 활동로그 대표 사진의 url 리스트
+        #### 📌 **activityThumbnailDTOList**
+        - **activityId**: activity의 id
+        - **thumbnailUrl**: 활동로그의 가장 첫 이미지의 url
         """)
     @GetMapping("/club/{clubId}")
     public ApiResponse<GetAllActivityResponse> getAllActivity(@PathVariable Long clubId) {
@@ -94,6 +97,16 @@ public class ActivityController {
         
         ### 🔹 PathVariable
         #### 📌 activityId: 상세조회할 activity의 ID
+        
+        ### 🔹 Response
+        #### 📌 **activityThumbnailDTOList**
+        - **content**: 활동로그 내용
+        - **date**: 활동로그 날짜
+        - **activityImageDTOList**: activityImageDTO 객체들의 리스트 
+        
+        #### 📌 **activityThumbnailDTO**
+        - **orderIndex**: 해당 이미지의 순서(0부터 시작)
+        - **imageUrl**: 해당 이미지의 url
         """)
     @GetMapping("/{activityId}")
     public ApiResponse<GetSpecificActivityResponse> getSpecificActivity(@PathVariable Long activityId) {
