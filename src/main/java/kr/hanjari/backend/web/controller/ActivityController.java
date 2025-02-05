@@ -31,7 +31,7 @@ public class ActivityController {
         
         ### 🔹 Request
         #### 📌 requestBody (JSON)
-        - **title**: 제목
+        - **content**: 제목
         - **date**: 날짜
 
         #### 📌 files (multipart/form-data 리스트)

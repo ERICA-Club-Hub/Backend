@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -47,7 +46,7 @@ public class ActivityServiceImpl implements ActivityService {
         newActivity.setClub(club);
         activityRepository.save(newActivity);
 
-        IntStream.range(0, images.size()).parallel()
+        IntStream.range(0, images.size())
                 .forEach(i -> {
                     File newImage = s3Service.uploadFile(images.get(i));
                     ActivityImageId activityImageId = new ActivityImageId();
@@ -95,10 +94,10 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         List<ActivityImage> activityImages = activityImageRepository.findAllByActivityId(activityId);
-        activityImages.stream().parallel().forEach(
+        activityImages.forEach(
                 activityImage -> {
-                    s3Service.deleteFile(activityImage.getImageFile().getId());
                     activityImageRepository.delete(activityImage);
+                    s3Service.deleteFile(activityImage.getImageFile().getId());
                 }
         );
         activityRepository.deleteById(activityId);
