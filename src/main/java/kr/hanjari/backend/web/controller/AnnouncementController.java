@@ -19,7 +19,7 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 생성", description = """
-        ## 📝 총동연 공지사항을 생성합니다.
+        ## 📤 총동연 공지사항을 생성합니다.
 
         ### 🔹 Request
         #### 📌 requestBody (JSON)
@@ -42,7 +42,7 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 전체 조회", description = """
-        ## 📌 총동연 공지사항을 전부 조회합니다.
+        ## 📄 총동연 공지사항을 전부 조회합니다.
 
         ### 🔹 Response
         #### 📌 AnnouncementDTOList
@@ -64,7 +64,7 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 수정", description = """
-        ## 🛠 총동연 공지사항을 수정합니다.
+        ## ✏️ 총동연 공지사항을 수정합니다.
 
         ### 🔹 PathVariable
         #### 📌 announcementId: 수정할 공지사항의 ID

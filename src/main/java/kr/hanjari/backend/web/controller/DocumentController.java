@@ -45,7 +45,7 @@ public class DocumentController {
     }
 
     @Operation(summary = "[자료실] 자료 전체 조회", description = """
-        ## 📌 자료실에 업로드된 파일을 전체 조회합니다.
+        ## 📄 자료실에 업로드된 파일을 전체 조회합니다.
 
         ### 🔹 Response
         #### 📌 documentDTOList
@@ -84,7 +84,7 @@ public class DocumentController {
 
     @Operation(summary = "[자료실] 자료 수정", description = """
         ## ✏️ 자료를 수정합니다.
-
+        
         ### 🔹 PathVariable
         #### 📌 documentId: 수정할 document의 ID
 

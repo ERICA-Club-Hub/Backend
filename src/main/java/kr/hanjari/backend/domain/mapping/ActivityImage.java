@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.File;
 import kr.hanjari.backend.domain.key.ActivityImageId;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "activity_image")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class ActivityImage {
 
     @EmbeddedId
@@ -23,4 +26,8 @@ public class ActivityImage {
     @OneToOne
     @JoinColumn(name = "image_file_id")
     private File imageFile;
+
+    @Column(name = "order_index", nullable = false)
+    private Integer orderIndex;
+
 }

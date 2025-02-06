@@ -1,19 +1,16 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
 @Entity
-@Builder
 @Table(name = "activity")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Getter
 public class Activity {
 
     @Id
@@ -22,6 +19,7 @@ public class Activity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
+    @Setter
     private Club club;
 
     @Column(name = "date")
@@ -30,4 +28,8 @@ public class Activity {
     @Column(name = "content")
     private String content;
 
+    public void updateContentAndDate(String content, LocalDate date) {
+        this.content = content;
+        this.date = date;
+    }
 }
