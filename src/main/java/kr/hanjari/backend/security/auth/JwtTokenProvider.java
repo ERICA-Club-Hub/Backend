@@ -3,9 +3,15 @@ package kr.hanjari.backend.security.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Objects;
+import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class JwtTokenProvider {
@@ -32,8 +38,37 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    public String getClubNameFromToken(String token) {
+    // 접근 가능한 API인지 확인(토큰이 유효한지, 만료되지 않았는지, 동아리 관리자가 맞는지)
+    public void isAccessible(String clubName) {
+        String token = getToken("Authorization");
+        token = token.substring(7);
+        if (isTokenExpired(token)) {
+            throw new GeneralException(ErrorStatus._TOKEN_ALREADY_LOGOUT);
+        }
+
+        String clubNameByToken = getClubNameFromToken(token);
+
+        if (!Objects.equals(clubName, clubNameByToken)) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+    }
+
+
+    private String getClubNameFromToken(String token) {
         return validateToken(token).getSubject();
+    }
+
+    private String getToken(String tokenName) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+
+        String token = request.getHeader(tokenName);
+
+        if (token == null) {
+            throw new GeneralException(ErrorStatus._TOKEN_NOT_EXIST);
+        }
+
+        return token;
     }
 
     public boolean isTokenExpired(String token) {

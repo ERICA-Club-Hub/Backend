@@ -18,6 +18,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 사용자 관련
     _TOKEN_ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "USER400", "이미 로그아웃 처리된 토큰입니다."),
+    _TOKEN_NOT_EXIST(HttpStatus.BAD_REQUEST, "USER400", "토큰이 존재하지 않습니다."),
 
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
