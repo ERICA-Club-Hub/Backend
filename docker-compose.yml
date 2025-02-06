@@ -11,6 +11,14 @@ services:
     ports:
       - "3306:3306"
 
+  redis:
+    image: redis:7.4.2
+    container_name: "redis-container"
+    networks:
+      - dev-db-network
+    ports:
+      - "6379:6379"
+
   hanjari:
     image: hanjari-dev:latest
     container_name: "hanjari-container"
@@ -20,6 +28,7 @@ services:
       - dev-db-network
     depends_on:
       - mysql
+      - redis
     ports:
       - "8080:8080"
 
