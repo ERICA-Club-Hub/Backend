@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain;
 
 import jakarta.persistence.*;
+import kr.hanjari.backend.domain.common.BaseEntity;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Activity {
+public class Activity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
