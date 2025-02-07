@@ -36,19 +36,22 @@ public class ClubController {
     @Tag(name = "동아리 기본", description = "동아리 기본 API")
     @Operation(summary = "[동아리 기본] 동아리 등록 요청", description = """
             ## 동아리 등록을 요청합니다.
-            ### RequestBody
-            - **name**: 동아리명
+            ### Request
+            #### requestBody (JSON)
+            - **clubName**: 동아리명
             - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
             - **category**: 동아리 카테고리(SPORTS, ART)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
-            ### Multipart/form-data
-            - **image**: 동아리 대표 사진
+            #### image (multipart/form-data)
+            - **동아리 대표 이미지**
             """)
     @PostMapping("/")
-    public void createNewClub(@RequestPart CommonClubDTO request,
-                              @RequestPart MultipartFile image) {
-        return;
+    public ApiResponse<Void> requestClubRegistration(@RequestPart CommonClubDTO requestBody,
+                                        @RequestPart MultipartFile image) {
+
+        clubCommandService.requestClubRegistration(requestBody, image);
+        return ApiResponse.onSuccess();
     }
 
     @Tag(name = "동아리 기본", description = "동아리 기본 API")

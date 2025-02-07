@@ -3,7 +3,17 @@ package kr.hanjari.backend.domain;
 import jakarta.persistence.*;
 import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "club_registration")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class ClubRegistration extends BaseEntity {
 
     @Id
@@ -30,4 +40,7 @@ public class ClubRegistration extends BaseEntity {
     @Column(name = "brief_introduction", nullable = false)
     private String briefIntroduction;
 
+    public void updateImageFile(File imageFile) {
+        this.imageFile = imageFile;
+    }
 }

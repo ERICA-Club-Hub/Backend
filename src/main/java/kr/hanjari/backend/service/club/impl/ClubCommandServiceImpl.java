@@ -1,26 +1,20 @@
 package kr.hanjari.backend.service.club.impl;
 
 
-import kr.hanjari.backend.domain.Club;
-import kr.hanjari.backend.domain.Introduction;
-import kr.hanjari.backend.domain.Recruitment;
-import kr.hanjari.backend.domain.Schedule;
+import kr.hanjari.backend.domain.*;
+import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.repository.IntroductionRepository;
-import kr.hanjari.backend.repository.RecruitmentRepository;
-import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.*;
 import kr.hanjari.backend.service.club.ClubCommandService;
-import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
+import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -29,9 +23,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClubCommandServiceImpl implements ClubCommandService {
 
     private final ClubRepository clubRepository;
+    private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
+
+    private final S3Service s3Service;
+
+    @Override
+    public void requestClubRegistration(CommonClubDTO requestBody, MultipartFile image) {
+
+        File imageFile = s3Service.uploadFile(image);
+
+        ClubRegistration clubRegistration = requestBody.toClubRegistration();
+        clubRegistration.updateImageFile(imageFile);
+
+        clubRegistrationRepository.save(clubRegistration);
+    }
 
     @Override
     public Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
