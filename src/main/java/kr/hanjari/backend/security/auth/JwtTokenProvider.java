@@ -20,7 +20,28 @@ public class JwtTokenProvider {
     private String SECRET_KEY;
     @Value("${jwt.expiration-time}")
     private Integer EXPIRATION_TIME; // 24시간
+    @Value("${jwt.secret.admin}")
+    private String SECRET_ADMIN;
+    @Value("${jwt.secret.service-admin}")
+    private String SECRET_SERVICE_ADMIN;
 
+    public String createAdminToken() {
+        return Jwts.builder()
+                .setSubject(SECRET_ADMIN)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24시간 유효
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+    }
+
+    public String createServiceAdminToken() {
+        return Jwts.builder()
+                .setSubject(SECRET_SERVICE_ADMIN)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24시간 유효
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+    }
 
     public String createToken(String clubName) {
         return Jwts.builder()

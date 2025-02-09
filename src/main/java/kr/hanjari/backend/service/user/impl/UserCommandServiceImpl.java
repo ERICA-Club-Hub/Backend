@@ -13,9 +13,11 @@ import kr.hanjari.backend.web.dto.user.response.UserCodeResponseDTO;
 import kr.hanjari.backend.web.dto.user.response.UserLoginResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @Slf4j
 @Service
@@ -27,10 +29,15 @@ public class UserCommandServiceImpl implements UserCommandService {
     private final StringRedisTemplate redisTemplate;
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String BLACKLIST_KEY = "blacklist";
+    @Value("${service.admin}")
+    private String SERVICE_ADMIN_CODE;
+    @Value("${admin}")
+    private String ADMIN_CODE;
 
+    private static final String BLACKLIST_KEY = "blacklist";
     private static final String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 코드에 사용할 문자 집합
     private static final int CODE_LENGTH = 6; // 코드 길이
+
     private final SecureRandom random = new SecureRandom();
 
     @Override
@@ -53,6 +60,14 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     @Override
     public UserLoginResponseDTO login(UserLoginRequestDTO request) {
+        if (request.code().equals(SERVICE_ADMIN_CODE)) {
+            return UserLoginResponseDTO.of(jwtTokenProvider.createServiceAdminToken(), "서비스 관리자", request.code());
+        }
+
+        if (request.code().equals(ADMIN_CODE)) {
+            return UserLoginResponseDTO.of(jwtTokenProvider.createAdminToken(), "총동아리연합회", request.code());
+        }
+
         Club club = clubRepository.findByCode(request.code()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._INVALID_CODE));
 

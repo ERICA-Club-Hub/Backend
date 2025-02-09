@@ -4,6 +4,7 @@ import kr.hanjari.backend.domain.ServiceAnnouncement;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ServiceAnnouncementRepository;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementCommandService;
 import kr.hanjari.backend.web.dto.serviceAnnouncement.request.CreateServiceAnnouncementRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncementCommandService {
 
     private final ServiceAnnouncementRepository serviceAnnouncementRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Long createServiceAnnouncement(CreateServiceAnnouncementRequestDTO requestDTO) {
