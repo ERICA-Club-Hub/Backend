@@ -26,31 +26,22 @@ public class JwtTokenProvider {
     private String SECRET_SERVICE_ADMIN;
 
     public String createAdminToken() {
-        return Jwts.builder()
-                .setSubject(SECRET_ADMIN)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24시간 유효
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
+        return createToken(SECRET_ADMIN);
     }
 
     public String createServiceAdminToken() {
+        return createToken(SECRET_SERVICE_ADMIN);
+    }
+
+    public String createToken(String subject) {
         return Jwts.builder()
-                .setSubject(SECRET_SERVICE_ADMIN)
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24시간 유효
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
     }
 
-    public String createToken(String clubName) {
-        return Jwts.builder()
-                .setSubject(clubName)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24시간 유효
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-    }
 
     public Claims validateToken(String token) {
         return Jwts.parser()
