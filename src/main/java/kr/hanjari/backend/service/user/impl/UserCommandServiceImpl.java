@@ -61,11 +61,11 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public UserLoginResponseDTO login(UserLoginRequestDTO request) {
         if (request.code().equals(SERVICE_ADMIN_CODE)) {
-            return UserLoginResponseDTO.of(jwtTokenProvider.createServiceAdminToken(), "서비스 관리자", request.code());
+            return UserLoginResponseDTO.of(jwtTokenProvider.createServiceAdminToken(), "서비스 관리자");
         }
 
         if (request.code().equals(ADMIN_CODE)) {
-            return UserLoginResponseDTO.of(jwtTokenProvider.createAdminToken(), "총동아리연합회", request.code());
+            return UserLoginResponseDTO.of(jwtTokenProvider.createAdminToken(), "총동아리연합회");
         }
 
         Club club = clubRepository.findByCode(request.code()).orElseThrow(
@@ -73,7 +73,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         String accessToken = jwtTokenProvider.createToken(club.getName());
 
-        return UserLoginResponseDTO.of(accessToken, club.getName(), request.code());
+        return UserLoginResponseDTO.of(accessToken, club.getName());
     }
 
     @Override
