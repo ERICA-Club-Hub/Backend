@@ -23,6 +23,9 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
 
     @Override
     public Long createServiceAnnouncement(CreateServiceAnnouncementRequestDTO requestDTO) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = ServiceAnnouncement.builder()
                 .title(requestDTO.title())
                 .content(requestDTO.content())
@@ -34,6 +37,9 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
 
     @Override
     public Long updateServiceAnnouncement(Long id, CreateServiceAnnouncementRequestDTO requestDTO) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 
@@ -45,6 +51,9 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
 
     @Override
     public void deleteServiceAnnouncement(Long id) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 

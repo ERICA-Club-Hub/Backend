@@ -50,20 +50,35 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    // 접근 가능한 API인지 확인(토큰이 유효한지, 만료되지 않았는지, 동아리 관리자가 맞는지)
+    // 토큰 기반 접근 권한 검증
     public void isAccessible(String clubName) {
-        String token = getToken("Authorization");
-        token = token.substring(7);
+        validateTokenAndCheckAccess(clubName);
+    }
+
+    // 서비스 관리자 접근 권한 검증
+    public void isServiceAdminAccessible() {
+        validateTokenAndCheckAccess(SECRET_SERVICE_ADMIN);
+    }
+
+    // 총동연 관리자 접근 권한 검증
+    public void isAdminAccessible() {
+        validateTokenAndCheckAccess(SECRET_ADMIN);
+    }
+
+    // 공통 검증 로직 (중복 제거)
+    private void validateTokenAndCheckAccess(String expectedSubject) {
+        String token = getToken("Authorization").substring(7);
+
         if (isTokenExpired(token)) {
             throw new GeneralException(ErrorStatus._TOKEN_ALREADY_LOGOUT);
         }
 
-        String clubNameByToken = getClubNameFromToken(token);
-
-        if (!Objects.equals(clubName, clubNameByToken)) {
+        String subject = getClubNameFromToken(token);
+        if (!Objects.equals(subject, expectedSubject)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
     }
+
 
 
     private String getClubNameFromToken(String token) {
