@@ -11,6 +11,7 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ActivityImageRepository;
 import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
@@ -31,9 +32,11 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
 
+    //TODO 활동 로그 인증/인가 적용 -> 현재 Club 관련 정보 X
     private final ActivityRepository activityRepository;
     private final ActivityImageRepository activityImageRepository;
     private final ClubRepository clubRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final S3Service s3Service;
 
@@ -44,6 +47,7 @@ public class ActivityServiceImpl implements ActivityService {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
+        jwtTokenProvider.isAccessible(club.getName());
         newActivity.setClub(club);
         activityRepository.save(newActivity);
 
@@ -70,6 +74,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         activity.updateContentAndDate(updateActivityRequest.content(), updateActivityRequest.date());
 
+        // jwtTokenProvider.isAccessible(club.getName());
         List<ActivityImage> activityImageList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(activityId);
 
         if (!images.isEmpty()) {
@@ -102,6 +107,8 @@ public class ActivityServiceImpl implements ActivityService {
             throw new GeneralException(ErrorStatus._BAD_REQUEST);
         }
 
+
+//        jwtTokenProvider.isAccessible(club.getName());
         List<ActivityImage> activityImages = activityImageRepository.findAllByActivityId(activityId);
         activityImages.forEach(
                 activityImage -> {
