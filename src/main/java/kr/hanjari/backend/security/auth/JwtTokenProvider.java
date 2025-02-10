@@ -70,7 +70,7 @@ public class JwtTokenProvider {
         String token = getToken("Authorization").substring(7);
 
         if (isTokenExpired(token)) {
-            throw new GeneralException(ErrorStatus._TOKEN_ALREADY_LOGOUT);
+            throw new GeneralException(ErrorStatus._TOKEN_EXPIRED);
         }
 
         String subject = getClubNameFromToken(token);
