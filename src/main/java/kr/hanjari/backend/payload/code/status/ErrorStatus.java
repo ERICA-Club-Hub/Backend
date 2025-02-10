@@ -17,9 +17,12 @@ public enum ErrorStatus implements BaseErrorCode {
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
     // 사용자 관련
-    _TOKEN_ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "USER404", "이미 로그아웃 처리된 토큰입니다."),
+    _INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "USER401", "유효하지 않은 토큰입니다."),
+    _TOKEN_ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "USER400", "이미 로그아웃 처리된 토큰입니다."),
     _TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED, "USER401", "토큰이 존재하지 않습니다."),
     _TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "USER401", "만료된 토큰입니다."),
+    _ACCESS_DENIED(HttpStatus.FORBIDDEN, "USER403", "접근 권한이 없습니다."),
+    _INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "USER401", "유효하지 않은 토큰 서명입니다."),
 
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),

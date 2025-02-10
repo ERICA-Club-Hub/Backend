@@ -15,7 +15,4 @@ public interface UserCommandService {
     // 로그아웃
     void logout(String authorizationHeader);
 
-    // 토큰이 블랙리스트에 있는지 확인
-    boolean isContainToken(String token);
-
 }
