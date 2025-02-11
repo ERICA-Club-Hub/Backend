@@ -11,7 +11,7 @@ public record ClubSearchResponseDTO(
     public static ClubSearchResponseDTO of(Page<Club> clubs) {
         return new ClubSearchResponseDTO(
                 clubs.map(ClubResponseDTO::of).getContent(),
-                (int) clubs.getTotalElements()
+                clubs.getNumberOfElements()
         );
     }
 }

@@ -2,10 +2,10 @@ package kr.hanjari.backend.service.club.impl;
 
 
 import kr.hanjari.backend.domain.*;
-import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.*;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.*;
@@ -27,6 +27,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final S3Service s3Service;
 
@@ -58,6 +59,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        jwtTokenProvider.isAccessible(club.getName());
         club.updateClubDetails(clubDetailDTO);
         Club saved = clubRepository.save(club);
         return saved.getId();
@@ -66,6 +68,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ScheduleResponseDTO saveClubSchedule(Long clubId, ClubScheduleRequestDTO clubScheduleDTO) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        jwtTokenProvider.isAccessible(club.getName());
 
         Schedule schedule = Schedule.builder()
                 .club(club)
@@ -82,6 +85,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
+        jwtTokenProvider.isAccessible(club.getName());
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
 
@@ -101,6 +105,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public void deleteClubSchedule(Long clubId, Long scheduleId) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
+        jwtTokenProvider.isAccessible(club.getName());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
 
         if (!club.getId().equals(schedule.getClub().getId())) {
@@ -120,6 +125,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         // 기존 Introduction 조회
         Introduction introduction = introductionRepository.findById(clubId)
                 .orElseGet(() -> Introduction.builder().clubId(clubId).build());
+
+        // 클럽의 이름만 조회
+        String clubName = clubRepository.findClubNameById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        jwtTokenProvider.isAccessible(clubName);
 
         // Introduction 내용 업데이트
         introduction.updateIntroduction(clubIntroductionDTO.introduction(),
@@ -141,6 +152,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         Recruitment recruitment = recruitmentRepository.findById(clubId)
                 .orElseGet(() -> Recruitment.builder().clubId(clubId).build());
+
+        // 클럽의 이름만 조회
+        String clubName = clubRepository.findClubNameById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        jwtTokenProvider.isAccessible(clubName);
 
         recruitment.updateRecruitment(clubRecruitmentDTO);
 
