@@ -7,7 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ClubCommandService {
 
     //동아리 등록 신청
-    void requestClubRegistration(CommonClubDTO reqeustBody, MultipartFile image);
+    Long requestClubRegistration(CommonClubDTO reqeustBody, MultipartFile image);
+    Long acceptClubRegistration(Long clubRegistrationId);
 
     // 동아리 상세 정보
     Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO);

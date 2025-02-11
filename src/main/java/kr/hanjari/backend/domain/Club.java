@@ -5,6 +5,8 @@ import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "club")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Club extends BaseEntity {
 
     @Id

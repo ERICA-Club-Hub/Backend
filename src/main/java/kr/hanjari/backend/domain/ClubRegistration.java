@@ -43,4 +43,15 @@ public class ClubRegistration extends BaseEntity {
     public void updateImageFile(File imageFile) {
         this.imageFile = imageFile;
     }
+
+    public Club toClub() {
+        return Club.builder()
+                .imageFile(imageFile)
+                .name(name)
+                .category(category)
+                .leaderEmail(leaderEmail)
+                .oneLiner(oneLiner)
+                .briefIntroduction(briefIntroduction)
+                .build();
+    }
 }

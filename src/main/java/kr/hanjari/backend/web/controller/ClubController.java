@@ -33,8 +33,8 @@ public class ClubController {
     private final ClubQueryService clubQueryService;
     private final ClubCommandService clubCommandService;
 
-    @Tag(name = "동아리 기본", description = "동아리 기본 API")
-    @Operation(summary = "[동아리 기본] 동아리 등록 요청", description = """
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """
             ## 동아리 등록을 요청합니다.
             ### Request
             #### requestBody (JSON)
@@ -45,13 +45,30 @@ public class ClubController {
             - **briefIntroduction**: 동아리 간단소개
             #### image (multipart/form-data)
             - **동아리 대표 이미지**
+            ### Response
+            - **생성된 ClubRegistration의 id**
             """)
-    @PostMapping("/")
-    public ApiResponse<Void> requestClubRegistration(@RequestPart CommonClubDTO requestBody,
-                                        @RequestPart MultipartFile image) {
+    @PostMapping("/registrations")
+    public ApiResponse<Long> requestClubRegistration(@RequestPart CommonClubDTO requestBody,
+                                                     @RequestPart MultipartFile image) {
 
-        clubCommandService.requestClubRegistration(requestBody, image);
-        return ApiResponse.onSuccess();
+        Long result = clubCommandService.requestClubRegistration(requestBody, image);
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
+            ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 수락하려는 clubRegistration의 ID
+            ### Response
+            - **수락 후 새로 등록된 club의 id**
+            """)
+    @PostMapping("/registrations/{clubRegistrationId}")
+    public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
+
+        Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "동아리 기본", description = "동아리 기본 API")
