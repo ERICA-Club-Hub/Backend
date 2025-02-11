@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "사용자", description = "사용자 관련 API")
-@CrossOrigin
+@CrossOrigin(exposedHeaders = "Authorization")
 @RequestMapping("/api/users")
 @RestController
 @RequiredArgsConstructor
