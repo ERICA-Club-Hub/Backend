@@ -16,7 +16,6 @@ import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubDetailResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
@@ -33,22 +32,42 @@ public class ClubController {
     private final ClubQueryService clubQueryService;
     private final ClubCommandService clubCommandService;
 
-    @Tag(name = "동아리 기본", description = "동아리 기본 API")
-    @Operation(summary = "[동아리 기본] 동아리 등록 요청", description = """
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """
             ## 동아리 등록을 요청합니다.
-            ### RequestBody
-            - **name**: 동아리명
+            ### Request
+            #### requestBody (JSON)
+            - **clubName**: 동아리명
             - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
             - **category**: 동아리 카테고리(SPORTS, ART)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
-            ### Multipart/form-data
-            - **image**: 동아리 대표 사진
+            #### image (multipart/form-data)
+            - **동아리 대표 이미지**
+            ### Response
+            - **생성된 ClubRegistration의 id**
             """)
-    @PostMapping("/")
-    public void createNewClub(@RequestPart CommonClubDTO request,
-                              @RequestPart MultipartFile image) {
-        return;
+    @PostMapping("/registrations")
+    public ApiResponse<Long> requestClubRegistration(@RequestPart CommonClubDTO requestBody,
+                                                     @RequestPart MultipartFile image) {
+
+        Long result = clubCommandService.requestClubRegistration(requestBody, image);
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
+            ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 수락하려는 clubRegistration의 ID
+            ### Response
+            - **수락 후 새로 등록된 club의 id**
+            """)
+    @PostMapping("/registrations/{clubRegistrationId}")
+    public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
+
+        Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
     }
 
     @Tag(name = "동아리 기본", description = "동아리 기본 API")

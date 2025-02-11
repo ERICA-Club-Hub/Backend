@@ -55,7 +55,7 @@ public class DocumentController {
         - **title**: 자료 제목
         """
     )
-    @GetMapping("/")
+    @GetMapping("")
     public ApiResponse<GetAllDocumentsResponse> getAllDocuments() {
 
         GetAllDocumentsResponse result = documentService.getAllDocuments();

@@ -34,7 +34,7 @@ public class AnnouncementController {
         - **생성된 공지사항의 ID**
         """
     )
-    @PostMapping(value = "/", consumes = {"application/json", "multipart/form-data"})
+    @PostMapping(value = "", consumes = {"application/json", "multipart/form-data"})
     public ApiResponse<Long> postNewAnnouncement(@RequestPart(name = "requestBody") CommonAnnouncementRequest requestBody,
                                                  @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
 
@@ -57,7 +57,7 @@ public class AnnouncementController {
         - **thumbnail**: 썸네일 이미지 링크
         """
     )
-    @GetMapping("/")
+    @GetMapping("")
     public ApiResponse<GetAllAnnouncementResponse> getAllAnnouncement() {
 
         GetAllAnnouncementResponse result = announcementService.getAllAnnouncement();
