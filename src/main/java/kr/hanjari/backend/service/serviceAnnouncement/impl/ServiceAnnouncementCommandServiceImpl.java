@@ -4,6 +4,7 @@ import kr.hanjari.backend.domain.ServiceAnnouncement;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ServiceAnnouncementRepository;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.serviceAnnouncement.ServiceAnnouncementCommandService;
 import kr.hanjari.backend.web.dto.serviceAnnouncement.request.CreateServiceAnnouncementRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncementCommandService {
 
     private final ServiceAnnouncementRepository serviceAnnouncementRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public Long createServiceAnnouncement(CreateServiceAnnouncementRequestDTO requestDTO) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = ServiceAnnouncement.builder()
                 .title(requestDTO.title())
                 .content(requestDTO.content())
@@ -32,6 +37,9 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
 
     @Override
     public Long updateServiceAnnouncement(Long id, CreateServiceAnnouncementRequestDTO requestDTO) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 
@@ -43,6 +51,9 @@ public class ServiceAnnouncementCommandServiceImpl implements ServiceAnnouncemen
 
     @Override
     public void deleteServiceAnnouncement(Long id) {
+
+        jwtTokenProvider.isServiceAdminAccessible();
+
         ServiceAnnouncement serviceAnnouncement = serviceAnnouncementRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND));
 

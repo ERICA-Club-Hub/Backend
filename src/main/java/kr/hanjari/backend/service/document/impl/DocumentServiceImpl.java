@@ -9,6 +9,7 @@ import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.DocumentFileRepository;
 import kr.hanjari.backend.repository.DocumentRepository;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.document.DocumentService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.document.DocumentDTO;
@@ -30,6 +31,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
     private final DocumentFileRepository documentFileRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     private final S3Service s3Service;
 
     public GetAllDocumentsResponse getAllDocuments() {
@@ -65,6 +67,7 @@ public class DocumentServiceImpl implements DocumentService {
     public Long createDocument(CreateDocumentRequest request,
                                List<MultipartFile> files) {
 
+        jwtTokenProvider.isAdminAccessible();
         Document newDocument = request.toEntity();
         documentRepository.save(newDocument);
 
@@ -85,6 +88,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     public void deleteDocument(Long documentId) {
 
+        jwtTokenProvider.isAdminAccessible();
         List<DocumentFile> documentFiles = documentFileRepository.findAllByDocumentId(documentId);
         documentFileRepository.deleteAll(documentFiles);
         documentRepository.deleteById(documentId);
@@ -98,6 +102,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     public void updateDocument(Long documentId, UpdateDocumentRequest request, List<MultipartFile> files) {
 
+        jwtTokenProvider.isAdminAccessible();
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
 
