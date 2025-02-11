@@ -4,6 +4,7 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.user.UserCommandService;
 import kr.hanjari.backend.web.dto.user.request.UserLoginRequestDTO;
@@ -32,8 +33,8 @@ public class UserController {
             - **code**: 동아리 별 인증 코드
             """)
     @PostMapping("/login")
-    public ApiResponse<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO request) {
-        return ApiResponse.onSuccess(userCommandService.login(request));
+    public ApiResponse<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO request, HttpServletResponse response) {
+        return ApiResponse.onSuccess(userCommandService.login(request, response));
     }
 
     // 로그아웃
