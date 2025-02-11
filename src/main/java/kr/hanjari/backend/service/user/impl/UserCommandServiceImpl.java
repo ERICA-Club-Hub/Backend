@@ -1,5 +1,6 @@
 package kr.hanjari.backend.service.user.impl;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
@@ -31,6 +32,8 @@ public class UserCommandServiceImpl implements UserCommandService {
     private String ADMIN_CODE;
 
     private static final String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 코드에 사용할 문자 집합
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER = "Bearer ";
     private static final int CODE_LENGTH = 6; // 코드 길이
 
     private final SecureRandom random = new SecureRandom();
@@ -54,13 +57,15 @@ public class UserCommandServiceImpl implements UserCommandService {
     }
 
     @Override
-    public UserLoginResponseDTO login(UserLoginRequestDTO request) {
+    public UserLoginResponseDTO login(UserLoginRequestDTO request, HttpServletResponse response) {
         if (request.code().equals(SERVICE_ADMIN_CODE)) {
-            return UserLoginResponseDTO.of(jwtTokenProvider.createServiceAdminToken(), "서비스 관리자");
+            response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createServiceAdminToken());
+            return UserLoginResponseDTO.of("서비스 관리자");
         }
 
         if (request.code().equals(ADMIN_CODE)) {
-            return UserLoginResponseDTO.of(jwtTokenProvider.createAdminToken(), "총동아리연합회");
+            response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createAdminToken());
+            return UserLoginResponseDTO.of("총동아리연합회");
         }
 
         Club club = clubRepository.findByCode(request.code()).orElseThrow(
@@ -68,7 +73,9 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         String accessToken = jwtTokenProvider.createToken(club.getName());
 
-        return UserLoginResponseDTO.of(accessToken, club.getName());
+        // 헤더에 토큰 포함
+        response.setHeader(AUTHORIZATION_HEADER, BEARER  + accessToken);
+        return UserLoginResponseDTO.of(club.getName());
     }
 
     @Override
