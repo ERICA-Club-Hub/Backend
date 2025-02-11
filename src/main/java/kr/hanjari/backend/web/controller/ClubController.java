@@ -16,7 +16,6 @@ import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubDetailResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
