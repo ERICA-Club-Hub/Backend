@@ -33,6 +33,8 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private static final String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 코드에 사용할 문자 집합
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String SERVICE_ADMIN = "서비스 관리자";
+    private static final String ADMIN = "총동아리연합회";
     private static final String BEARER = "Bearer ";
     private static final int CODE_LENGTH = 6; // 코드 길이
 
@@ -60,12 +62,12 @@ public class UserCommandServiceImpl implements UserCommandService {
     public UserLoginResponseDTO login(UserLoginRequestDTO request, HttpServletResponse response) {
         if (request.code().equals(SERVICE_ADMIN_CODE)) {
             response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createServiceAdminToken());
-            return UserLoginResponseDTO.of("서비스 관리자");
+            return UserLoginResponseDTO.of(SERVICE_ADMIN);
         }
 
         if (request.code().equals(ADMIN_CODE)) {
             response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createAdminToken());
-            return UserLoginResponseDTO.of("총동아리연합회");
+            return UserLoginResponseDTO.of(ADMIN);
         }
 
         Club club = clubRepository.findByCode(request.code()).orElseThrow(
