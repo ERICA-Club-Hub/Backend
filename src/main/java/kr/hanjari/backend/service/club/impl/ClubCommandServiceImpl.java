@@ -176,26 +176,36 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public Long saveClubRecruitment(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
-
-        if (!clubRepository.existsById(clubId)) {
+        if (!clubRepository.existsById(clubId))
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
 
         Recruitment recruitment = recruitmentRepository.findById(clubId)
                 .orElseGet(() -> Recruitment.builder().clubId(clubId).build());
 
-        // 클럽의 이름만 조회
         checkAuthorizationByClubId(clubId);
-
         recruitment.updateRecruitment(clubRecruitmentDTO);
-
         Recruitment save = recruitmentRepository.save(recruitment);
+
+        if (recruitmentDraftRepository.existsByClubId(clubId))
+            recruitmentDraftRepository.removeByClubId(clubId);
 
         return save.getClubId();
     }
+
     @Override
-    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO recruitment) {
-        return 0L;
+    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+        if (!clubRepository.existsById(clubId))
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
+
+
+        RecruitmentDraft recruitment = recruitmentDraftRepository.findById(clubId)
+                .orElseGet(() -> RecruitmentDraft.builder().clubId(clubId).build());
+
+        checkAuthorizationByClubId(clubId);
+        recruitment.updateRecruitment(clubRecruitmentDTO);
+        RecruitmentDraft save = recruitmentDraftRepository.save(recruitment);
+
+        return save.getClubId();
     }
 
     private void checkAuthorizationByClubId(Long clubId) {

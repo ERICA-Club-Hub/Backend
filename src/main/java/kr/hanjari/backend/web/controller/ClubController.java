@@ -321,6 +321,6 @@ public class ClubController {
     public ApiResponse<?> postClubRecruitmentDraft(
             @PathVariable Long clubId,
             @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO) {
-        return ApiResponse.onSuccess();
+        return ApiResponse.onSuccess(clubCommandService.saveClubRecruitmentDraft(clubId, clubRecruitmentDTO));
     }
 }
