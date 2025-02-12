@@ -7,6 +7,7 @@ import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.Schedule;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
+import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
@@ -22,6 +23,7 @@ import kr.hanjari.backend.repository.specification.ClubSpecifications;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
@@ -117,14 +119,18 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_NOT_FOUND));
-
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_NOT_FOUND));
 
         return ClubRecruitmentResponseDTO.of(recruitment, club);
     }
 
     @Override
-    public ClubRecruitmentResponseDTO findClubRecruitmentDraft(Long clubId) {
-        return null;
+    public ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId) {
+        clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        RecruitmentDraft recruitment = recruitmentDraftRepository.findByClubId(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
+
+        return ClubRecruitmentDraftResponseDTO.of(recruitment);
     }
 }
