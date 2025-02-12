@@ -2,9 +2,13 @@ package kr.hanjari.backend.service.club.impl;
 
 
 import kr.hanjari.backend.domain.*;
+import kr.hanjari.backend.domain.draft.IntroductionDraft;
+import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.*;
+import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
+import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.s3.S3Service;
@@ -27,6 +31,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
+
+    private final IntroductionDraftRepository introductionDraftRepository;
+    private final RecruitmentDraftRepository recruitmentDraftRepository;
+
     private final JwtTokenProvider jwtTokenProvider;
 
     private final S3Service s3Service;
@@ -126,11 +134,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Introduction introduction = introductionRepository.findById(clubId)
                 .orElseGet(() -> Introduction.builder().clubId(clubId).build());
 
-        // 클럽의 이름만 조회
-        String clubName = clubRepository.findClubNameById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        jwtTokenProvider.isAccessible(clubName);
+        checkAuthorizationByClubId(clubId);
 
         // Introduction 내용 업데이트
         introduction.updateIntroduction(clubIntroductionDTO.introduction(),
@@ -139,8 +143,35 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         // 저장
         Introduction saved = introductionRepository.save(introduction);
 
+        if (introductionDraftRepository.existsByClubId(clubId)) {
+            introductionDraftRepository.removeByClubId(clubId);
+        }
+
         return saved.getClubId();
     }
+
+    @Override
+    public Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequestDTO clubIntroductionDTO) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
+        }
+
+        // 기존 IntroductionDraft 조회
+        IntroductionDraft introductionDraft = introductionDraftRepository.findById(clubId)
+                .orElseGet(() -> IntroductionDraft.builder().clubId(clubId).build());
+
+        checkAuthorizationByClubId(clubId);
+
+        // IntroductionDraft 내용 업데이트
+        introductionDraft.updateIntroduction(clubIntroductionDTO.introduction(),
+                clubIntroductionDTO.activities(), clubIntroductionDTO.recruitment());
+
+        // 저장
+        IntroductionDraft saved = introductionDraftRepository.save(introductionDraft);
+
+        return saved.getClubId();
+    }
+
 
 
     @Override
@@ -154,15 +185,24 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .orElseGet(() -> Recruitment.builder().clubId(clubId).build());
 
         // 클럽의 이름만 조회
-        String clubName = clubRepository.findClubNameById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        jwtTokenProvider.isAccessible(clubName);
+        checkAuthorizationByClubId(clubId);
 
         recruitment.updateRecruitment(clubRecruitmentDTO);
 
         Recruitment save = recruitmentRepository.save(recruitment);
 
         return save.getClubId();
+    }
+    @Override
+    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO recruitment) {
+        return 0L;
+    }
+
+    private void checkAuthorizationByClubId(Long clubId) {
+        // 클럽의 이름만 조회
+        String clubName = clubRepository.findClubNameById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        jwtTokenProvider.isAccessible(clubName);
     }
 }

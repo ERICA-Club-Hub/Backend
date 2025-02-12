@@ -20,9 +20,11 @@ public interface ClubCommandService {
 
     // 동아리 소개
     Long saveClubIntroduction(Long clubId, ClubIntroductionRequestDTO introduction);
+    Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequestDTO introduction);
 
     // 동아리 모집 안내
     Long saveClubRecruitment(Long clubId, ClubRecruitmentRequestDTO recruitment);
+    Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO recruitment);
 
 }
 

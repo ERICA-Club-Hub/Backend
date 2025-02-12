@@ -14,6 +14,7 @@ import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
@@ -243,8 +244,8 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}/introduction/draft")
-    public ApiResponse<ClubIntroductionResponseDTO> getClubIntroductionDraft(@PathVariable Long clubId) {
-        return ApiResponse.onSuccess();
+    public ApiResponse<ClubIntroductionDraftResponseDTO> getClubIntroductionDraft(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findClubIntroductionDraft(clubId));
     }
 
     @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
@@ -262,7 +263,7 @@ public class ClubController {
     public ApiResponse<?> postClubIntroductionDraft(
             @PathVariable Long clubId,
             @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO) {
-        return ApiResponse.onSuccess();
+        return ApiResponse.onSuccess(clubCommandService.saveClubIntroductionDraft(clubId, clubIntroductionDTO));
     }
 
 
