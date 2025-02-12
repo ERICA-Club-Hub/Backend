@@ -138,7 +138,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         // Introduction 내용 업데이트
         introduction.updateIntroduction(clubIntroductionDTO.introduction(),
-                clubIntroductionDTO.activities(), clubIntroductionDTO.recruitment());
+                clubIntroductionDTO.activity(), clubIntroductionDTO.recruitment());
 
         // 저장
         Introduction saved = introductionRepository.save(introduction);
@@ -164,7 +164,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         // IntroductionDraft 내용 업데이트
         introductionDraft.updateIntroduction(clubIntroductionDTO.introduction(),
-                clubIntroductionDTO.activities(), clubIntroductionDTO.recruitment());
+                clubIntroductionDTO.activity(), clubIntroductionDTO.recruitment());
 
         // 저장
         IntroductionDraft saved = introductionDraftRepository.save(introductionDraft);
