@@ -20,6 +20,7 @@ import kr.hanjari.backend.repository.ScheduleRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
@@ -50,6 +51,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final IntroductionDraftRepository introductionDraftRepository;
     private final RecruitmentDraftRepository recruitmentDraftRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @Override
@@ -103,9 +106,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubIntroductionDraftResponseDTO findClubIntroductionDraft(Long clubId) {
-        if (!clubRepository.existsById(clubId)) {
-            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
+        checkAuthorizationByClubId(clubId);
 
         IntroductionDraft introduction = introductionDraftRepository.findByClubId(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_DRAFT_NOT_FOUND));
@@ -126,11 +127,18 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId) {
-        clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        checkAuthorizationByClubId(clubId);
 
         RecruitmentDraft recruitment = recruitmentDraftRepository.findByClubId(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
 
         return ClubRecruitmentDraftResponseDTO.of(recruitment);
+    }
+
+    private void checkAuthorizationByClubId(Long clubId) {
+        String clubName = clubRepository.findClubNameById(clubId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        jwtTokenProvider.isAccessible(clubName);
     }
 }
