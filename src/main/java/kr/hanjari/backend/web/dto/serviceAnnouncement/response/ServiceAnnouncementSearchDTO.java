@@ -11,7 +11,7 @@ public record ServiceAnnouncementSearchDTO(
     public static ServiceAnnouncementSearchDTO of(Page<ServiceAnnouncement> serviceAnnouncements) {
         return new ServiceAnnouncementSearchDTO(
                 serviceAnnouncements.map(ServiceAnnouncementDetailDTO::of).getContent(),
-                (int) serviceAnnouncements.getTotalElements()
+                serviceAnnouncements.getNumberOfElements()
         );
     }
 }
