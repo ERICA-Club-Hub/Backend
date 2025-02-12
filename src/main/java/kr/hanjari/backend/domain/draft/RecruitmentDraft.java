@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Builder
-@Table(name = "recruitment")
+@Table(name = "recruitment_draft")
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecruitmentDraft {
@@ -33,5 +33,11 @@ public class RecruitmentDraft {
 
     @Column(name = "content3")
     private String content3;
+
+    public void updateRecruitment(ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+        this.content1 = clubRecruitmentDTO.due();
+        this.content2 = clubRecruitmentDTO.notice();
+        this.content3 = clubRecruitmentDTO.etc();
+    }
 
 }
