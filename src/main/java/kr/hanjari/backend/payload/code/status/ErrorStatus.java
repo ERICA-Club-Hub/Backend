@@ -34,6 +34,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _SCHEDULE_TO_CHANGE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "ACTIVITY400", "변경할 월에 활동이 이미 존재합니다."),
 
     _INTRODUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "소개를 찾을 수 없습니다."),
+    _INTRODUCTION_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "임시 저장 된 소개를 찾을 수 없습니다."),
+
+    _RECRUITMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "동아리 모집 안내를 찾을 수 없습니다."),
+    _RECRUITMENT_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "임시 저장 된 동아리 모집 안내를 찾을 수 없습니다."),
 
     _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),;
     private final HttpStatus httpStatus;

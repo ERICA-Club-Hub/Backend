@@ -6,6 +6,8 @@ import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.Schedule;
+import kr.hanjari.backend.domain.draft.IntroductionDraft;
+import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
@@ -15,9 +17,14 @@ import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
 import kr.hanjari.backend.repository.RecruitmentRepository;
 import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
+import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
+import kr.hanjari.backend.security.auth.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubQueryService;
+import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
@@ -41,6 +48,11 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
+
+    private final IntroductionDraftRepository introductionDraftRepository;
+    private final RecruitmentDraftRepository recruitmentDraftRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @Override
@@ -93,14 +105,40 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
+    public ClubIntroductionDraftResponseDTO findClubIntroductionDraft(Long clubId) {
+        checkAuthorizationByClubId(clubId);
+
+        IntroductionDraft introduction = introductionDraftRepository.findByClubId(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_DRAFT_NOT_FOUND));
+        
+        return ClubIntroductionDraftResponseDTO.of(introduction);
+    }
+
+    @Override
     public ClubRecruitmentResponseDTO findClubRecruitment(Long clubId) {
 
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_NOT_FOUND));
-
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_NOT_FOUND));
 
         return ClubRecruitmentResponseDTO.of(recruitment, club);
+    }
+
+    @Override
+    public ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId) {
+        checkAuthorizationByClubId(clubId);
+
+        RecruitmentDraft recruitment = recruitmentDraftRepository.findByClubId(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
+
+        return ClubRecruitmentDraftResponseDTO.of(recruitment);
+    }
+
+    private void checkAuthorizationByClubId(Long clubId) {
+        String clubName = clubRepository.findClubNameById(clubId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        jwtTokenProvider.isAccessible(clubName);
     }
 }

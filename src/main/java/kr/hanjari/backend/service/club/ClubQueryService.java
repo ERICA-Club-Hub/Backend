@@ -4,7 +4,9 @@ package kr.hanjari.backend.service.club;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
+import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
@@ -25,7 +27,9 @@ public interface ClubQueryService {
 
     // 동아리 소개 조회
     ClubIntroductionResponseDTO findClubIntroduction(Long clubId);
+    ClubIntroductionDraftResponseDTO findClubIntroductionDraft(Long clubId);
 
     // 동아리 모집 안내
     ClubRecruitmentResponseDTO findClubRecruitment(Long clubId);
+    ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId);
 }
