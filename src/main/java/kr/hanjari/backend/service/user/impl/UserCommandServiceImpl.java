@@ -62,12 +62,12 @@ public class UserCommandServiceImpl implements UserCommandService {
     public UserLoginResponseDTO login(UserLoginRequestDTO request, HttpServletResponse response) {
         if (request.code().equals(SERVICE_ADMIN_CODE)) {
             response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createServiceAdminToken());
-            return UserLoginResponseDTO.of(SERVICE_ADMIN);
+            return UserLoginResponseDTO.of(SERVICE_ADMIN, 0L);
         }
 
         if (request.code().equals(ADMIN_CODE)) {
             response.setHeader(AUTHORIZATION_HEADER, BEARER + jwtTokenProvider.createAdminToken());
-            return UserLoginResponseDTO.of(ADMIN);
+            return UserLoginResponseDTO.of(ADMIN, 0L);
         }
 
         Club club = clubRepository.findByCode(request.code()).orElseThrow(
@@ -77,7 +77,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         // 헤더에 토큰 포함
         response.setHeader(AUTHORIZATION_HEADER, BEARER  + accessToken);
-        return UserLoginResponseDTO.of(club.getName());
+        return UserLoginResponseDTO.of(club.getName(), club.getId());
     }
 
     @Override
