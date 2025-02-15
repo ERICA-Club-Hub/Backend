@@ -59,6 +59,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
 
         Club newClub = clubRegistration.toClub();
+        newClub.updateRecruitmentStatus(0);
         clubRepository.save(newClub);
 
         return newClub.getId();

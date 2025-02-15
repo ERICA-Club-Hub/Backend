@@ -36,13 +36,13 @@ public class Club extends BaseEntity {
     @Column(name = "category", nullable = false)
     private ClubCategory category;
 
-    @Column(name = "leader_name", nullable = false)
+    @Column(name = "leader_name")
     private String leaderName;
 
     @Column(name = "leader_email", nullable = false)
     private String leaderEmail;
 
-    @Column(name = "leader_phone", nullable = false)
+    @Column(name = "leader_phone")
     private String leaderPhone;
 
     @Column(name = "one_liner", nullable = false)
@@ -51,10 +51,10 @@ public class Club extends BaseEntity {
     @Column(name = "brief_introduction", nullable = false)
     private String briefIntroduction;
 
-    @Column(name = "meeting_schedule", nullable = false)
+    @Column(name = "meeting_schedule")
     private String meetingSchedule;
 
-    @Column(name = "membership_fee", nullable = false)
+    @Column(name = "membership_fee")
     private Integer membershipFee;
 
     @Column(name = "sns_url")
@@ -85,5 +85,12 @@ public class Club extends BaseEntity {
         this.code = code;
     }
 
+    public void updateRecruitmentStatus(int option) {
+        switch (option) {
+            case 0 -> this.recruitmentStatus = RecruitmentStatus.UPCOMING;
+            case 1 -> this.recruitmentStatus = RecruitmentStatus.OPEN;
+            case 2 -> this.recruitmentStatus = RecruitmentStatus.CLOSED;
+        }
+    }
 
 }
