@@ -8,6 +8,7 @@ public record ClubDetailRequestDTO(
         String leaderEmail,
         String leaderPhone,
         String activities,
+        Integer membershipFee,
         String snsUrl,
         String applicationUrl
 ) {
