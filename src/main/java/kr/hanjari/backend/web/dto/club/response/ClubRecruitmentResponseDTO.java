@@ -10,6 +10,11 @@ public record ClubRecruitmentResponseDTO(
         String etc
 ) {
     public static ClubRecruitmentResponseDTO of(Recruitment recruitment, Club club) {
+        if (recruitment == null) {
+            return new ClubRecruitmentResponseDTO(
+                    ClubResponseDTO.of(club),
+                    null, null, null);
+        }
         return new ClubRecruitmentResponseDTO(
                 ClubResponseDTO.of(club),
                 recruitment.getContent1(),
