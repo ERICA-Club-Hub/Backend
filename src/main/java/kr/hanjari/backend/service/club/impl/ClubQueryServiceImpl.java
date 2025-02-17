@@ -120,7 +120,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_NOT_FOUND));
+                .orElse(new Recruitment());
 
         return ClubRecruitmentResponseDTO.of(recruitment, club);
     }
