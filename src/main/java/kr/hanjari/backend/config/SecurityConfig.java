@@ -1,6 +1,6 @@
 package kr.hanjari.backend.config;
 
-import kr.hanjari.backend.security.auth.JwtAuthenticationFilter;
+import kr.hanjari.backend.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final String[] SERVICE_ADMIN_URL = {
-            "/api/service-announcements/admin", "/api/service-announcements/admin/**"
+            "/api/service-announcements/service-admin", "/api/service-announcements/service-admin/**",
+            "/api/club/service-admin", "/api/club/service-admin/**"
     };
 
     private final String[] ADMIN_URL = {
@@ -29,10 +30,9 @@ public class SecurityConfig {
     };
 
     private final String[] CLUB_ADMIN_URL = {
-            "/api/clubs/admin", "/api/clubs/admin/**",
-            "/api/activities/admin", "/api/activities/admin/**"
+            "/api/clubs/club-admin", "/api/clubs/club-admin/**",
+            "/api/activities/club-admin", "/api/activities/club-admin/**"
     };
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -9,6 +9,7 @@ import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
+import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
@@ -33,6 +34,7 @@ public class ClubController {
 
     private final ClubQueryService clubQueryService;
     private final ClubCommandService clubCommandService;
+    private final ClubUtil clubUtil;
 
     @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """
@@ -140,7 +142,7 @@ public class ClubController {
             - **snsUrl**: SNS 링크 (string) \n
             - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
-    @PostMapping("/{clubId}")
+    @PostMapping("/club-admin/{clubId}")
     public ApiResponse<Long> postSpecificClub(
             @PathVariable Long clubId,
             @RequestBody ClubDetailRequestDTO clubDetailDTO) {
@@ -150,7 +152,7 @@ public class ClubController {
     /*--------------------------- 동아리 월 별 일정 ---------------------------*/
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정", description = """
-            ## 동아리 월 별 일정을 전체 조회합니다. 
+            ## 동아리 월 별 일정을 전체 조회합니다.
             ### Path Variable
             - **clubId**: 조회할 동아리의 ID
             """)
@@ -161,7 +163,7 @@ public class ClubController {
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력", description = """
-            ## 동아리 월 별 일정을 입력합니다. 
+            ## 동아리 월 별 일정을 입력합니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
             
@@ -169,7 +171,7 @@ public class ClubController {
             - **month**: 월 (integer, 1~12 사이) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
             """)
-    @PostMapping("/{clubId}/schedules")
+    @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
             @RequestBody ClubScheduleRequestDTO clubActivityDTO) {
@@ -187,7 +189,7 @@ public class ClubController {
             - **month**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
             """)
-    @PatchMapping("/{clubId}/schedules/{scheduleId}")
+    @PatchMapping("/club-admin/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> patchClubSchedules(
             @PathVariable Long clubId,
             @PathVariable Long scheduleId,
@@ -202,7 +204,7 @@ public class ClubController {
             - **clubId**: 삭제할 동아리의 ID
             - **scheduleId**: 삭제할 활동의 ID
             """)
-    @DeleteMapping("/{clubId}/schedules/{scheduleId}")
+    @DeleteMapping("/club-admin/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> deleteClubSchedules(
             @PathVariable Long clubId,
             @PathVariable Long scheduleId) {
@@ -232,7 +234,7 @@ public class ClubController {
             - **activity**: 활동 내용 (string, 1000자 미만) \n
             - **recruitment**: 원하는 동아리 원 설명 (string, 500자 미만) \n
             """)
-    @PostMapping("/{clubId}/introduction")
+    @PostMapping("/club-admin/{clubId}/introduction")
     public ApiResponse<?> postClubIntroduction(
             @PathVariable Long clubId,
             @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO) {
@@ -244,7 +246,7 @@ public class ClubController {
             ## 임시 저장 된 동아리 소개글을 조회합니다.
             - **clubId**: 조회할 동아리의 ID
             """)
-    @GetMapping("/{clubId}/introduction/draft")
+    @GetMapping("/club-admin/{clubId}/introduction/draft")
     public ApiResponse<ClubIntroductionDraftResponseDTO> getClubIntroductionDraft(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroductionDraft(clubId));
     }
@@ -260,7 +262,7 @@ public class ClubController {
             - **activity**: 활동 내용 (string, 1000자 미만) \n
             - **recruitment**: 원하는 동아리 원 설명 (string, 500자 미만) \n
             """)
-    @PostMapping("/{clubId}/introduction/draft")
+    @PostMapping("/club-admin/{clubId}/introduction/draft")
     public ApiResponse<?> postClubIntroductionDraft(
             @PathVariable Long clubId,
             @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO) {
@@ -290,7 +292,7 @@ public class ClubController {
             - **notice**: 유의사항 (string, 500자 미만) \n
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
-    @PostMapping("/{clubId}/recruitment")
+    @PostMapping("/club-admin/{clubId}/recruitment")
     public ApiResponse<?> postClubRecruitment(
             @PathVariable Long clubId,
             @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO) {
@@ -302,7 +304,7 @@ public class ClubController {
             ## 임시 저장 된 동아리 모집 안내를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
             """)
-    @GetMapping("/{clubId}/recruitment/draft")
+    @GetMapping("/club-admin/{clubId}/recruitment/draft")
     public ApiResponse<ClubRecruitmentDraftResponseDTO> getClubRecruitmentDraft(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubRecruitmentDraft(clubId));
     }
@@ -318,10 +320,21 @@ public class ClubController {
             - **notice**: 유의사항 (string, 500자 미만) \n
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
-    @PostMapping("/{clubId}/recruitment/draft")
+    @PostMapping("/club-admin/{clubId}/recruitment/draft")
     public ApiResponse<?> postClubRecruitmentDraft(
             @PathVariable Long clubId,
             @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitmentDraft(clubId, clubRecruitmentDTO));
+    }
+
+    @Operation(summary = "[인증] 동아리 인증 코드 재발급", description = """
+            ## 동아리의 인증 코드를 재발급합니다(기존 인증 코드 대체).
+            - **clubId**: 동아리 ID
+            """)
+    @PostMapping("/service-admin/reissue")
+    public ApiResponse<String> reissueClubCode(@RequestParam Long clubId) {
+
+        String result = clubUtil.reissueClubCode(clubId);
+        return ApiResponse.onSuccess(result);
     }
 }

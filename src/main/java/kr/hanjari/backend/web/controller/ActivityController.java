@@ -3,12 +3,15 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.security.detail.CustomUserDetails;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.request.UpdateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
 import kr.hanjari.backend.web.dto.activity.response.GetSpecificActivityResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,8 +43,8 @@ public class ActivityController {
         ### 🔹 Response
         - **생성된 activity의 ID**
         """)
-    @PostMapping("/admin/{clubId}")
-    public ApiResponse<Long> postNewActivity(@PathVariable Long clubId, // TODO: token으로 치환
+    @PostMapping("/club-admin/{clubId}")
+    public ApiResponse<Long> postNewActivity(@PathVariable Long clubId,
                                              @RequestPart CreateActivityRequest requestBody,
                                              @RequestPart List<MultipartFile> images) {
 
@@ -66,8 +69,8 @@ public class ActivityController {
         
         #### changedActivityImageOrderIndexList와 files의 크기는 동일해야 함
         """)
-    @PatchMapping("/admin/{activityId}")
-    public ApiResponse<Void> updateActivity(@PathVariable Long activityId,   // TODO: token 검증
+    @PatchMapping("/club-admin/{activityId}")
+    public ApiResponse<Void> updateActivity(@PathVariable Long activityId,
                                @RequestPart UpdateActivityRequest requestBody,
                                @RequestPart List<MultipartFile> images) {
 
@@ -122,7 +125,7 @@ public class ActivityController {
         ### 🔹 PathVariable
         #### 📌 activityId: 삭제할 activity의 ID
         """)
-    @DeleteMapping("/admin/{activityId}")
+    @DeleteMapping("/club-admin/{activityId}")
     public ApiResponse<Void> deleteActivity(@PathVariable Long activityId) {
 
         activityService.deleteActivity(activityId);

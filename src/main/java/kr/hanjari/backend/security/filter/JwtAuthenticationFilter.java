@@ -1,4 +1,4 @@
-package kr.hanjari.backend.security.auth;
+package kr.hanjari.backend.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
