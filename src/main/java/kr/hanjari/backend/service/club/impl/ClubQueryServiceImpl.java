@@ -98,7 +98,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         Introduction introduction = introductionRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_NOT_FOUND));
+                .orElse(new Introduction());
 
 
         return ClubIntroductionResponseDTO.of(club, introduction);
