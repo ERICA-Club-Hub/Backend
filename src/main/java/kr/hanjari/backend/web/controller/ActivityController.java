@@ -40,7 +40,7 @@ public class ActivityController {
         ### 🔹 Response
         - **생성된 activity의 ID**
         """)
-    @PostMapping("/{clubId}")
+    @PostMapping("/admin/{clubId}")
     public ApiResponse<Long> postNewActivity(@PathVariable Long clubId, // TODO: token으로 치환
                                              @RequestPart CreateActivityRequest requestBody,
                                              @RequestPart List<MultipartFile> images) {
@@ -66,7 +66,7 @@ public class ActivityController {
         
         #### changedActivityImageOrderIndexList와 files의 크기는 동일해야 함
         """)
-    @PatchMapping("/{activityId}")
+    @PatchMapping("/admin/{activityId}")
     public ApiResponse<Void> updateActivity(@PathVariable Long activityId,   // TODO: token 검증
                                @RequestPart UpdateActivityRequest requestBody,
                                @RequestPart List<MultipartFile> images) {
@@ -122,7 +122,7 @@ public class ActivityController {
         ### 🔹 PathVariable
         #### 📌 activityId: 삭제할 activity의 ID
         """)
-    @DeleteMapping("/{activityId}")
+    @DeleteMapping("/admin/{activityId}")
     public ApiResponse<Void> deleteActivity(@PathVariable Long activityId) {
 
         activityService.deleteActivity(activityId);

@@ -5,7 +5,7 @@ import kr.hanjari.backend.domain.File;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.AnnouncementRepository;
-import kr.hanjari.backend.security.auth.JwtTokenProvider;
+import kr.hanjari.backend.security.token.JwtTokenProvider;
 import kr.hanjari.backend.service.announcement.AnnouncementService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.announcement.request.CommonAnnouncementRequest;
@@ -22,11 +22,9 @@ import java.util.List;
 public class AnnouncementServiceImpl implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final S3Service s3Service;
 
     public Long createAnnouncement(CommonAnnouncementRequest commonAnnouncementRequest, MultipartFile thumbnail) {
-        jwtTokenProvider.isAdminAccessible();
 
         Announcement newAnnouncement = commonAnnouncementRequest.toAnnouncement();
         File thumbnailImage = s3Service.uploadFile(thumbnail);
@@ -38,7 +36,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     public void updateAnnouncement(Long announcementId, CommonAnnouncementRequest commonAnnouncementRequest, MultipartFile thumbnail) {
-        jwtTokenProvider.isAdminAccessible();
 
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외
@@ -53,7 +50,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     public void deleteAnnouncement(Long announcementId) {
-        jwtTokenProvider.isAdminAccessible();
 
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
