@@ -76,6 +76,7 @@ public class Club extends BaseEntity {
         this.leaderName = detail.leaderName();
         this.leaderEmail = detail.leaderEmail();
         this.leaderPhone = detail.leaderPhone();
+        this.membershipFee = detail. membershipFee();
         this.meetingSchedule = detail.activities();
         this.snsUrl = detail.snsUrl();
         this.applicationUrl = detail.applicationUrl();
