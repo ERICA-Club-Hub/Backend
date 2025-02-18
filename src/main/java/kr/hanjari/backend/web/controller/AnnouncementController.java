@@ -34,7 +34,7 @@ public class AnnouncementController {
         - **생성된 공지사항의 ID**
         """
     )
-    @PostMapping(value = "/admin", consumes = {"application/json", "multipart/form-data"})
+    @PostMapping(value = "/union-admin", consumes = {"application/json", "multipart/form-data"})
     public ApiResponse<Long> postNewAnnouncement(@RequestPart(name = "requestBody") CommonAnnouncementRequest requestBody,
                                                  @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
         Long result = announcementService.createAnnouncement(requestBody, thumbnail);
@@ -78,7 +78,7 @@ public class AnnouncementController {
         - **썸네일 이미지 (필수 X, 이미지도 수정하는 경우에만 입력)**
         """
     )
-    @PatchMapping(value = "/admin/{announcementId}", consumes = {"application/json", "multipart/form-data"})
+    @PatchMapping(value = "/union-admin/{announcementId}", consumes = {"application/json", "multipart/form-data"})
     public ApiResponse<Void> updateAnnouncement(@PathVariable Long announcementId,
                                                 @RequestPart(name = "requestBody") CommonAnnouncementRequest requestBody,
                                                 @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) {
@@ -94,7 +94,7 @@ public class AnnouncementController {
         #### 📌 announcementId: 삭제할 공지사항의 ID
         """
     )
-    @DeleteMapping("/admin/{announcementId}")
+    @DeleteMapping("/union-admin/{announcementId}")
     public ApiResponse<Void> deleteAnnouncement(@PathVariable Long announcementId) {
 
         announcementService.deleteAnnouncement(announcementId);
