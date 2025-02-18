@@ -60,7 +60,7 @@ public class ServiceAnnouncementController {
             - **title** : 제목
             - **content** : 내용
             """)
-    @PostMapping
+    @PostMapping("/service-admin")
     public ApiResponse<?> createServiceAnnouncement(
             @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
         return ApiResponse.onSuccess(serviceAnnouncementCommandService.createServiceAnnouncement(requestDTO));
@@ -76,7 +76,7 @@ public class ServiceAnnouncementController {
             - **title** : 제목
             - **content** : 내용
             """)
-    @PatchMapping("/{id}")
+    @PatchMapping("/service-admin/{id}")
     public ApiResponse<?> updateServiceAnnouncement(
             @PathVariable Long id,
             @RequestBody CreateServiceAnnouncementRequestDTO requestDTO) {
@@ -90,7 +90,7 @@ public class ServiceAnnouncementController {
             ### Path Variables
             - **id** : 삭제 할 서비스 공지사항 ID
             """)
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/service-admin/{id}")
     public ApiResponse<?> deleteServiceAnnouncement(@PathVariable Long id) {
         serviceAnnouncementCommandService.deleteServiceAnnouncement(id);
         return ApiResponse.onSuccess();

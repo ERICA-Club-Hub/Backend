@@ -1,5 +1,19 @@
 package kr.hanjari.backend.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Role {
-    ADMIN, CLUB_ADMIN
+
+    SERVICE_ADMIN("SERVICE_ADMIN"),
+    ADMIN("ADMIN"),
+    CLUB_ADMIN("CLUB_ADMIN");
+
+    private final String role;
+
+    Role(String role) {
+        this.role = role;
+    }
+
+
 }
