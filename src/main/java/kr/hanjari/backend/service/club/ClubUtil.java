@@ -6,12 +6,14 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ClubUtil {
 
     private final ClubRepository clubRepository;
