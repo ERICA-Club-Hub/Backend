@@ -25,8 +25,8 @@ public class SecurityConfig {
     };
 
     private final String[] ADMIN_URL = {
-            "/api/announcements/admin", "/api/announcements/admin/**",
-            "/api/documents/admin", "/api/documents/admin/**"
+            "/api/announcements/union-admin", "/api/announcements/union-admin/**",
+            "/api/documents/union-admin", "/api/documents/union-admin/**"
     };
 
     private final String[] CLUB_ADMIN_URL = {
