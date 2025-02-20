@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Role {
 
     SERVICE_ADMIN("SERVICE_ADMIN"),
-    ADMIN("ADMIN"),
+    UNION_ADMIN("UNION_ADMIN"),
     CLUB_ADMIN("CLUB_ADMIN");
 
     private final String role;

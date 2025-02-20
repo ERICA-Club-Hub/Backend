@@ -24,9 +24,9 @@ public class SecurityConfig {
             "/api/club/service-admin", "/api/club/service-admin/**"
     };
 
-    private final String[] ADMIN_URL = {
-            "/api/announcements/admin", "/api/announcements/admin/**",
-            "/api/documents/admin", "/api/documents/admin/**"
+    private final String[] UNION_ADMIN_URL = {
+            "/api/announcements/union-admin", "/api/announcements/union-admin/**",
+            "/api/documents/union-admin", "/api/documents/union-admin/**"
     };
 
     private final String[] CLUB_ADMIN_URL = {
@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
                                 .requestMatchers(SERVICE_ADMIN_URL).hasRole("SERVICE_ADMIN")
-                                .requestMatchers(ADMIN_URL).hasRole("ADMIN")
+                                .requestMatchers(UNION_ADMIN_URL).hasRole("UNION_ADMIN")
                                 .requestMatchers(CLUB_ADMIN_URL).hasRole("CLUB_ADMIN")
                                 .anyRequest().permitAll()
                 );

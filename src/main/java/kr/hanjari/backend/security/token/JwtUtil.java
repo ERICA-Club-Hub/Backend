@@ -38,7 +38,7 @@ public class JwtUtil {
     private final StringRedisTemplate redisTemplate;
 
     public String createAdminToken() {
-        return createToken(0L, Role.ADMIN.getRole());
+        return createToken(0L, Role.UNION_ADMIN.getRole());
     }
 
     public String createServiceAdminToken() {

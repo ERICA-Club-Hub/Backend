@@ -327,6 +327,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitmentDraft(clubId, clubRecruitmentDTO));
     }
 
+    @Tag(name = "동아리 인증 코드", description = "동아리 인증 코드 발급 API")
     @Operation(summary = "[인증] 동아리 인증 코드 재발급", description = """
             ## 동아리의 인증 코드를 재발급합니다(기존 인증 코드 대체).
             - **clubId**: 동아리 ID

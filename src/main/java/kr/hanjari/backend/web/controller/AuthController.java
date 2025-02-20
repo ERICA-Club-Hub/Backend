@@ -11,6 +11,8 @@ import kr.hanjari.backend.web.dto.auth.request.LoginRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+
+@CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
