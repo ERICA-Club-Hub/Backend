@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
                                 .requestMatchers(SERVICE_ADMIN_URL).hasRole("SERVICE_ADMIN")
-                                .requestMatchers(ADMIN_URL).hasRole("ADMIN")
+                                .requestMatchers(ADMIN_URL).hasRole("UNION_ADMIN")
                                 .requestMatchers(CLUB_ADMIN_URL).hasRole("CLUB_ADMIN")
                                 .anyRequest().permitAll()
                 );
