@@ -5,6 +5,7 @@ import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -80,6 +81,14 @@ public class Club extends BaseEntity {
         this.meetingSchedule = detail.activities();
         this.snsUrl = detail.snsUrl();
         this.applicationUrl = detail.applicationUrl();
+    }
+
+    public void updateClubCommonInfo(CommonClubDTO commonInfo) {
+        this.name = commonInfo.clubName();
+        this.leaderEmail = commonInfo.leaderEmail();
+        this.category = ClubCategory.valueOf(commonInfo.category());
+        this.oneLiner = commonInfo.oneLiner();
+        this.briefIntroduction = commonInfo.briefIntroduction();
     }
 
     public void updateCode(String code) {

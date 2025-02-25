@@ -72,6 +72,19 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
+    public Long updateClubDetail(Long clubId, CommonClubDTO request, MultipartFile file) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        club.updateClubCommonInfo(request);
+
+        File imageFile = s3Service.uploadFile(file);
+        club.updateClubImage(imageFile);
+
+        Club saved = clubRepository.save(club);
+
+        return saved.getId();
+    }
+
+    @Override
     public ScheduleResponseDTO saveClubSchedule(Long clubId, ClubScheduleRequestDTO clubScheduleDTO) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 

@@ -86,9 +86,11 @@ public class ClubController {
             ### Multipart/form-data
             - **image**: 동아리 대표 사진
             """)
-    public void updateClubInfo(@RequestPart CommonClubDTO request,
-                               @RequestPart MultipartFile image) {
-        return;
+    @PostMapping("{clubId}/update")
+    public ApiResponse<Long> updateClubInfo(@RequestPart CommonClubDTO requestBody,
+                               @RequestPart MultipartFile image,
+                               @PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubCommandService.updateClubDetail(clubId, requestBody, image));
     }
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
