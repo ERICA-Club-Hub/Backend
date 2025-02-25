@@ -1,5 +1,6 @@
 package kr.hanjari.backend.service.club;
 
+import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,8 @@ public interface ClubCommandService {
 
     // 동아리 상세 정보
     Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO);
+    Long updateClubDetail(Long clubId, CommonClubDTO request, MultipartFile file);
+    Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO);
 
     // 동아리 월 별 일정
     ScheduleResponseDTO saveClubSchedule(Long clubId, ClubScheduleRequestDTO clubActivityDTO);
