@@ -9,14 +9,14 @@ public record ClubRecruitmentResponseDTO(
         String notice,
         String etc
 ) {
-    public static ClubRecruitmentResponseDTO of(Recruitment recruitment, Club club) {
+    public static ClubRecruitmentResponseDTO of(Recruitment recruitment, Club club, String profileImageUrl) {
         if (recruitment == null) {
             return new ClubRecruitmentResponseDTO(
-                    ClubResponseDTO.of(club),
+                    ClubResponseDTO.of(club, profileImageUrl),
                     null, null, null);
         }
         return new ClubRecruitmentResponseDTO(
-                ClubResponseDTO.of(club),
+                ClubResponseDTO.of(club, profileImageUrl),
                 recruitment.getContent1(),
                 recruitment.getContent2(),
                 recruitment.getContent3()
