@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin
+@CrossOrigin(exposedHeaders = "Authorization")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
