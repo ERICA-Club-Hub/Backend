@@ -75,7 +75,6 @@ public class Club extends BaseEntity {
     public void updateClubDetails(ClubDetailRequestDTO detail) {
         this.recruitmentStatus = detail.recruitmentStatus();
         this.leaderName = detail.leaderName();
-        this.leaderEmail = detail.leaderEmail();
         this.leaderPhone = detail.leaderPhone();
         this.membershipFee = detail. membershipFee();
         this.meetingSchedule = detail.activities();

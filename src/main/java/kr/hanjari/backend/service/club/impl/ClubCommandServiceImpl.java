@@ -71,6 +71,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubDetails(clubDetailDTO);
         Club saved = clubRepository.save(club);
+
+        if (clubDetailDraftRepository.existsById(clubId)) {
+            clubDetailDraftRepository.deleteById(clubId);
+        }
         return saved.getId();
     }
 

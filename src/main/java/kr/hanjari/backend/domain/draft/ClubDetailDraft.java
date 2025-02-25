@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClubDetailDraft  {
 
+    @Id
     @Column(name = "club_id")
     private Long clubId;
 
@@ -33,9 +34,6 @@ public class ClubDetailDraft  {
 
     @Column(name = "leader_name")
     String leaderName;
-
-    @Column(name = "leader_email")
-    String leaderEmail;
 
     @Column(name = "leader_phone")
     String leaderPhone;
@@ -55,7 +53,6 @@ public class ClubDetailDraft  {
     public void updateClubDetails(ClubDetailRequestDTO request) {
         this.recruitmentStatus = request.recruitmentStatus();
         this.leaderName = request.leaderName();
-        this.leaderEmail = request.leaderEmail();
         this.leaderPhone = request.leaderPhone();
         this.activities = request.activities();
         this.membershipFee = request.membershipFee();

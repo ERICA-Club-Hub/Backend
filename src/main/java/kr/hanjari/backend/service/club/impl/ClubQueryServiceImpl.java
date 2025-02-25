@@ -6,6 +6,7 @@ import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.Introduction;
 import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.Schedule;
+import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.enums.ClubCategory;
@@ -17,12 +18,14 @@ import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.repository.IntroductionRepository;
 import kr.hanjari.backend.repository.RecruitmentRepository;
 import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
 import kr.hanjari.backend.security.token.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentDraftResponseDTO;
@@ -52,6 +55,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final IntroductionDraftRepository introductionDraftRepository;
     private final RecruitmentDraftRepository recruitmentDraftRepository;
+    private final ClubDetailDraftRepository clubDetailDraftRepository;
 
     private final S3Service s3Service;
 
@@ -82,6 +86,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         return ClubResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+    }
+
+    @Override
+    public ClubDetailDraftResponseDTO findClubDetailDraft(Long clubId) {
+        ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
+
+        return ClubDetailDraftResponseDTO.of(clubDetailDraft);
     }
 
     @Override
