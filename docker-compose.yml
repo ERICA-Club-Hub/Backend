@@ -32,6 +32,21 @@ services:
     ports:
       - "8080:8080"
 
+  nginx:
+    image: nginx:1.27.4
+    container_name: "nginx-container"
+    volumes:
+      - ~/hanjari/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ~/hanjari/nginx/conf.d:/etc/nginx/conf.d
+      - ~/hanjari/ssl:/etc/nginx/ssl
+    networks:
+      - dev-db-network
+    depends_on:
+      - hanjari
+    ports:
+      - "80:80"
+      - "443:443"
+
 networks:
   dev-db-network:
     external: true
@@ -39,5 +54,4 @@ networks:
 volumes:
   hanjari-db-dev:
     external: true
-
-
+    
