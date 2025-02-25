@@ -14,6 +14,7 @@ public interface ClubCommandService {
     // 동아리 상세 정보
     Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO);
     Long updateClubDetail(Long clubId, CommonClubDTO request, MultipartFile file);
+    Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO);
 
     // 동아리 월 별 일정
     ScheduleResponseDTO saveClubSchedule(Long clubId, ClubScheduleRequestDTO clubActivityDTO);

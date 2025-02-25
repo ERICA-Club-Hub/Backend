@@ -150,6 +150,37 @@ public class ClubController {
             @RequestBody ClubDetailRequestDTO clubDetailDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
+    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Operation(summary = "[동아리 상세] 임시 저장된 동아리 상세 정보 조회", description = """
+            ## 동아리 상세 정보를 조회합니다.
+            - **clubId**: 조회할 동아리의 ID
+            """)
+    @GetMapping("/{clubId}/draft")
+    public ApiResponse<ClubResponseDTO> getSpecificClubDraft(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
+    }
+
+    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Operation(summary = "[동아리 상세] 동아리 상세 정보 임시저장", description = """
+            ## 동아리 상세 정보를 임시저장합니다.
+            ### Path Variable
+            - **clubId**: 입력할 동아리의 ID  \n
+            
+            ### Request Body
+            - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
+            - **leaderName**: 동아리 대표자 이름 (string) \n
+            - **leaderEmail**: 동아리 대표자 이메일 (string) \n
+            - **leaderPhone**: 동아리 대표자 연락처 (string) \n
+            - **activities**: 정기 모임 일정 (string) \n
+            - **snsUrl**: SNS 링크 (string) \n
+            - **applicationUrl**: 동아리 지원 링크 (string) \n
+            """)
+    @PostMapping("/club-admin/{clubId}/draft")
+    public ApiResponse<Long> postSpecificClubDraft(
+            @PathVariable Long clubId,
+            @RequestBody ClubDetailRequestDTO clubDetailDTO) {
+        return ApiResponse.onSuccess(clubCommandService.saveClubDetailDraft(clubId, clubDetailDTO));
+    }
 
     /*--------------------------- 동아리 월 별 일정 ---------------------------*/
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")

@@ -22,6 +22,7 @@ public interface ClubQueryService {
     // 동아리 상세 조회
     ClubResponseDTO findClubDetail(Long clubId);
 
+
     // 동아리 월 별 일정 조회
     ClubScheduleResponseDTO findAllClubActivities(Long clubId);
 

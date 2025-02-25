@@ -2,11 +2,13 @@ package kr.hanjari.backend.service.club.impl;
 
 
 import kr.hanjari.backend.domain.*;
+import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.*;
+import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.security.token.JwtTokenProvider;
@@ -34,6 +36,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     private final IntroductionDraftRepository introductionDraftRepository;
     private final RecruitmentDraftRepository recruitmentDraftRepository;
+    private final ClubDetailDraftRepository clubDetailDraftRepository;
 
     private final S3Service s3Service;
 
@@ -82,6 +85,22 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club saved = clubRepository.save(club);
 
         return saved.getId();
+    }
+
+    @Override
+    public Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
+        }
+
+        ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
+                .orElseGet(() -> ClubDetailDraft.builder().clubId(clubId).build());
+
+        clubDetailDraft.updateClubDetails(clubDetailDTO);
+
+        ClubDetailDraft saved = clubDetailDraftRepository.save(clubDetailDraft);
+
+        return saved.getClubId();
     }
 
     @Override
