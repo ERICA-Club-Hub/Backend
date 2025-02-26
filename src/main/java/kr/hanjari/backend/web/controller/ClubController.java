@@ -13,6 +13,7 @@ import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubDetailDraftResponseDTO;
@@ -209,7 +210,7 @@ public class ClubController {
     @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
-            @RequestBody ClubScheduleRequestDTO clubActivityDTO) {
+            @RequestBody ClubScheduleListRequestDTO clubActivityDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubSchedule(clubId, clubActivityDTO));
     }
 
