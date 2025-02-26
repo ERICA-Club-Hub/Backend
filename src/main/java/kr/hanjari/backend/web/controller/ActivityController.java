@@ -3,21 +3,17 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.payload.ApiResponse;
-import kr.hanjari.backend.security.detail.CustomUserDetails;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.request.UpdateActivityRequest;
 import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
 import kr.hanjari.backend.web.dto.activity.response.GetSpecificActivityResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("api/activities")
 @RequiredArgsConstructor
