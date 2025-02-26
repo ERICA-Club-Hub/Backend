@@ -1,6 +1,8 @@
 package kr.hanjari.backend.service.club.impl;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import kr.hanjari.backend.domain.*;
 import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
@@ -15,6 +17,7 @@ import kr.hanjari.backend.security.token.JwtTokenProvider;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.*;
+import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,17 +111,21 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public ScheduleResponseDTO saveClubSchedule(Long clubId, ClubScheduleRequestDTO clubScheduleDTO) {
+    public ScheduleListResponseDTO saveClubSchedule(Long clubId, ClubScheduleListRequestDTO clubScheduleDTO) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
-        Schedule schedule = Schedule.builder()
-                .club(club)
-                .month(clubScheduleDTO.month())
-                .content(clubScheduleDTO.content())
-                .build();
+        List<Schedule> schedules = new ArrayList<>();
 
-        Schedule save = scheduleRepository.save(schedule);
-        return ScheduleResponseDTO.of(save);
+        clubScheduleDTO.schedules().forEach(schedule -> {
+            Schedule save = scheduleRepository.save(Schedule.builder()
+                    .club(club)
+                    .month(schedule.month())
+                    .content(schedule.content())
+                    .build());
+            schedules.add(save);
+        });
+
+        return ScheduleListResponseDTO.of(schedules);
     }
 
     @Override
