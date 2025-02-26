@@ -1,6 +1,5 @@
 package kr.hanjari.backend.web.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.domain.enums.ClubCategory;
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin
 @RequestMapping("/api/clubs")
 @RestController
 @RequiredArgsConstructor

@@ -12,7 +12,6 @@ import kr.hanjari.backend.web.dto.serviceAnnouncement.response.ServiceAnnounceme
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
 @RequestMapping("/api/service-announcements")
 @RestController
 @RequiredArgsConstructor
