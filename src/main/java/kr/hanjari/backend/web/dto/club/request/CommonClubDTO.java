@@ -3,6 +3,7 @@ package kr.hanjari.backend.web.dto.club.request;
 import kr.hanjari.backend.domain.ClubRegistration;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 
+
 public record CommonClubDTO(String clubName,
                             String leaderEmail,
                             String category,

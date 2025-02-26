@@ -10,7 +10,7 @@ public record ClubResponseDTO(
         String description,
         ClubCategory category,
         RecruitmentStatus recruitmentStatus,
-        //String profileImageUrl,
+        String profileImageUrl,
         String activities,
         String leaderName,
         String leaderEmail,
@@ -19,14 +19,14 @@ public record ClubResponseDTO(
         String snsUrl,
         String applicationUrl
 ) {
-    public static ClubResponseDTO of(Club club) {
+    public static ClubResponseDTO of(Club club, String profileImageUrl) {
         return new ClubResponseDTO(
                 club.getId(),
                 club.getName(),
                 club.getBriefIntroduction(),
                 club.getCategory(),
                 club.getRecruitmentStatus(),
-                //club.getImageFile().getFileKey(),
+                profileImageUrl,
                 club.getMeetingSchedule(),
                 club.getLeaderName(),
                 club.getLeaderEmail(),
