@@ -38,7 +38,8 @@ services:
     volumes:
       - ~/hanjari/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ~/hanjari/nginx/conf.d:/etc/nginx/conf.d
-      - ~/hanjari/ssl:/etc/nginx/ssl
+      - /etc/letsencrypt/live/hanjari-dev.site/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/hanjari-dev.site/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     networks:
       - dev-db-network
     depends_on:
