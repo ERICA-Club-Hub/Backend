@@ -196,40 +196,41 @@ public class ClubController {
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
-    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력", description = """
-            ## 동아리 월 별 일정을 입력합니다.
+    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력 및 수정", description = """
+            ## 동아리 월 별 일정을 입력 및 수정합니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
+            - **scheduleId**: 활동 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
             @RequestBody ClubScheduleListRequestDTO clubActivityDTO) {
-        return ApiResponse.onSuccess(clubCommandService.saveClubSchedule(clubId, clubActivityDTO));
+        return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubSchedule(clubId, clubActivityDTO));
     }
 
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
-    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 수정", description = """
-            ## 동아리 월 별 일정을 수정합니다. 
-            ### Path Variable
-            - **clubId**: 입력할 동아리의 ID  \n
-            - **scheduleId**: 수정할 활동의 ID  \n
-            
-            ### Request Body
-            - **month**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
-            - **content**: 활동 내용 (string, 30자 미만) \n
-            """)
-    @PatchMapping("/club-admin/{clubId}/schedules/{scheduleId}")
-    public ApiResponse<?> patchClubSchedules(
-            @PathVariable Long clubId,
-            @PathVariable Long scheduleId,
-            @RequestBody ClubScheduleRequestDTO clubScheduleDTO) {
-        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, scheduleId, clubScheduleDTO));
-    }
+//    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+//    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 수정", description = """
+//            ## 동아리 월 별 일정을 수정합니다.
+//            ### Path Variable
+//            - **clubId**: 입력할 동아리의 ID  \n
+//            - **scheduleId**: 수정할 활동의 ID  \n
+//
+//            ### Request Body
+//            - **month**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
+//            - **content**: 활동 내용 (string, 30자 미만) \n
+//            """)
+//    @PatchMapping("/club-admin/{clubId}/schedules/{scheduleId}")
+//    public ApiResponse<?> patchClubSchedules(
+//            @PathVariable Long clubId,
+//            @PathVariable Long scheduleId,
+//            @RequestBody ClubScheduleRequestDTO clubScheduleDTO) {
+//        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, scheduleId, clubScheduleDTO));
+//    }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 삭제", description = """
