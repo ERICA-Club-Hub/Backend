@@ -127,6 +127,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             } else {
                 Schedule schedule = scheduleRepository.findById(request.scheduleId())
                         .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+
+                if (!club.getId().equals(schedule.getClub().getId())) {
+                    throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+                }
+
                 schedule.updateSchedule(request.month(), request.content());
                 schedules.add(scheduleRepository.save(schedule));
             }
