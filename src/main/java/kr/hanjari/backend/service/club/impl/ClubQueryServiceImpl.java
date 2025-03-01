@@ -93,10 +93,12 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubDetailDraftResponseDTO findClubDetailDraft(Long clubId) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
         ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
 
-        return ClubDetailDraftResponseDTO.of(clubDetailDraft);
+        return ClubDetailDraftResponseDTO.of(clubDetailDraft, club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
