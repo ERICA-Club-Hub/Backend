@@ -1,6 +1,5 @@
-package kr.hanjari.backend.web.dto.club.response;
+package kr.hanjari.backend.web.dto.club.response.draft;
 
-import kr.hanjari.backend.domain.Recruitment;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 
 public record ClubRecruitmentDraftResponseDTO(
