@@ -111,42 +111,53 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public ScheduleListResponseDTO saveClubSchedule(Long clubId, ClubScheduleListRequestDTO clubScheduleDTO) {
+    public ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubScheduleDTO) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         List<Schedule> schedules = new ArrayList<>();
 
-        clubScheduleDTO.schedules().forEach(schedule -> {
-            Schedule save = scheduleRepository.save(Schedule.builder()
-                    .club(club)
-                    .month(schedule.month())
-                    .content(schedule.content())
-                    .build());
-            schedules.add(save);
-        });
+        for (ClubScheduleRequestDTO request : clubScheduleDTO.schedules()) {
+            if (request.scheduleId() == null) {
+                Schedule schedule = Schedule.builder()
+                        .club(club)
+                        .month(request.month())
+                        .content(request.content())
+                        .build();
+                schedules.add(scheduleRepository.save(schedule));
+            } else {
+                Schedule schedule = scheduleRepository.findById(request.scheduleId())
+                        .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
 
+                if (!club.getId().equals(schedule.getClub().getId())) {
+                    throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+                }
+
+                schedule.updateSchedule(request.month(), request.content());
+                schedules.add(scheduleRepository.save(schedule));
+            }
+        }
         return ScheduleListResponseDTO.of(schedules);
     }
 
-    @Override
-    public ScheduleResponseDTO updateClubSchedule(Long clubId, Long scheduleId, ClubScheduleRequestDTO clubScheduleDTO) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
-
-        // 동아리에 속한 스케줄인지 확인
-        if (!club.getId().equals(schedule.getClub().getId())) {
-            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
-        }
-
-        schedule.updateSchedule(clubScheduleDTO.month(), clubScheduleDTO.content());
-
-        Schedule save = scheduleRepository.save(schedule);
-
-        return ScheduleResponseDTO.of(save);
-    }
+//    @Override
+//    public ScheduleResponseDTO updateClubSchedule(Long clubId, Long scheduleId, ClubScheduleRequestDTO clubScheduleDTO) {
+//        Club club = clubRepository.findById(clubId)
+//                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+//
+//        Schedule schedule = scheduleRepository.findById(scheduleId)
+//                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+//
+//        // 동아리에 속한 스케줄인지 확인
+//        if (!club.getId().equals(schedule.getClub().getId())) {
+//            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+//        }
+//
+//        schedule.updateSchedule(clubScheduleDTO.month(), clubScheduleDTO.content());
+//
+//        Schedule save = scheduleRepository.save(schedule);
+//
+//        return ScheduleResponseDTO.of(save);
+//    }
 
     @Override
     public void deleteClubSchedule(Long clubId, Long scheduleId) {

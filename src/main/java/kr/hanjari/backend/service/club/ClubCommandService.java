@@ -1,6 +1,5 @@
 package kr.hanjari.backend.service.club;
 
-import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
@@ -18,8 +17,8 @@ public interface ClubCommandService {
     Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO);
 
     // 동아리 월 별 일정
-    ScheduleListResponseDTO saveClubSchedule(Long clubId, ClubScheduleListRequestDTO clubActivityDTO);
-    ScheduleResponseDTO updateClubSchedule(Long clubId, Long scheduleId, ClubScheduleRequestDTO clubActivityDTO);
+    ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubActivityDTO);
+    //ScheduleResponseDTO updateClubSchedule(Long clubId, Long scheduleId, ClubScheduleRequestDTO clubActivityDTO);
     void deleteClubSchedule(Long clubId, Long scheduleId);
 
     // 동아리 소개
