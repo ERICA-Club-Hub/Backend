@@ -1,4 +1,4 @@
-package kr.hanjari.backend.web.dto.club.response;
+package kr.hanjari.backend.web.dto.club.response.draft;
 
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 
