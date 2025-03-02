@@ -43,9 +43,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         announcement.updateTitleAndUrl(commonAnnouncementRequest.title(), commonAnnouncementRequest.url());
 
         if (thumbnail != null) {
-            s3Service.deleteFile(announcement.getThumbnailImage().getId());
+            File fileToDelete = announcement.getThumbnailImage();
             File newThumbnailImage = s3Service.uploadFile(thumbnail);
             announcement.updateThumbnailImage(newThumbnailImage);
+            announcementRepository.save(announcement);
+            s3Service.deleteFile(fileToDelete.getId());
         }
     }
 
