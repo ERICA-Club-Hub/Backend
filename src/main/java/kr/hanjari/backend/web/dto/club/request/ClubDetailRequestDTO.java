@@ -4,6 +4,7 @@ import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 
 public record ClubDetailRequestDTO(
         RecruitmentStatus recruitmentStatus,
+        String oneLiner,
         String leaderName,
         String leaderPhone,
         String activities,

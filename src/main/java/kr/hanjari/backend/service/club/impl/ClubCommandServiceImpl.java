@@ -7,18 +7,19 @@ import kr.hanjari.backend.domain.*;
 import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
+import kr.hanjari.backend.domain.draft.ScheduleDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.*;
 import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
-import kr.hanjari.backend.security.token.JwtTokenProvider;
+import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final IntroductionDraftRepository introductionDraftRepository;
     private final RecruitmentDraftRepository recruitmentDraftRepository;
     private final ClubDetailDraftRepository clubDetailDraftRepository;
+    private final ScheduleDraftRepository scheduleDraftRepository;
 
     private final S3Service s3Service;
 
@@ -124,6 +126,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                         .content(request.content())
                         .build();
                 schedules.add(scheduleRepository.save(schedule));
+                scheduleDraftRepository.deleteByClubId(clubId);
             } else {
                 Schedule schedule = scheduleRepository.findById(request.scheduleId())
                         .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
@@ -134,9 +137,41 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
                 schedule.updateSchedule(request.month(), request.content());
                 schedules.add(scheduleRepository.save(schedule));
+                scheduleDraftRepository.deleteByClubId(clubId);
             }
         }
         return ScheduleListResponseDTO.of(schedules);
+    }
+
+    @Override
+    public ClubScheduleDraftResponseDTO saveAndUpdateClubScheduleDraft(Long clubId,
+                                                                       ClubScheduleListRequestDTO clubActivityDTO) {
+
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+
+        List<ScheduleDraft> scheduleDrafts = new ArrayList<>();
+
+        for (ClubScheduleRequestDTO request : clubActivityDTO.schedules()) {
+            if (request.scheduleId() == null) {
+                ScheduleDraft scheduleDraft = ScheduleDraft.builder()
+                        .club(club)
+                        .month(request.month())
+                        .content(request.content())
+                        .build();
+                scheduleDrafts.add(scheduleDraftRepository.save(scheduleDraft));
+            } else {
+                ScheduleDraft scheduleDraft = scheduleDraftRepository.findById(request.scheduleId())
+                        .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+
+                if (!club.getId().equals(scheduleDraft.getClub().getId())) {
+                    throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+                }
+
+                scheduleDraft.updateSchedule(request.month(), request.content());
+                scheduleDrafts.add(scheduleDraftRepository.save(scheduleDraft));
+            }
+        }
+        return ClubScheduleDraftResponseDTO.of(scheduleDrafts);
     }
 
 //    @Override

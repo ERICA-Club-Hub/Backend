@@ -3,6 +3,8 @@ package kr.hanjari.backend.service.club;
 import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ScheduleResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ScheduleDraftResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ClubCommandService {
@@ -18,7 +20,7 @@ public interface ClubCommandService {
 
     // 동아리 월 별 일정
     ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubActivityDTO);
-    //ScheduleResponseDTO updateClubSchedule(Long clubId, Long scheduleId, ClubScheduleRequestDTO clubActivityDTO);
+    ClubScheduleDraftResponseDTO saveAndUpdateClubScheduleDraft(Long clubId, ClubScheduleListRequestDTO clubActivityDTO);
     void deleteClubSchedule(Long clubId, Long scheduleId);
 
     // 동아리 소개

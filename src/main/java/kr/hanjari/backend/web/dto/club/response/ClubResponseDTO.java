@@ -23,7 +23,7 @@ public record ClubResponseDTO(
         return new ClubResponseDTO(
                 club.getId(),
                 club.getName(),
-                club.getBriefIntroduction(),
+                club.getOneLiner(),
                 club.getCategory(),
                 club.getRecruitmentStatus(),
                 profileImageUrl,
