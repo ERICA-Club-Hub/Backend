@@ -21,8 +21,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${service.admin}")
     private String SERVICE_ADMIN_CODE;
-    @Value("${admin}")
-    private String ADMIN_CODE;
+    @Value("${union.admin}")
+    private String UNION_ADMIN_CODE;
 
     @Override
     public LoginResultDTO login(LoginRequestDTO request) {
@@ -33,9 +33,9 @@ public class AuthServiceImpl implements AuthService {
             token = jwtUtil.createServiceAdminToken();
             return LoginResultDTO.of(token, 0L, "Service Admin");
         }
-        if (code.equals(ADMIN_CODE)) {
+        if (code.equals(UNION_ADMIN_CODE)) {
             token = jwtUtil.createAdminToken();
-            return LoginResultDTO.of(token, 0L, "Admin");
+            return LoginResultDTO.of(token, 0L, "Union Admin");
         }
 
         Club club = clubRepository.findByCode(code)
