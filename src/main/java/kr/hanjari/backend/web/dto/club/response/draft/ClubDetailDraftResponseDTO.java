@@ -21,7 +21,7 @@ public record ClubDetailDraftResponseDTO(
     public static ClubDetailDraftResponseDTO of(ClubDetailDraft clubDetailDraft, Club club, String profileImage) {
         return new ClubDetailDraftResponseDTO(
                 club.getName(),
-                club.getBriefIntroduction(),
+                club.getOneLiner(),
                 club.getCategory(),
                 clubDetailDraft.getRecruitmentStatus(),
                 clubDetailDraft.getLeaderName(),

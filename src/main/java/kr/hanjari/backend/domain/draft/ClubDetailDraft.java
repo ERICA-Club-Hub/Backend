@@ -29,6 +29,9 @@ public class ClubDetailDraft  {
     @Column(name = "club_id")
     private Long clubId;
 
+    @Column(name = "one_liner")
+    String oneLiner;
+
     @Enumerated(EnumType.STRING)
     RecruitmentStatus recruitmentStatus;
 
@@ -52,6 +55,7 @@ public class ClubDetailDraft  {
 
     public void updateClubDetails(ClubDetailRequestDTO request) {
         this.recruitmentStatus = request.recruitmentStatus();
+        this.oneLiner = request.oneLiner();
         this.leaderName = request.leaderName();
         this.leaderPhone = request.leaderPhone();
         this.activities = request.activities();

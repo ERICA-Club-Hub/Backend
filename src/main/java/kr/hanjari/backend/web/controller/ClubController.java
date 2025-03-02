@@ -136,6 +136,7 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
+            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
@@ -168,6 +169,7 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
+            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
