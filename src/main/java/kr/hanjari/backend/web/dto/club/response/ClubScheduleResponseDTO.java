@@ -4,7 +4,7 @@ import java.util.List;
 import kr.hanjari.backend.domain.Schedule;
 
 public record ClubScheduleResponseDTO(
-        List<ScheduleResponseDTO> activities,
+        List<ScheduleResponseDTO> schedules,
         Integer totalElements
 ) {
     public static ClubScheduleResponseDTO of(List<Schedule> schedules) {
