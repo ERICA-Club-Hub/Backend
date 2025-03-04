@@ -20,8 +20,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${service.admin}")
     private String SERVICE_ADMIN_CODE;
-    @Value("${admin}")
-    private String ADMIN_CODE;
+    @Value("${union.admin}")
+    private String UNION_ADMIN_CODE;
 
     @Override
     public String login(LoginRequestDTO request) {
@@ -30,8 +30,8 @@ public class AuthServiceImpl implements AuthService {
         if (code.equals(SERVICE_ADMIN_CODE)) {
             return jwtUtil.createServiceAdminToken();
         }
-        if (code.equals(ADMIN_CODE)) {
-            return jwtUtil.createAdminToken();
+        if (code.equals(UNION_ADMIN_CODE)) {
+            return jwtUtil.createUnionAdminToken();
         }
 
         Club club = clubRepository.findByCode(code)
