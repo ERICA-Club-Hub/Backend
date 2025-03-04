@@ -14,14 +14,10 @@ import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
+import kr.hanjari.backend.web.dto.club.response.*;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubRecruitmentDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +39,7 @@ public class ClubController {
             #### requestBody (JSON)
             - **clubName**: 동아리명
             - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
-            - **category**: 동아리 카테고리(SPORTS, ART)
+            - **category**: 동아리 카테고리(SPORTS, ART, VOLUNTEER, UNION, ACADEMIC, RELIGION)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
             #### image (multipart/form-data)
@@ -60,6 +56,19 @@ public class ClubController {
     }
 
     @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 등록 요청 동아리 조회", description = """
+            ## 등록 요청된 동아리를 조회합니다.
+            ### Response
+            - 
+            """)
+    @GetMapping("/service-admin/registrations")
+    public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
+        GetRegistrationsResponseDTO result = clubQueryService.getRegistrations();
+
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
             ### PathVariable
@@ -67,7 +76,7 @@ public class ClubController {
             ### Response
             - **수락 후 새로 등록된 club의 id**
             """)
-    @PostMapping("/registrations/{clubRegistrationId}")
+    @PostMapping("/service-admin/registrations/{clubRegistrationId}")
     public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
 
         Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
