@@ -20,6 +20,7 @@ public class CorsConfig {
         allowedOrigins.add("http://localhost:5173");
         allowedOrigins.add("https://localhost:3000");
         allowedOrigins.add("https://localhost:5173");
+        allowedOrigins.add("https://deploy-preview-120--hanjari.netlify.app");
 
         List<String> allowedMethods = new ArrayList<>();
         allowedMethods.add("OPTIONS");
