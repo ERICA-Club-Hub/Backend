@@ -16,11 +16,7 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         List<String> allowedOrigins = new ArrayList<>();
-        allowedOrigins.add("http://localhost:3000");
-        allowedOrigins.add("http://localhost:5173");
-        allowedOrigins.add("https://localhost:3000");
-        allowedOrigins.add("https://localhost:5173");
-        allowedOrigins.add("https://deploy-preview-120--hanjari.netlify.app");
+        allowedOrigins.add("*");
 
         List<String> allowedMethods = new ArrayList<>();
         allowedMethods.add("OPTIONS");
