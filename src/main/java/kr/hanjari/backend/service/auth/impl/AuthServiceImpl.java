@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
             return LoginResultDTO.of(token, 0L, "Service Admin");
         }
         if (code.equals(UNION_ADMIN_CODE)) {
-            token = jwtUtil.createAdminToken();
+            token = jwtUtil.createUnionAdminToken();
             return LoginResultDTO.of(token, 0L, "Union Admin");
         }
 
