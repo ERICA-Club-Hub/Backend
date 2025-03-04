@@ -2,10 +2,8 @@ package kr.hanjari.backend.service.club.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.hanjari.backend.domain.Club;
-import kr.hanjari.backend.domain.Introduction;
-import kr.hanjari.backend.domain.Recruitment;
-import kr.hanjari.backend.domain.Schedule;
+
+import kr.hanjari.backend.domain.*;
 import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
@@ -15,10 +13,7 @@ import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.repository.IntroductionRepository;
-import kr.hanjari.backend.repository.RecruitmentRepository;
-import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.*;
 import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
@@ -26,14 +21,10 @@ import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.club.response.*;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubRecruitmentDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final ClubRepository clubRepository;
+    private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
@@ -62,6 +54,16 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final S3Service s3Service;
 
+
+    @Override
+    public GetRegistrationsResponseDTO getRegistrations() {
+        List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+        List<ClubRegistrationDTO> clubRegistrationDTOList = clubRegistrationList.stream()
+                .map(ClubRegistrationDTO::from)
+                .toList();
+
+        return GetRegistrationsResponseDTO.of(clubRegistrationDTOList);
+    }
 
     @Override
     public ClubSearchResponseDTO findClubsByCondition(
