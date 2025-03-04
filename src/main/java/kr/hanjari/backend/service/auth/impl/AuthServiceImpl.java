@@ -6,6 +6,7 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ClubRepository;
 import kr.hanjari.backend.security.token.JwtUtil;
 import kr.hanjari.backend.service.auth.AuthService;
+import kr.hanjari.backend.web.dto.auth.LoginResultDTO;
 import kr.hanjari.backend.web.dto.auth.request.LoginRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,19 +25,26 @@ public class AuthServiceImpl implements AuthService {
     private String UNION_ADMIN_CODE;
 
     @Override
-    public String login(LoginRequestDTO request) {
+    public LoginResultDTO login(LoginRequestDTO request) {
         String code = request.code();
+        String token;
 
         if (code.equals(SERVICE_ADMIN_CODE)) {
-            return jwtUtil.createServiceAdminToken();
+            token = jwtUtil.createServiceAdminToken();
+            return LoginResultDTO.of(token, 0L, "Service Admin");
         }
         if (code.equals(UNION_ADMIN_CODE)) {
-            return jwtUtil.createUnionAdminToken();
+            token = jwtUtil.createUnionAdminToken();
+            return LoginResultDTO.of(token, 0L, "Union Admin");
         }
 
         Club club = clubRepository.findByCode(code)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INVALID_CODE));
-        return jwtUtil.createClubAdminToken(club.getId());
+        Long clubId = club.getId();
+        String clubName = club.getName();
+        token = jwtUtil.createClubAdminToken(clubId);
+
+        return LoginResultDTO.of(token, clubId, clubName);
     }
 
     @Override

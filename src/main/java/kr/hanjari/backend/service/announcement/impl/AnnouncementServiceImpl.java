@@ -38,24 +38,27 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public void updateAnnouncement(Long announcementId, CommonAnnouncementRequest commonAnnouncementRequest, MultipartFile thumbnail) {
 
         Announcement announcement = announcementRepository.findById(announcementId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외
+                .orElseThrow(() -> new GeneralException(ErrorStatus._UNION_ANNOUNCEMENT_NOT_FOUND));
 
         announcement.updateTitleAndUrl(commonAnnouncementRequest.title(), commonAnnouncementRequest.url());
 
         if (thumbnail != null) {
-            s3Service.deleteFile(announcement.getThumbnailImage().getId());
+            File fileToDelete = announcement.getThumbnailImage();
             File newThumbnailImage = s3Service.uploadFile(thumbnail);
             announcement.updateThumbnailImage(newThumbnailImage);
+            announcementRepository.save(announcement);
+            s3Service.deleteFile(fileToDelete.getId());
         }
     }
 
     public void deleteAnnouncement(Long announcementId) {
 
         Announcement announcement = announcementRepository.findById(announcementId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._UNION_ANNOUNCEMENT_NOT_FOUND));
 
-        s3Service.deleteFile(announcement.getThumbnailImage().getId());
+        File fileToDelete = announcement.getThumbnailImage();
         announcementRepository.delete(announcement);
+        s3Service.deleteFile(fileToDelete.getId());
     }
 
     public GetAllAnnouncementResponse getAllAnnouncement() {

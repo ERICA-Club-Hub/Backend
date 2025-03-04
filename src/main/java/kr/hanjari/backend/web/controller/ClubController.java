@@ -12,16 +12,13 @@ import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubDetailDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubIntroductionDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentDraftResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.*;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubRecruitmentDraftResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +39,7 @@ public class ClubController {
             #### requestBody (JSON)
             - **clubName**: 동아리명
             - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
-            - **category**: 동아리 카테고리(SPORTS, ART)
+            - **category**: 동아리 카테고리(SPORTS, ART, VOLUNTEER, UNION, ACADEMIC, RELIGION)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
             #### image (multipart/form-data)
@@ -59,6 +56,19 @@ public class ClubController {
     }
 
     @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 등록 요청 동아리 조회", description = """
+            ## 등록 요청된 동아리를 조회합니다.
+            ### Response
+            - 
+            """)
+    @GetMapping("/service-admin/registrations")
+    public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
+        GetRegistrationsResponseDTO result = clubQueryService.getRegistrations();
+
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
             ### PathVariable
@@ -66,7 +76,7 @@ public class ClubController {
             ### Response
             - **수락 후 새로 등록된 club의 id**
             """)
-    @PostMapping("/registrations/{clubRegistrationId}")
+    @PostMapping("/service-admin/registrations/{clubRegistrationId}")
     public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
 
         Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
@@ -135,6 +145,7 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
+            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
@@ -167,6 +178,7 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
+            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
@@ -195,39 +207,21 @@ public class ClubController {
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
-    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력", description = """
-            ## 동아리 월 별 일정을 입력합니다.
+    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력 및 수정", description = """
+            ## 동아리 월 별 일정을 입력 및 수정합니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
             - **content**: 활동 내용 (string, 30자 미만) \n
+            - **scheduleId**: 활동 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
-            @RequestBody ClubScheduleRequestDTO clubActivityDTO) {
-        return ApiResponse.onSuccess(clubCommandService.saveClubSchedule(clubId, clubActivityDTO));
-    }
-
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
-    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 수정", description = """
-            ## 동아리 월 별 일정을 수정합니다. 
-            ### Path Variable
-            - **clubId**: 입력할 동아리의 ID  \n
-            - **scheduleId**: 수정할 활동의 ID  \n
-            
-            ### Request Body
-            - **month**: 변경 하고싶은 월 (어떤 월로 바꾸고 싶은지 입력) (integer) \n
-            - **content**: 활동 내용 (string, 30자 미만) \n
-            """)
-    @PatchMapping("/club-admin/{clubId}/schedules/{scheduleId}")
-    public ApiResponse<?> patchClubSchedules(
-            @PathVariable Long clubId,
-            @PathVariable Long scheduleId,
-            @RequestBody ClubScheduleRequestDTO clubScheduleDTO) {
-        return ApiResponse.onSuccess(clubCommandService.updateClubSchedule(clubId, scheduleId, clubScheduleDTO));
+            @RequestBody ClubScheduleListRequestDTO clubActivityDTO) {
+        return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubSchedule(clubId, clubActivityDTO));
     }
 
     @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
@@ -244,6 +238,36 @@ public class ClubController {
         clubCommandService.deleteClubSchedule(clubId, scheduleId);
         return ApiResponse.onSuccess();
     }
+
+    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Operation(summary = "[동아리 소개] 임시 저장된 동아리 월 별 일정 조회", description = """
+            ## 임시 저장 된 동아리 월 별 일정을 조회합니다.
+            - **clubId**: 조회할 동아리의 ID
+            """)
+    @GetMapping("/club-admin/{clubId}/schedules/draft")
+    public ApiResponse<ClubScheduleDraftResponseDTO> getClubSchedulesDraft(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findAllClubActivitiesDraft(clubId));
+    }
+
+    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Operation(summary = "[동아리 소개] 동아리 월 별 일정 임시 저장", description = """
+            ## 동아리 월 별 일정을 임시 저장합니다.
+            ### Path Variable
+            - **clubId**: 입력할 동아리의 ID  \n
+            
+            ### Request Body
+            - **month**: 월 (integer, 1~12 사이) \n
+            - **content**: 활동 내용 (string, 30자 미만) \n
+            - **scheduleId**: 활동 ID (수정 시에만 필요)
+            """)
+    @PostMapping("/club-admin/{clubId}/schedules/draft")
+    public ApiResponse<?> postClubSchedulesDraft(
+            @PathVariable Long clubId,
+            @RequestBody ClubScheduleListRequestDTO clubActivityDTO) {
+        return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubScheduleDraft(clubId, clubActivityDTO));
+    }
+
+    
 
     /*----------------------------- 동아리 소개글 ------------------------------*/
     @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")

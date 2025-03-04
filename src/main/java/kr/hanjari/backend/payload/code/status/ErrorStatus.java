@@ -25,6 +25,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "USER401", "유효하지 않은 토큰 서명입니다."),
     _INVALID_TOKEN_FORMAT(HttpStatus.BAD_REQUEST, "USER400", "잘못된 토큰 형식입니다"),
 
+    // 총동연 관련
+    _UNION_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "UNION_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
+
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
     _INVALID_CODE(HttpStatus.BAD_REQUEST, "CLUB400", "유효하지 않은 코드입니다."),
