@@ -43,7 +43,7 @@ public class ClubController {
             #### requestBody (JSON)
             - **clubName**: 동아리명
             - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
-            - **category**: 동아리 카테고리(SPORTS, ART)
+            - **category**: 동아리 카테고리(SPORTS, ART, VOLUNTEER, UNION, ACADEMIC, RELIGION)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
             #### image (multipart/form-data)
