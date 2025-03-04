@@ -5,8 +5,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
@@ -21,10 +25,23 @@ public class SwaggerConfig {
                 .scheme("bearer")
                 .bearerFormat("JWT")
         );
+
+        List<Server> serverList = new ArrayList<>();
+        Server httpsDevServer = new Server();
+        httpsDevServer.setUrl("https://hanjari-dev.site");
+        httpsDevServer.setDescription("Hanjari Dev Https Server");
+        Server localServer = new Server();
+        localServer.setUrl("http://localhost:8080");
+        localServer.setDescription("Hanjari Local Server");
+
+        serverList.add(httpsDevServer);
+        serverList.add(localServer);
+
         return new OpenAPI()
                 .components(new Components())
                 .info(apiInfo())
                 .addSecurityItem(securityRequirement)
+                .servers(serverList)
                 .components(components);
     }
 
