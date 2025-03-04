@@ -61,7 +61,7 @@ public class ClubController {
             ### Response
             - 
             """)
-    @GetMapping("/registrations")
+    @GetMapping("/service-admin/registrations")
     public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
         GetRegistrationsResponseDTO result = clubQueryService.getRegistrations();
 
@@ -76,7 +76,7 @@ public class ClubController {
             ### Response
             - **수락 후 새로 등록된 club의 id**
             """)
-    @PostMapping("/registrations/{clubRegistrationId}")
+    @PostMapping("/service-admin/registrations/{clubRegistrationId}")
     public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
 
         Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
