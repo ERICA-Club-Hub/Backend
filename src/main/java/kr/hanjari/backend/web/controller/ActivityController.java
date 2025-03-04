@@ -23,20 +23,20 @@ public class ActivityController {
     private final ActivityService activityService;
 
     @Operation(summary = "[활동로그] 활동로그 게시", description = """
-        ## 📤 동아리 활동로그를 게시합니다.
+        ## 동아리 활동로그를 게시합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 clubId: club의 ID
+        ### PathVariable
+        #### clubId: club의 ID
         
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **content**: 제목
         - **date**: 날짜
 
-        #### 📌 images (multipart/form-data 리스트)
+        #### images (multipart/form-data 리스트)
         - **업로드할 이미지 리스트**
 
-        ### 🔹 Response
+        ### Response
         - **생성된 activity의 ID**
         """)
     @PostMapping("/club-admin/{clubId}")
@@ -49,18 +49,18 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 수정", description = """
-        ## ✏️ 활동로그를 수정합니다.
+        ## 활동로그를 수정합니다.
         
-        ### 🔹 PathVariable
-        #### 📌 activityId: 수정할 activity의 ID
+        ### PathVariable
+        #### activityId: 수정할 activity의 ID
 
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **content**: 수정할 내용
         - **date**: 수정할 날짜
         - **changedActivityImageOrderIndexList**: 이미지를 교체할 activityImage의 orderIndex 리스트
 
-        #### 📌 files (multipart/form-data 리스트)
+        #### files (multipart/form-data 리스트)
         - **새롭게 추가할 이미지 리스트(필수 x, 있는 경우에만 입력, orderIndex 순서로)**
         
         #### changedActivityImageOrderIndexList와 files의 크기는 동일해야 함
@@ -75,13 +75,13 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 조회", description = """
-        ## 📄 동아리의 활동로그를 모두 조회합니다.
+        ## 동아리의 활동로그를 모두 조회합니다.
         
-        ### 🔹 PathVariable
-        #### 📌 clubId: 활동로그를 조회할 club의 ID
+        ### PathVariable
+        #### clubId: 활동로그를 조회할 club의 ID
         
-        ### 🔹 Response
-        #### 📌 **activityThumbnailDTOList**
+        ### Response
+        #### **activityThumbnailDTOList**
         - **activityId**: activity의 id
         - **thumbnailUrl**: 활동로그의 가장 첫 이미지의 url
         """)
@@ -93,18 +93,18 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 상세 조회", description = """
-        ## 📄 활동로그 하나를 상세조회합니다.
+        ## 활동로그 하나를 상세조회합니다.
         
-        ### 🔹 PathVariable
-        #### 📌 activityId: 상세조회할 activity의 ID
+        ### PathVariable
+        #### activityId: 상세조회할 activity의 ID
         
-        ### 🔹 Response
-        #### 📌 **activityThumbnailDTOList**
+        ### Response
+        #### **activityThumbnailDTOList**
         - **content**: 활동로그 내용
         - **date**: 활동로그 날짜
         - **activityImageDTOList**: activityImageDTO 객체들의 리스트 
         
-        #### 📌 **activityThumbnailDTO**
+        #### **activityThumbnailDTO**
         - **orderIndex**: 해당 이미지의 순서(0부터 시작)
         - **imageUrl**: 해당 이미지의 url
         """)
@@ -116,10 +116,10 @@ public class ActivityController {
     }
 
     @Operation(summary = "[활동로그] 활동로그 삭제", description = """
-        ## 🗑 활동로그를 삭제합니다.
+        ## 활동로그를 삭제합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 activityId: 삭제할 activity의 ID
+        ### PathVariable
+        #### activityId: 삭제할 activity의 ID
         """)
     @DeleteMapping("/club-admin/{activityId}")
     public ApiResponse<Void> deleteActivity(@PathVariable Long activityId) {
