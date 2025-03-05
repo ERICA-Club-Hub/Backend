@@ -22,6 +22,7 @@ public class CorsConfig {
         allowedOrigins.add("https://localhost:3000");
         allowedOrigins.add("https://localhost:4173");
         allowedOrigins.add("https://localhost:5173");
+        allowedOrigins.add("https://hanjari.netlify.app");
 
         List<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("https://deploy-preview-*--hanjari.netlify.app");
