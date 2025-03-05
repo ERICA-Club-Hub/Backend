@@ -54,8 +54,6 @@ public class ClubDetailDraft  {
     String applicationUrl;
 
     public void updateClubDetails(ClubDetailRequestDTO request) {
-        this.recruitmentStatus = request.recruitmentStatus();
-        this.oneLiner = request.oneLiner();
         this.leaderName = request.leaderName();
         this.leaderPhone = request.leaderPhone();
         this.activities = request.activities();
