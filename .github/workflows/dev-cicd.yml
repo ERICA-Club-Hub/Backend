@@ -84,7 +84,7 @@ jobs:
             docker compose -f dev-docker-compose.yml down
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_REPO }}:latest
             docker tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_REPO }}:latest ${{ secrets.DOCKER_DEV_REPO }}:latest
-            docker compose up dev-docker-compose.yml -f -d
+            docker compose -f dev-docker-compose.yml up -d
 
   dependency-submission:
 
