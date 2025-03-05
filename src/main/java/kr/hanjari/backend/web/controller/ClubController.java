@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequestMapping("/api/clubs")
 @RestController
+@RequestMapping("/api/clubs")
 @RequiredArgsConstructor
 public class ClubController {
 

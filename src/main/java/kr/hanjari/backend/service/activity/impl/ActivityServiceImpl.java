@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
 
-    //TODO 활동 로그 인증/인가 적용 -> 현재 Club 관련 정보 X
     private final ActivityRepository activityRepository;
     private final ActivityImageRepository activityImageRepository;
     private final ClubRepository clubRepository;
