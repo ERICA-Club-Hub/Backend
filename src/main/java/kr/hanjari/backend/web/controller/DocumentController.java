@@ -16,23 +16,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
-@Tag(name = "📂 자료실", description = "자료실 관련 API")
+@Tag(name = "자료실", description = "자료실 관련 API")
 @RequiredArgsConstructor
 public class DocumentController {
 
     private final DocumentService documentService;
 
     @Operation(summary = "[자료실] 자료 업로드", description = """
-        ## 📤 자료실에 파일을 업로드합니다.
+        ## 자료실에 파일을 업로드합니다.
 
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **title**: 제목
 
-        #### 📌 files (multipart/form-data 리스트)
+        #### files (multipart/form-data 리스트)
         - **업로드할 파일 리스트**
 
-        ### 🔹 Response
+        ### Response
         - **생성된 document의 ID**
         """
     )
@@ -45,10 +45,10 @@ public class DocumentController {
     }
 
     @Operation(summary = "[자료실] 자료 전체 조회", description = """
-        ## 📄 자료실에 업로드된 파일을 전체 조회합니다.
+        ## 자료실에 업로드된 파일을 전체 조회합니다.
 
-        ### 🔹 Response
-        #### 📌 documentDTOList
+        ### Response
+        #### documentDTOList
         - **documentId**: 자료 ID
         - **title**: 자료 제목
         """
@@ -61,16 +61,16 @@ public class DocumentController {
     }
 
     @Operation(summary = "[자료실] 자료 파일 조회", description = """
-        ## 📄 특정 자료의 파일을 조회합니다.
+        ## 특정 자료의 파일을 조회합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 documentId: 조회할 document의 ID
+        ### PathVariable
+        #### documentId: 조회할 document의 ID
 
-        ### 🔹 Response
-        #### 📌 fileDTOList
+        ### Response
+        #### fileDTOList
         - **fileDTO** 객체들의 리스트
         
-        #### 📌 fileDTO
+        #### fileDTO
         - **fileName**: 파일 이름
         - **downloadUrl**: 다운로드 URL
         """
@@ -83,17 +83,17 @@ public class DocumentController {
     }
 
     @Operation(summary = "[자료실] 자료 수정", description = """
-        ## ✏️ 자료를 수정합니다.
+        ## 자료를 수정합니다.
         
-        ### 🔹 PathVariable
-        #### 📌 documentId: 수정할 document의 ID
+        ### PathVariable
+        #### documentId: 수정할 document의 ID
 
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **title**: 수정할 제목
         - **removedFileIDList**: 삭제할 파일 ID 리스트
 
-        #### 📌 files (multipart/form-data 리스트)
+        #### files (multipart/form-data 리스트)
         - **새롭게 추가할 파일 리스트(필수 x, 있는 경우에만 입력)**
         """
     )
@@ -107,10 +107,10 @@ public class DocumentController {
     }
 
     @Operation(summary = "[자료실] 자료 삭제", description = """
-        ## 🗑 자료를 삭제합니다.
+        ## 자료를 삭제합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 documentId: 삭제할 document의 ID
+        ### PathVariable
+        #### documentId: 삭제할 document의 ID
         """
     )
     @DeleteMapping("/{documentId}")

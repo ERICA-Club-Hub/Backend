@@ -59,7 +59,7 @@ public class ClubController {
     @Operation(summary = "[동아리 등록] 등록 요청 동아리 조회", description = """
             ## 등록 요청된 동아리를 조회합니다.
             ### Response
-            - 
+            - clubRegistrationDTOList: 등록 요청한 동아리 리스트
             """)
     @GetMapping("/service-admin/registrations")
     public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
