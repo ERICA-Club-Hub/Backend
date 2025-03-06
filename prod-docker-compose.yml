@@ -7,7 +7,7 @@ services:
       - hanjari-network
 
   hanjari:
-    image: hanjari-dev:latest
+    image: hanjari-prod:latest
     container_name: "hanjari-container"
     env_file:
       - .env
