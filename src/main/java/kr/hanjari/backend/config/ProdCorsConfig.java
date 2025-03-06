@@ -2,6 +2,7 @@ package kr.hanjari.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -10,10 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class CorsConfig {
+@Profile("prod")
+public class ProdCorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
+        //origin 변경 예정
 
         List<String> allowedOrigins = new ArrayList<>();
         allowedOrigins.add("http://localhost:3000");

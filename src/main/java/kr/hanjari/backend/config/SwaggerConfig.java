@@ -6,14 +6,20 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
+@Profile({"local", "dev"})
 public class SwaggerConfig {
+
+    @Value("${DEV_BACKEND_URL}")
+    private String DEV_BACKEND_URL;
 
     @Bean
     public OpenAPI openAPI() {
@@ -28,7 +34,7 @@ public class SwaggerConfig {
 
         List<Server> serverList = new ArrayList<>();
         Server httpsDevServer = new Server();
-        httpsDevServer.setUrl("https://hanjari-dev.site");
+        httpsDevServer.setUrl("https://" + DEV_BACKEND_URL);
         httpsDevServer.setDescription("Hanjari Dev Https Server");
         Server localServer = new Server();
         localServer.setUrl("http://localhost:8080");
