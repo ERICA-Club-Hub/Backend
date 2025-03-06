@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/activities")
+@RequestMapping("/api/activities")
 @RequiredArgsConstructor
 @Tag(name = "활동로그", description = "활동로그 관련 API")
 public class ActivityController {

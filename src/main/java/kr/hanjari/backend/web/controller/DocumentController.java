@@ -16,8 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/documents")
-@Tag(name = "자료실", description = "자료실 관련 API")
 @RequiredArgsConstructor
+@Tag(name = "📂 자료실", description = "자료실 관련 API")
 public class DocumentController {
 
     private final DocumentService documentService;
@@ -120,3 +120,4 @@ public class DocumentController {
         return ApiResponse.onSuccess();
     }
 }
+
