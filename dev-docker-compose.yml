@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:9.1.0
+    container_name: "mysql-container"
+    env_file:
+      - mysql.env
+    networks:
+      - dev-db-network
+    volumes:
+      - hanjari-db-dev:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7.4.2
+    container_name: "redis-container"
+    networks:
+      - dev-db-network
+    ports:
+      - "6379:6379"
+
+  hanjari:
+    image: hanjari-dev:latest
+    container_name: "hanjari-container"
+    env_file:
+      - .env
+    networks:
+      - dev-db-network
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8080:8080"
+
+  nginx:
+    image: nginx:1.27.4
+    container_name: "nginx-container"
+    volumes:
+      - ~/hanjari/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ~/hanjari/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt/live/dev.backend.hanjari.site/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/dev.backend.hanjari.site/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+    networks:
+      - dev-db-network
+    depends_on:
+      - hanjari
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  dev-db-network:
+    external: true
+
+volumes:
+  hanjari-db-dev:
+    external: true
+    
