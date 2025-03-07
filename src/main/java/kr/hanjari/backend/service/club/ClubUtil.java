@@ -24,7 +24,7 @@ import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 @Transactional
 public class ClubUtil {
 
-    @Value("spring.mail.username")
+    @Value("${spring.mail.username}")
     private String serviceEmail;
 
 
