@@ -69,6 +69,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         Club newClub = clubRegistration.toClub();
         newClub.updateRecruitmentStatus(0);
         clubRepository.save(newClub);
+        clubRegistrationRepository.deleteById(clubRegistrationId);
 
         Long newClubId = clubRegistration.getId();
         clubUtil.reissueClubCode(newClubId);

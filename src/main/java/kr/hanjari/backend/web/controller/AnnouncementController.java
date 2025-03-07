@@ -13,23 +13,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/announcements")
 @RequiredArgsConstructor
-@Tag(name = "📢 총동연 공지사항", description = "총동연 공지사항 관련 API")
+@Tag(name = "총동연 공지사항", description = "총동연 공지사항 관련 API")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 생성", description = """
-        ## 📤 총동연 공지사항을 생성합니다.
+        ## 총동연 공지사항을 생성합니다.
 
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **title**: 공지사항 제목
         - **url**: 링크 URL
 
-        #### 📌 thumbnail (multipart/form-data)
+        #### thumbnail (multipart/form-data)
         - **썸네일 이미지 파일**
 
-        ### 🔹 Response
+        ### Response
         - **생성된 공지사항의 ID**
         """
     )
@@ -41,13 +41,13 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 전체 조회", description = """
-        ## 📄 총동연 공지사항을 전부 조회합니다.
+        ## 총동연 공지사항을 전부 조회합니다.
 
-        ### 🔹 Response
-        #### 📌 AnnouncementDTOList
+        ### Response
+        #### AnnouncementDTOList
         - **AnnouncementDTO** 객체들의 리스트
 
-        #### 📌 AnnouncementDTO
+        #### AnnouncementDTO
         - **announcementId**: 공지사항 ID
         - **title**: 공지사항 제목
         - **date**: 공지 날짜
@@ -63,17 +63,17 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 수정", description = """
-        ## ✏️ 총동연 공지사항을 수정합니다.
+        ## 총동연 공지사항을 수정합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 announcementId: 수정할 공지사항의 ID
+        ### PathVariable
+        #### announcementId: 수정할 공지사항의 ID
 
-        ### 🔹 Request
-        #### 📌 requestBody (JSON)
+        ### Request
+        #### requestBody (JSON)
         - **title**: 공지사항 제목
         - **url**: 링크 URL
 
-        #### 📌 thumbnail (multipart/form-data)
+        #### thumbnail (multipart/form-data)
         - **썸네일 이미지 (필수 X, 이미지도 수정하는 경우에만 입력)**
         """
     )
@@ -87,10 +87,10 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 삭제", description = """
-        ## 🗑 총동연 공지사항을 삭제합니다.
+        ## 총동연 공지사항을 삭제합니다.
 
-        ### 🔹 PathVariable
-        #### 📌 announcementId: 삭제할 공지사항의 ID
+        ### PathVariable
+        #### announcementId: 삭제할 공지사항의 ID
         """
     )
     @DeleteMapping("/union-admin/{announcementId}")

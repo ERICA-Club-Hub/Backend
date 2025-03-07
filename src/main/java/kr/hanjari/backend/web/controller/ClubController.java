@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RequestMapping("/api/clubs")
 @RestController
+@RequestMapping("/api/clubs")
 @RequiredArgsConstructor
 public class ClubController {
 
@@ -59,7 +59,7 @@ public class ClubController {
     @Operation(summary = "[동아리 등록] 등록 요청 동아리 조회", description = """
             ## 등록 요청된 동아리를 조회합니다.
             ### Response
-            - 
+            - clubRegistrationDTOList: 등록 요청한 동아리 리스트
             """)
     @GetMapping("/service-admin/registrations")
     public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
@@ -145,7 +145,6 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
-            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
@@ -178,7 +177,6 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
-            - **oneLiner**: 동아리 한줄 소개 (string) \n
             - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
             - **leaderName**: 동아리 대표자 이름 (string) \n
             - **leaderPhone**: 동아리 대표자 연락처 (string) \n
