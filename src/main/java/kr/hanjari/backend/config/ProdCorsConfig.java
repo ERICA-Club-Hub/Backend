@@ -17,20 +17,8 @@ public class ProdCorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        //origin 변경 예정
-
         List<String> allowedOrigins = new ArrayList<>();
-        allowedOrigins.add("http://localhost:3000");
-        allowedOrigins.add("http://localhost:4173");
-        allowedOrigins.add("http://localhost:5173");
-        allowedOrigins.add("https://localhost:3000");
-        allowedOrigins.add("https://localhost:4173");
-        allowedOrigins.add("https://localhost:5173");
-        allowedOrigins.add("https://hanjari.netlify.app");
         allowedOrigins.add("https://hanjari.site");
-
-        List<String> allowedOriginPatterns = new ArrayList<>();
-        allowedOriginPatterns.add("https://deploy-preview-*--hanjari.netlify.app");
 
         List<String> allowedMethods = new ArrayList<>();
         allowedMethods.add("OPTIONS");
@@ -51,7 +39,6 @@ public class ProdCorsConfig {
 
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedOriginPatterns(allowedOriginPatterns);
         configuration.setAllowedMethods(allowedMethods);
         configuration.setAllowedHeaders(allowedHeaders);
         configuration.setExposedHeaders(exposedHeaders);
