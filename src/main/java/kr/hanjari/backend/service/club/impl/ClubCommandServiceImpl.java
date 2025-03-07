@@ -16,6 +16,7 @@ import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.service.club.ClubCommandService;
+import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.*;
 import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
@@ -43,6 +44,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ClubDetailDraftRepository clubDetailDraftRepository;
     private final ScheduleDraftRepository scheduleDraftRepository;
 
+    private final ClubUtil clubUtil;
     private final S3Service s3Service;
 
     @Override
@@ -68,6 +70,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         newClub.updateRecruitmentStatus(0);
         clubRepository.save(newClub);
 
+        Long newClubId = clubRegistration.getId();
+        clubUtil.reissueClubCode(newClubId);
         return newClub.getId();
     }
 
