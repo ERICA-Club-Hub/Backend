@@ -23,6 +23,7 @@ import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
+
+    @Value("${login.url}")
+    private String loginURL;
 
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
@@ -72,7 +76,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         clubRegistrationRepository.deleteById(clubRegistrationId);
 
         Long newClubId = clubRegistration.getId();
-        clubUtil.reissueClubCode(newClubId);
+        String code = clubUtil.reissueClubCode(newClubId);
+
+        clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
         return newClub.getId();
     }
 
