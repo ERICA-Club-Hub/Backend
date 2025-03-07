@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>가입 승인 안내</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+  <h2 style="color: #007bff;">🎉 가입 신청이 승인되었습니다!</h2>
+  <p>안녕하세요,</p>
+  <p><strong><span th:text="${clubName}"></span></strong> 동아리 가입 신청이 승인되었습니다.</p>
+  <p>아래의 6자리 로그인 인증 코드를 사용하여 서비스를 이용하실 수 있습니다.</p>
+  <div style="font-size: 24px; font-weight: bold; color: #007bff; text-align: center; padding: 10px; border: 2px solid #007bff;">
+    <span th:text="${verificationCode}"></span>
+  </div>
+  <p style="text-align: center; margin-top: 20px;">
+    <a th:href="@{${loginUrl}}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">
+      로그인 하기
+    </a>
+  </p>
+  <p>감사합니다.<br><strong>한자리 팀 드림.</strong></p>
+</div>
+</body>
+</html>
