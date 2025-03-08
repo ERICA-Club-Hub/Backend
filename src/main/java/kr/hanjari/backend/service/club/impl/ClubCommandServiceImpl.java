@@ -15,6 +15,8 @@ import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
+import kr.hanjari.backend.security.token.JwtUtil;
+import kr.hanjari.backend.service.auth.AuthService;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.service.s3.S3Service;
@@ -49,6 +51,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ScheduleDraftRepository scheduleDraftRepository;
 
     private final ClubUtil clubUtil;
+    private final JwtUtil jwtUtil;
     private final S3Service s3Service;
 
     @Override
