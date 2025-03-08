@@ -25,7 +25,7 @@ public class S3Service {
     private String bucket;
 
     private final S3Operations s3Operations;
-    private final S3UtilService s3UtilService;
+    private final S3Util s3Util;
 
     private final FileRepository fileRepository;
 
@@ -33,8 +33,8 @@ public class S3Service {
         try (InputStream inputStream = file.getInputStream()) {
 
             String fileName = file.getOriginalFilename();
-            String fileKey = s3UtilService.generateFileKey(fileName);
-            String fileExtension = s3UtilService.getFileExtension(fileName);
+            String fileKey = s3Util.generateFileKey(fileName);
+            String fileExtension = s3Util.getFileExtension(fileName);
 
             s3Operations.upload(bucket, fileKey, inputStream,
                     ObjectMetadata.builder()
