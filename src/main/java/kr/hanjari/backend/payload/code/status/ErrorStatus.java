@@ -30,10 +30,6 @@ public enum ErrorStatus implements BaseErrorCode {
     // 총동연 관련
     _UNION_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "UNION_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
 
-    // 파일 관련
-    _FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE500", "파일 업로드에 실패했습니다."),
-    _FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE404", "파일을 찾을 수 없습니다."),
-
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
     _INVALID_CODE(HttpStatus.BAD_REQUEST, "CLUB400", "유효하지 않은 코드입니다."),
@@ -41,10 +37,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     _ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "ACTIVITY404", "활동로그를 찾을 수 없습니다."),
 
-    _SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404", "일정을 찾을 수 없습니다."),
-    _SCHEDULE_IS_NOT_BELONG_TO_CLUB(HttpStatus.BAD_REQUEST, "SCHEDULE400", "해당 동아리에 속한 일정이 아닙니다."),
-    _SCHEDULE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SCHEDULE400", "해당 월에 일정이 이미 존재합니다."),
-    _SCHEDULE_TO_CHANGE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SCHEDULE400", "변경할 월에 일정이 이미 존재합니다."),
+    _SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "ACTIVITY404", "활동을 찾을 수 없습니다."),
+    _SCHEDULE_IS_NOT_BELONG_TO_CLUB(HttpStatus.BAD_REQUEST, "ACTIVITY400", "해당 동아리에 속한 활동이 아닙니다."),
+    _SCHEDULE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "ACTIVITY400", "해당 월에 활동이 이미 존재합니다."),
+    _SCHEDULE_TO_CHANGE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "ACTIVITY400", "변경할 월에 활동이 이미 존재합니다."),
 
     _INTRODUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "소개를 찾을 수 없습니다."),
     _INTRODUCTION_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "임시 저장 된 소개를 찾을 수 없습니다."),
