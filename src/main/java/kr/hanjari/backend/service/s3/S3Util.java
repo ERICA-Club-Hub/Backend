@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class S3UtilService {
+public class S3Util {
 
     public String generateFileKey(String fileName) {
         return UUID.randomUUID() + fileName;

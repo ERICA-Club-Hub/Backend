@@ -67,7 +67,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public void updateActivity(Long activityId, UpdateActivityRequest updateActivityRequest, List<MultipartFile> images) {
         Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
         activity.updateContentAndDate(updateActivityRequest.content(), updateActivityRequest.date());
 
@@ -98,16 +98,17 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void deleteActivity(Long activityId) { // TODO: clubId 검사
+    public void deleteActivity(Long activityId) {
         if (!activityRepository.existsById(activityId)) {
-            throw new GeneralException(ErrorStatus._BAD_REQUEST);
+            throw new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND);
         }
 
         List<ActivityImage> activityImages = activityImageRepository.findAllByActivityId(activityId);
         activityImages.forEach(
                 activityImage -> {
+                    Long fileIdForDelete = activityImage.getImageFile().getId();
                     activityImageRepository.delete(activityImage);
-                    s3Service.deleteFile(activityImage.getImageFile().getId());
+                    s3Service.deleteFile(fileIdForDelete);
                 }
         );
         activityRepository.deleteById(activityId);
@@ -118,10 +119,11 @@ public class ActivityServiceImpl implements ActivityService {
         List<Activity> activityList = activityRepository.findAllByClubId(clubId);
         List<ActivityThumbnailDTO> activityThumbnailDTOList = activityList.stream()
                 .map(activity -> {
-                    File thumbnail = activityImageRepository.findFirstByActivityIdOrderByIdAsc(activity.getId())
+                    Long activityId = activity.getId();
+                    File thumbnail = activityImageRepository.findFirstByActivityIdOrderByIdAsc(activityId)
                             .get().getImageFile();
                     String thumbnailUrl = s3Service.getDownloadUrl(thumbnail.getId());
-                    return ActivityThumbnailDTO.of(activity.getId(), thumbnailUrl);
+                    return ActivityThumbnailDTO.of(activityId, thumbnailUrl);
                 }).toList();
 
         return GetAllActivityResponse.of(activityThumbnailDTOList);
@@ -130,7 +132,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public GetSpecificActivityResponse getSpecificActivity(Long activityId) {
         Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
         List<ActivityImageDTO> activityImageDTOList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(activityId).stream()
                 .map(activityImage
