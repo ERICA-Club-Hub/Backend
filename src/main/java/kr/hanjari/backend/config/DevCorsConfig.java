@@ -26,6 +26,7 @@ public class DevCorsConfig {
         allowedOrigins.add("https://localhost:5173");
         allowedOrigins.add("https://hanjari.netlify.app");
         allowedOrigins.add("https://develop.hanjari.site");
+        allowedOrigins.add("https://dev.backend.hanjari.site:443");
 
         List<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("https://deploy-preview-*--hanjari.netlify.app");
