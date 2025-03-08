@@ -6,9 +6,6 @@ import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
-import kr.hanjari.backend.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.security.detail.CustomUserDetails;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.club.ClubUtil;
@@ -23,11 +20,8 @@ import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftRespo
 import kr.hanjari.backend.web.dto.club.response.draft.ClubRecruitmentDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/clubs")
@@ -38,7 +32,6 @@ public class ClubController {
     private final ClubCommandService clubCommandService;
     private final ClubUtil clubUtil;
 
-    /*------------------------ 동아리 등록 ----------------------------*/
     @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """
             ## 동아리 등록을 요청합니다.
@@ -105,13 +98,8 @@ public class ClubController {
             """)
     @PostMapping("{clubId}/update")
     public ApiResponse<Long> updateClubInfo(@RequestPart ClubBasicInformationDTO requestBody,
-                                            @RequestPart MultipartFile image,
-                                            @PathVariable Long clubId,
-                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
-
+                               @RequestPart MultipartFile image,
+                               @PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
     }
 
@@ -169,12 +157,7 @@ public class ClubController {
     @PostMapping("/club-admin/{clubId}")
     public ApiResponse<Long> postSpecificClub(
             @PathVariable Long clubId,
-            @RequestBody ClubDetailRequestDTO clubDetailDTO,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
+            @RequestBody ClubDetailRequestDTO clubDetailDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
@@ -230,18 +213,13 @@ public class ClubController {
             
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
-            - **content**: 일정 내용 (string, 30자 미만) \n
-            - **scheduleId**: 일정 ID (수정 시에만 필요)
+            - **content**: 활동 내용 (string, 30자 미만) \n
+            - **scheduleId**: 활동 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<?> postClubSchedules(
             @PathVariable Long clubId,
-            @RequestBody ClubScheduleListRequestDTO clubActivityDTO,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
+            @RequestBody ClubScheduleListRequestDTO clubActivityDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubSchedule(clubId, clubActivityDTO));
     }
 
@@ -250,17 +228,12 @@ public class ClubController {
             ## 동아리 월 별 일정을 삭제합니다. 
             ### Path Variable
             - **clubId**: 삭제할 동아리의 ID
-            - **scheduleId**: 삭제할 일정의 ID
+            - **scheduleId**: 삭제할 활동의 ID
             """)
     @DeleteMapping("/club-admin/{clubId}/schedules/{scheduleId}")
     public ApiResponse<?> deleteClubSchedules(
             @PathVariable Long clubId,
-            @PathVariable Long scheduleId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
+            @PathVariable Long scheduleId) {
         clubCommandService.deleteClubSchedule(clubId, scheduleId);
         return ApiResponse.onSuccess();
     }
@@ -283,8 +256,8 @@ public class ClubController {
             
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
-            - **content**: 일정 내용 (string, 30자 미만) \n
-            - **scheduleId**: 일정 ID (수정 시에만 필요)
+            - **content**: 활동 내용 (string, 30자 미만) \n
+            - **scheduleId**: 활동 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules/draft")
     public ApiResponse<?> postClubSchedulesDraft(
@@ -320,12 +293,7 @@ public class ClubController {
     @PostMapping("/club-admin/{clubId}/introduction")
     public ApiResponse<?> postClubIntroduction(
             @PathVariable Long clubId,
-            @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
+            @RequestBody ClubIntroductionRequestDTO clubIntroductionDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubIntroduction(clubId, clubIntroductionDTO));
     }
 
@@ -383,12 +351,7 @@ public class ClubController {
     @PostMapping("/club-admin/{clubId}/recruitment")
     public ApiResponse<?> postClubRecruitment(
             @PathVariable Long clubId,
-            @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
-            throw new GeneralException(ErrorStatus._FORBIDDEN);
-        }
+            @RequestBody ClubRecruitmentRequestDTO clubRecruitmentDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitment(clubId, clubRecruitmentDTO));
     }
 
