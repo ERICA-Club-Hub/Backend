@@ -13,7 +13,7 @@ import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.CommonClubDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
 import kr.hanjari.backend.web.dto.club.response.*;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftResponseDTO;
@@ -48,7 +48,7 @@ public class ClubController {
             - **생성된 ClubRegistration의 id**
             """)
     @PostMapping("/registrations")
-    public ApiResponse<Long> requestClubRegistration(@RequestPart CommonClubDTO requestBody,
+    public ApiResponse<Long> requestClubRegistration(@RequestPart ClubBasicInformationDTO requestBody,
                                                      @RequestPart MultipartFile image) {
 
         Long result = clubCommandService.requestClubRegistration(requestBody, image);
@@ -83,6 +83,7 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
+    /*------------------------ 동아리 기본 ----------------------------*/
     @Tag(name = "동아리 기본", description = "동아리 기본 API")
     @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
             ## 동아리 기본 정보를 수정합니다.
@@ -96,10 +97,10 @@ public class ClubController {
             - **image**: 동아리 대표 사진
             """)
     @PostMapping("{clubId}/update")
-    public ApiResponse<Long> updateClubInfo(@RequestPart CommonClubDTO requestBody,
+    public ApiResponse<Long> updateClubInfo(@RequestPart ClubBasicInformationDTO requestBody,
                                @RequestPart MultipartFile image,
                                @PathVariable Long clubId) {
-        return ApiResponse.onSuccess(clubCommandService.updateClubDetail(clubId, requestBody, image));
+        return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
     }
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/

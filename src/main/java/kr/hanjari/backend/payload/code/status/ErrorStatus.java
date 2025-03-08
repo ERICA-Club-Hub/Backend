@@ -30,6 +30,10 @@ public enum ErrorStatus implements BaseErrorCode {
     // 총동연 관련
     _UNION_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "UNION_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
 
+    // 파일 관련
+    _FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE500", "파일 업로드에 실패했습니다."),
+    _FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE404", "파일을 찾을 수 없습니다."),
+
     // 동아리 관련
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
     _INVALID_CODE(HttpStatus.BAD_REQUEST, "CLUB400", "유효하지 않은 코드입니다."),

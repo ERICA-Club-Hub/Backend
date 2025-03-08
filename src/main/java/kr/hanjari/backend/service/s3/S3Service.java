@@ -53,20 +53,20 @@ public class S3Service {
             return fileRepository.save(newFile);
 
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: 예외 추가
+            throw new RuntimeException(e);
         }
     }
 
     public String getDownloadUrl(Long fileId) {
         File file = fileRepository.findById(fileId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FILE_NOT_FOUND));
 
         return s3Operations.createSignedGetURL(bucket, file.getFileKey(), Duration.ofHours(1)).toString();
     }
 
     public void deleteFile(Long fileId) {
         File file = fileRepository.findById(fileId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST)); // TODO: 예외 추가
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FILE_NOT_FOUND));
 
         s3Operations.deleteObject(bucket, file.getFileKey());
         fileRepository.delete(file);

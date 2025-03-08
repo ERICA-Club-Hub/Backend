@@ -52,7 +52,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final S3Service s3Service;
 
     @Override
-    public Long requestClubRegistration(CommonClubDTO requestBody, MultipartFile image) {
+    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile image) {
 
         File imageFile = s3Service.uploadFile(image);
 
@@ -95,12 +95,14 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long updateClubDetail(Long clubId, CommonClubDTO request, MultipartFile file) {
+    public Long updateClubBasicInformation(Long clubId, ClubBasicInformationDTO request, MultipartFile file) {
         Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubCommonInfo(request);
 
-        File imageFile = s3Service.uploadFile(file);
-        club.updateClubImage(imageFile);
+        if (file != null) {
+            File imageFile = s3Service.uploadFile(file);
+            club.updateClubImage(imageFile);
+        }
 
         Club saved = clubRepository.save(club);
 
