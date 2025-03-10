@@ -24,20 +24,20 @@ public class ClubRegistration extends BaseEntity {
     @JoinColumn(name = "image_file_id")
     private File imageFile;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 30)
     private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private ClubCategory category;
 
-    @Column(name = "leader_email", nullable = false)
+    @Column(name = "leader_email", nullable = false, length = 40)
     private String leaderEmail;
 
-    @Column(name = "one_liner", nullable = false)
+    @Column(name = "one_liner", nullable = false, length = 40)
     private String oneLiner;
 
-    @Column(name = "brief_introduction", nullable = false)
+    @Column(name = "brief_introduction", nullable = false, length = 120)
     private String briefIntroduction;
 
     public void updateImageFile(File imageFile) {
