@@ -5,7 +5,6 @@ import java.util.List;
 
 public record UpdateActivityRequest(
         String content,
-        LocalDate date,
-        List<Integer> changedActivityImageOrderIndexList
+        LocalDate date
 ) {
 }
