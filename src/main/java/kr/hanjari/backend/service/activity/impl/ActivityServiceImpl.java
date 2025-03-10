@@ -71,29 +71,29 @@ public class ActivityServiceImpl implements ActivityService {
 
         activity.updateContentAndDate(updateActivityRequest.content(), updateActivityRequest.date());
 
-        List<ActivityImage> activityImageList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(activityId);
+        if (images != null) {
+            List<ActivityImage> activityImageList = activityImageRepository.findAllByActivityId(activityId);
+            List<Long> fileIdToDeleteList = activityImageList.stream()
+                    .map(activityImage -> {
+                        Long fileId = activityImage.getImageFile().getId();
+                        activityImageRepository.delete(activityImage);
+                        return fileId;
+                    }).toList();
 
-        if (!images.isEmpty()) {
-            List<Integer> orderIndexList = updateActivityRequest.changedActivityImageOrderIndexList();
-            IntStream.range(0, images.size()).forEach(i -> {
-                int orderIndex = orderIndexList.get(i);
-                File newImageFile = s3Service.uploadFile(images.get(i));
+            IntStream.range(0, images.size())
+                    .forEach(i -> {
+                        File newImage = s3Service.uploadFile(images.get(i));
+                        ActivityImageId activityImageId = new ActivityImageId();
+                        ActivityImage activityImage = ActivityImage.builder()
+                                .id(activityImageId)
+                                .activity(activity)
+                                .imageFile(newImage)
+                                .orderIndex(i)
+                                .build();
+                        activityImageRepository.save(activityImage);
+                    });
 
-                ActivityImage oldActivityImage = activityImageList.get(orderIndex);
-                File oldImageFile = oldActivityImage.getImageFile();
-
-                ActivityImageId newActivityImageId = new ActivityImageId();
-                ActivityImage newActivityImage = ActivityImage.builder()
-                        .id(newActivityImageId)
-                        .activity(activity)
-                        .imageFile(newImageFile)
-                        .orderIndex(orderIndex)
-                        .build();
-                activityImageRepository.save(newActivityImage);
-
-                activityImageRepository.delete(oldActivityImage);
-                s3Service.deleteFile(oldImageFile.getId());
-            });
+            fileIdToDeleteList.forEach(s3Service::deleteFile);
         }
     }
 

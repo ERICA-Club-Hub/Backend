@@ -55,20 +55,18 @@ public class ActivityController {
         #### activityId: 수정할 activity의 ID
 
         ### Request
-        #### requestBody (JSON)
+        #### requestBody (JSON) (필수)
         - **content**: 수정할 내용
         - **date**: 수정할 날짜
-        - **changedActivityImageOrderIndexList**: 이미지를 교체할 activityImage의 orderIndex 리스트
 
         #### files (multipart/form-data 리스트)
-        - **새롭게 추가할 이미지 리스트(필수 x, 있는 경우에만 입력, orderIndex 순서로)**
+        - **새롭게 추가할 이미지 리스트(필수 x, 이미지 추가/삭제/수정이 있는 경우에만 입력)**
         
-        #### changedActivityImageOrderIndexList와 files의 크기는 동일해야 함
         """)
     @PatchMapping("/club-admin/{activityId}")
     public ApiResponse<Void> updateActivity(@PathVariable Long activityId,
                                @RequestPart UpdateActivityRequest requestBody,
-                               @RequestPart List<MultipartFile> images) {
+                               @RequestPart(required = false) List<MultipartFile> images) {
 
         activityService.updateActivity(activityId, requestBody, images);
         return ApiResponse.onSuccess();

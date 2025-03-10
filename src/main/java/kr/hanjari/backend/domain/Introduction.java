@@ -23,13 +23,13 @@ public class Introduction {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @Column(name = "content1")
+    @Column(name = "content1", length = 600)
     private String content1;
 
-    @Column(name = "content2")
+    @Column(name = "content2", length = 1200)
     private String content2;
 
-    @Column(name = "content3")
+    @Column(name = "content3", length = 600)
     private String content3;
 
     public void updateIntroduction(String content1, String content2, String content3 ) {

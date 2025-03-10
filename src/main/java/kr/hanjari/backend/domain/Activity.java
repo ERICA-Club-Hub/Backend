@@ -26,7 +26,7 @@ public class Activity extends BaseEntity {
     @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 120)
     private String content;
 
     public void updateContentAndDate(String content, LocalDate date) {

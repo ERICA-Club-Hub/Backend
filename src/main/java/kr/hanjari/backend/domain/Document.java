@@ -16,7 +16,7 @@ public class Document extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 60)
     private String title;
 
     public void updateTitle(String title) {
