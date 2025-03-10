@@ -1,9 +1,14 @@
 package kr.hanjari.backend.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.hanjari.backend.payload.ApiResponse;
+import kr.hanjari.backend.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.payload.dto.ErrorReasonDTO;
+import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.security.token.JwtTokenProvider;
 import kr.hanjari.backend.security.token.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +31,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtUtil.resolveToken(request);
         if (token != null) {
-            jwtUtil.validateJwtToken(token);
+            try {
+                jwtUtil.validateJwtToken(token);
+            } catch (GeneralException e) {
+                handleException(response, e);
+                return;
+            }
 
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);;
         }
         filterChain.doFilter(request, response);
     }
+
+    private void handleException(HttpServletResponse response, GeneralException e) throws IOException {
+        ErrorReasonDTO errorReason = e.getErrorReasonHttpStatus();
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(errorReason.getHttpStatus().value());
+
+        ApiResponse<Object> body = ApiResponse.onFailure(errorReason.getCode(), errorReason.getMessage(), null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.getWriter().write(objectMapper.writeValueAsString(body));
+
+    }
+
+
 
 }
