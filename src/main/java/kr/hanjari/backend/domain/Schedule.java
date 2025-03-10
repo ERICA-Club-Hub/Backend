@@ -24,7 +24,7 @@ public class Schedule {
     @Column(name = "month", nullable = false)
     private Integer month;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 40)
     private String content;
 
     public void updateSchedule(Integer month, String content) {
