@@ -131,7 +131,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public GetSpecificActivityResponse getSpecificActivity(Long activityId) {
-        Activity activity = activityRepository.findById(activityId)
+        Activity activity = activityRepository.findByIdWithClubAndImageFile(activityId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
         List<ActivityImageDTO> activityImageDTOList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(activityId).stream()
@@ -142,6 +142,7 @@ public class ActivityServiceImpl implements ActivityService {
                     return ActivityImageDTO.of(activityImage.getOrderIndex(), downloadUrl);
                 }).toList();
 
-        return GetSpecificActivityResponse.of(activity, activityImageDTOList);
+        return GetSpecificActivityResponse.of(
+                activity, s3Service.getDownloadUrl(activity.getClub().getImageFile().getId()), activityImageDTOList);
     }
 }
