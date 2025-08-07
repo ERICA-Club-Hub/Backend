@@ -166,7 +166,7 @@ public class ClubController {
     }
 
     // 조회
-    @Tag(name = "동아리 상세", description = "동아리 상세 - 동아리 오버뷰 정보 API")
+    @Tag(name = "동아리 상세", description = "동아리 상세 v2 - 동아리 오버뷰 정보 API")
     @Operation(summary = "[동아리 정보] 동아리 오버뷰 정보 조회", description = """
             ## 동아리  오버뷰 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -176,7 +176,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubOverview(clubId));
     }
 
-    @Tag(name = "동아리 상세", description = "동아리 상세 - 동아리 기본 정보 API")
+    @Tag(name = "동아리 상세", description = "동아리 상세 v2 - 동아리 기본 정보 API")
     @Operation(summary = "[동아리 정보] 동아리 기본 정보 조회", description = """
             ## 동아리 기본 정보 를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
