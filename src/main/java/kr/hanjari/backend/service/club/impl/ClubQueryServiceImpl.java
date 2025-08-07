@@ -190,7 +190,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Introduction introduction = introductionRepository.findByClubId(clubId)
                 .orElse(null);
 
-        String target = (introduction != null) ? introduction.getContent3() : null;
+        String target = (introduction != null) ? introduction.getContent2() : null;
         return ClubRecruitmentResponseDTO.of(recruitment, target);
     }
 
