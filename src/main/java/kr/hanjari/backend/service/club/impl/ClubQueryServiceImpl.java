@@ -165,15 +165,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
-
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
         Introduction introduction = introductionRepository.findByClubId(clubId)
                 .orElse(null);
 
-        return ClubIntroductionResponseDTO.of(club, introduction,
-                s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubIntroductionResponseDTO.of(introduction);
     }
 
     @Override
@@ -192,8 +187,11 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubRecruitmentResponseDTO findClubRecruitment(Long clubId) {
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
                 .orElse(null);
+        Introduction introduction = introductionRepository.findByClubId(clubId)
+                .orElse(null);
 
-        return ClubRecruitmentResponseDTO.of(recruitment);
+        String target = (introduction != null) ? introduction.getContent3() : null;
+        return ClubRecruitmentResponseDTO.of(recruitment, target);
     }
 
     @Override
