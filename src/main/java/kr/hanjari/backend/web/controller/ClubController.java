@@ -2,6 +2,7 @@ package kr.hanjari.backend.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Objects;
 import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
@@ -12,22 +13,35 @@ import kr.hanjari.backend.security.detail.CustomUserDetails;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.club.ClubUtil;
+import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.web.dto.club.response.*;
+import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubIntroductionDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubRecruitmentDraftResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/clubs")
@@ -136,19 +150,40 @@ public class ClubController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ApiResponse.onSuccess(clubQueryService.findClubsByCondition(keyword, category, status, sortBy, page, size));
+        return ApiResponse.onSuccess(
+                clubQueryService.findClubsByCondition(keyword, category, status, sortBy, page, size));
     }
 
-    /*----------------------------- 동아리 상세 -----------------------------*/
-    // 조회
+    /*----------------------------- 동아리 상세 -----------------------------*/    // 조회
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
-    @Operation(summary = "[동아리 상세] 동아리 상세 정보 조회", description = """
+    @Operation(summary = "[동아리 정보] 동아리 상세 정보 조회", description = """
             ## 동아리 상세 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}")
     public ApiResponse<ClubResponseDTO> getSpecificClub(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
+    }
+
+    // 조회
+    @Tag(name = "동아리 상세", description = "동아리 상세 - 동아리 오버뷰 정보 API")
+    @Operation(summary = "[동아리 정보] 동아리 오버뷰 정보 조회", description = """
+            ## 동아리  오버뷰 정보를 조회합니다.
+            - **clubId**: 조회할 동아리의 ID
+            """)
+    @GetMapping("/{clubId}/overview")
+    public ApiResponse<ClubOverviewResponseDTO> getSpecificClubOverview(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findClubOverview(clubId));
+    }
+
+    @Tag(name = "동아리 상세", description = "동아리 상세 - 동아리 기본 정보 API")
+    @Operation(summary = "[동아리 정보] 동아리 기본 정보 조회", description = """
+            ## 동아리 기본 정보 를 조회합니다.
+            - **clubId**: 조회할 동아리의 ID
+            """)
+    @GetMapping("/{clubId}/info")
+    public ApiResponse<ClubBasicInfoResponseDTO> getSpecificClubBasicInfo(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findClubBasicInfo(clubId));
     }
 
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
@@ -177,6 +212,7 @@ public class ClubController {
         }
         return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
+
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
     @Operation(summary = "[동아리 상세] 임시 저장된 동아리 상세 정보 조회", description = """
             ## 동아리 상세 정보를 조회합니다.
@@ -293,7 +329,6 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubScheduleDraft(clubId, clubActivityDTO));
     }
 
-    
 
     /*----------------------------- 동아리 소개글 ------------------------------*/
     @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
