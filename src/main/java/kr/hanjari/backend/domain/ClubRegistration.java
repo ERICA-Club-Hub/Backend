@@ -1,8 +1,18 @@
 package kr.hanjari.backend.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +39,7 @@ public class ClubRegistration extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private ClubCategory category;
+    private CentralClubCategory category;
 
     @Column(name = "leader_email", nullable = false, length = 40)
     private String leaderEmail;

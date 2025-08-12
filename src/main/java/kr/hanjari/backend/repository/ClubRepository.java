@@ -2,7 +2,7 @@ package kr.hanjari.backend.repository;
 
 import java.util.Optional;
 import kr.hanjari.backend.domain.Club;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,12 +16,13 @@ import org.springframework.stereotype.Repository;
 public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificationExecutor<Club> {
 
     Optional<Club> findByName(String clubName);
+
     Optional<Club> findByCode(String code);
+
     boolean existsByCode(String code);
 
     @Query("SELECT c.name FROM Club c WHERE c.id = :clubId")
     Optional<String> findClubNameById(@Param("clubId") Long clubId);
-
 
 
     @Query("SELECT c FROM Club c WHERE (:name IS NULL OR c.name LIKE %:name%) " +
@@ -32,6 +33,7 @@ public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificat
             "     WHEN c.recruitmentStatus = 'UPCOMING' THEN 1 " +
             "     WHEN c.recruitmentStatus = 'CLOSED' THEN 2 " +
             "     ELSE 3 END ASC, c.name ASC")
-    Page<Club> findClubsOrderByRecruitmentStatus(String name, ClubCategory category, RecruitmentStatus status, Pageable pageable);
+    Page<Club> findClubsOrderByRecruitmentStatus(String name, CentralClubCategory category, RecruitmentStatus status,
+                                                 Pageable pageable);
 
 }

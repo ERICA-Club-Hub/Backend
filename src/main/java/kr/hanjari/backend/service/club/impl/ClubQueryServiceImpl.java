@@ -11,7 +11,7 @@ import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.draft.ScheduleDraft;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
@@ -82,7 +82,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubSearchResponseDTO findClubsByCondition(
-            String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
+            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size) {
         List<String> profileImageUrls = new ArrayList<>();
         if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {

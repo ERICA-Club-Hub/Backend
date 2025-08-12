@@ -1,11 +1,21 @@
 package kr.hanjari.backend.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +45,7 @@ public class Club extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private ClubCategory category;
+    private CentralClubCategory category;
 
     @Column(name = "leader_name", length = 30)
     private String leaderName;
@@ -76,7 +86,7 @@ public class Club extends BaseEntity {
         this.recruitmentStatus = detail.recruitmentStatus();
         this.leaderName = detail.leaderName();
         this.leaderPhone = detail.leaderPhone();
-        this.membershipFee = detail. membershipFee();
+        this.membershipFee = detail.membershipFee();
         this.meetingSchedule = detail.activities();
         this.snsUrl = detail.snsUrl();
         this.applicationUrl = detail.applicationUrl();
@@ -85,7 +95,7 @@ public class Club extends BaseEntity {
     public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo) {
         this.name = commonInfo.clubName();
         this.leaderEmail = commonInfo.leaderEmail();
-        this.category = ClubCategory.valueOf(commonInfo.category());
+        this.category = CentralClubCategory.valueOf(commonInfo.category());
         this.oneLiner = commonInfo.oneLiner();
         this.briefIntroduction = commonInfo.briefIntroduction();
     }
