@@ -1,8 +1,7 @@
 package kr.hanjari.backend.domain;
 
-import static java.util.Objects.requireNonNull;
-
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,14 +14,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import kr.hanjari.backend.domain.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.enums.ClubType;
-import kr.hanjari.backend.domain.enums.College;
-import kr.hanjari.backend.domain.enums.Department;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.enums.UnionClubCategory;
-import kr.hanjari.backend.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.payload.exception.GeneralException;
+import kr.hanjari.backend.domain.vo.ClubCategoryInfo;
 import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import lombok.AllArgsConstructor;
@@ -51,10 +44,6 @@ public class Club extends BaseEntity {
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
-    private CentralClubCategory category;
 
     @Column(name = "leader_name", length = 30)
     private String leaderName;
@@ -87,92 +76,21 @@ public class Club extends BaseEntity {
     @Column(name = "recruitment_status", nullable = false)
     private RecruitmentStatus recruitmentStatus;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "club_type", nullable = false)
-    private ClubType clubType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "central_category")
-    private CentralClubCategory centralCategory;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "union_category")
-    private UnionClubCategory unionCategory;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "college")
-    private College college;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "department")
-    private Department department;
+    @Embedded
+    private ClubCategoryInfo categoryInfo;
 
     // 팩토리 메서드
-    public static Club create(
-            String code,
-            String name,
-            String leaderEmail,
-            RecruitmentStatus recruitmentStatus,
-            CategoryCommand categoryCommand,
-            String oneLiner,
-            String briefIntroduction
-    ) {
+    public static Club create(ClubRegistration clubRegistration) {
         Club club = Club.builder()
-                .code(code)
-                .name(name)
-                .leaderEmail(leaderEmail)
-                .recruitmentStatus(recruitmentStatus)
-                .oneLiner(oneLiner)
-                .briefIntroduction(briefIntroduction)
+                .name(clubRegistration.getName())
+                .leaderEmail(clubRegistration.getLeaderEmail())
+                .oneLiner(clubRegistration.getOneLiner())
+                .briefIntroduction(clubRegistration.getBriefIntroduction())
+                .categoryInfo(clubRegistration.getCategoryInfo())
                 .build();
 
-        // 카테고리 설정 및 타입별 검증
-        club.setCategory(categoryCommand);
-
+        club.updateRecruitmentStatus(0);
         return club;
-    }
-
-    // 팩토리/업데이트 시 불변성 체크를 위한 메서드
-    public void setCategory(CategoryCommand cmd) {
-        switch (cmd.type()) {
-            case CENTRAL -> {
-                requireNonNull(cmd.central());
-                this.centralCategory = cmd.central();
-                this.unionCategory = null;
-                this.college = null;
-                this.department = null;
-            }
-            case UNION -> {
-                requireNonNull(cmd.union());
-                this.unionCategory = cmd.union();
-                this.centralCategory = null;
-                this.college = null;
-                this.department = null;
-            }
-            case COLLEGE -> { // 단과대 학회(과 X)
-                requireNonNull(cmd.college());
-                this.college = cmd.college();
-                this.department = null;
-                this.centralCategory = null;
-                this.unionCategory = null;
-            }
-            case DEPARTMENT -> { // 과 학회(과 O)
-                requireNonNull(cmd.college());
-                requireNonNull(cmd.department());
-                validateDepartmentIsBelongToCollage(cmd);
-                this.college = cmd.college();
-                this.department = cmd.department();
-                this.centralCategory = null;
-                this.unionCategory = null;
-            }
-        }
-        this.clubType = cmd.type();
-    }
-
-    private static void validateDepartmentIsBelongToCollage(CategoryCommand cmd) {
-        if (cmd.department().getCollege() != cmd.college()) {
-            throw new GeneralException(ErrorStatus._DEPARTMENT_IS_NOT_BELONG_TO_COLLEGE);
-        }
     }
 
     public void updateClubImage(File imageFile) {
@@ -189,12 +107,12 @@ public class Club extends BaseEntity {
         this.applicationUrl = detail.applicationUrl();
     }
 
-    public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo) {
+    public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo, CategoryCommand categoryCommand) {
         this.name = commonInfo.clubName();
         this.leaderEmail = commonInfo.leaderEmail();
-        this.category = CentralClubCategory.valueOf(commonInfo.category());
         this.oneLiner = commonInfo.oneLiner();
         this.briefIntroduction = commonInfo.briefIntroduction();
+        this.categoryInfo.apply(categoryCommand);
     }
 
     public void updateCode(String code) {
