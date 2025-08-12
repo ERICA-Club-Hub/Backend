@@ -3,24 +3,36 @@ package kr.hanjari.backend.service.club.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.hanjari.backend.domain.*;
+import kr.hanjari.backend.domain.Club;
+import kr.hanjari.backend.domain.ClubRegistration;
+import kr.hanjari.backend.domain.File;
+import kr.hanjari.backend.domain.Introduction;
+import kr.hanjari.backend.domain.Recruitment;
+import kr.hanjari.backend.domain.Schedule;
 import kr.hanjari.backend.domain.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.draft.ScheduleDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.*;
+import kr.hanjari.backend.repository.ClubRegistrationRepository;
+import kr.hanjari.backend.repository.ClubRepository;
+import kr.hanjari.backend.repository.IntroductionRepository;
+import kr.hanjari.backend.repository.RecruitmentRepository;
+import kr.hanjari.backend.repository.ScheduleRepository;
 import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
-import kr.hanjari.backend.security.token.JwtUtil;
-import kr.hanjari.backend.service.auth.AuthService;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubUtil;
 import kr.hanjari.backend.service.s3.S3Service;
-import kr.hanjari.backend.web.dto.club.request.*;
+import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubScheduleRequestDTO;
 import kr.hanjari.backend.web.dto.club.response.ScheduleListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -51,15 +63,15 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ScheduleDraftRepository scheduleDraftRepository;
 
     private final ClubUtil clubUtil;
-    private final JwtUtil jwtUtil;
     private final S3Service s3Service;
 
     @Override
     public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile image) {
 
-        File imageFile = s3Service.uploadFile(image);
+        ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
+                requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
 
-        ClubRegistration clubRegistration = requestBody.toClubRegistration();
+        File imageFile = s3Service.uploadFile(image);
         clubRegistration.updateImageFile(imageFile);
 
         clubRegistrationRepository.save(clubRegistration);
@@ -73,21 +85,21 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         ClubRegistration clubRegistration = clubRegistrationRepository.findById(clubRegistrationId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
 
-        Club newClub = clubRegistration.toClub();
-        newClub.updateRecruitmentStatus(0);
+        Club newClub = Club.create(clubRegistration);
         clubRepository.save(newClub);
         clubRegistrationRepository.deleteById(clubRegistrationId);
 
         Long newClubId = newClub.getId();
         String code = clubUtil.reissueClubCode(newClubId);
-
         clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
+
         return newClub.getId();
     }
 
     @Override
     public Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubDetails(clubDetailDTO);
         Club saved = clubRepository.save(club);
 
@@ -99,8 +111,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public Long updateClubBasicInformation(Long clubId, ClubBasicInformationDTO request, MultipartFile file) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-        club.updateClubCommonInfo(request);
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        club.updateClubCommonInfo(request, request.toCategoryCommand());
 
         if (file != null) {
             File imageFile = s3Service.uploadFile(file);
@@ -108,7 +121,6 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         Club saved = clubRepository.save(club);
-
         return saved.getId();
     }
 
@@ -130,7 +142,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubScheduleDTO) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         List<Schedule> schedules = new ArrayList<>();
 
@@ -163,7 +176,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public ClubScheduleDraftResponseDTO saveAndUpdateClubScheduleDraft(Long clubId,
                                                                        ClubScheduleListRequestDTO clubActivityDTO) {
 
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         List<ScheduleDraft> scheduleDrafts = new ArrayList<>();
 
@@ -212,9 +226,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public void deleteClubSchedule(Long clubId, Long scheduleId) {
-        Club club = clubRepository.findById(clubId).orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
 
         if (!club.getId().equals(schedule.getClub().getId())) {
             throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
@@ -269,11 +285,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
 
-
     @Override
     public Long saveClubRecruitment(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
-        if (!clubRepository.existsById(clubId))
+        if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
+        }
 
         Recruitment recruitment = recruitmentRepository.findById(clubId)
                 .orElseGet(() -> Recruitment.builder().clubId(clubId).build());
@@ -281,17 +297,18 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         recruitment.updateRecruitment(clubRecruitmentDTO);
         Recruitment save = recruitmentRepository.save(recruitment);
 
-        if (recruitmentDraftRepository.existsByClubId(clubId))
+        if (recruitmentDraftRepository.existsByClubId(clubId)) {
             recruitmentDraftRepository.removeByClubId(clubId);
+        }
 
         return save.getClubId();
     }
 
     @Override
     public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
-        if (!clubRepository.existsById(clubId))
+        if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-
+        }
 
         RecruitmentDraft recruitment = recruitmentDraftRepository.findById(clubId)
                 .orElseGet(() -> RecruitmentDraft.builder().clubId(clubId).build());

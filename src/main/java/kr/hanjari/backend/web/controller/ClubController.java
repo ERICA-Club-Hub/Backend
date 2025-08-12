@@ -71,6 +71,7 @@ public class ClubController {
     @PostMapping("/registrations")
     public ApiResponse<Long> requestClubRegistration(@RequestPart ClubBasicInformationDTO requestBody,
                                                      @RequestPart MultipartFile image) {
+        requestBody.validate();
 
         Long result = clubCommandService.requestClubRegistration(requestBody, image);
         return ApiResponse.onSuccess(result);

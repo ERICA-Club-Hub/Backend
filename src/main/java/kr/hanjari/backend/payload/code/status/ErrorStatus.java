@@ -15,8 +15,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
+    _INVALID_INPUT(HttpStatus.BAD_REQUEST, "MAJOR400", "유효하지 않은 입력입니다."),
 
-    // 단과대 관련
+    // 단과대 관련,
     _DEPARTMENT_IS_NOT_BELONG_TO_COLLEGE(HttpStatus.BAD_REQUEST, "MAJOR400", "해당 단과대에 속하지 않는 전공입니다."),
 
     // 사용자 관련

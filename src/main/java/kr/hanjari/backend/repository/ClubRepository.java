@@ -9,24 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificationExecutor<Club> {
 
-    Optional<Club> findByName(String clubName);
-
     Optional<Club> findByCode(String code);
 
     boolean existsByCode(String code);
 
-    @Query("SELECT c.name FROM Club c WHERE c.id = :clubId")
-    Optional<String> findClubNameById(@Param("clubId") Long clubId);
-
-
     @Query("SELECT c FROM Club c WHERE (:name IS NULL OR c.name LIKE %:name%) " +
-            "AND (:category IS NULL OR c.category = :category) " +
+            "AND (:category IS NULL OR c.categoryInfo.centralCategory = :category) " +
             "AND (:status IS NULL OR c.recruitmentStatus = :status) " +
             "ORDER BY " +
             "CASE WHEN c.recruitmentStatus = 'OPEN' THEN 0 " +
