@@ -1,6 +1,6 @@
 package kr.hanjari.backend.domain.enums;
 
-public enum ClubCategory {
+public enum CentralClubCategory {
     VOLUNTEER,    // 봉사
     ART,          // 예술
     SPORTS,       // 체육

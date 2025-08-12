@@ -1,14 +1,14 @@
 package kr.hanjari.backend.web.dto.club.response;
 
 import kr.hanjari.backend.domain.Club;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 
 public record ClubResponseDTO(
         Long id,
         String name,
         String description,
-        ClubCategory category,
+        CentralClubCategory category,
         RecruitmentStatus recruitmentStatus,
         String profileImageUrl,
         String activities,

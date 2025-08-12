@@ -3,7 +3,7 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Objects;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
@@ -144,7 +144,7 @@ public class ClubController {
     @GetMapping("")
     public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) ClubCategory category,
+            @RequestParam(required = false) CentralClubCategory category,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(defaultValue = "0") int page,

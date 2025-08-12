@@ -1,7 +1,7 @@
 package kr.hanjari.backend.service.club;
 
 
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
@@ -24,7 +24,7 @@ public interface ClubQueryService {
 
     // 조건 별 동아리 검색
     ClubSearchResponseDTO findClubsByCondition(
-            String name, ClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
+            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size);
 
     // 동아리 상세 조회
