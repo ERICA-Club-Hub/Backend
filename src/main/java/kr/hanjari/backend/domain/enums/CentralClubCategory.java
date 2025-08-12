@@ -1,10 +1,19 @@
 package kr.hanjari.backend.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum CentralClubCategory {
-    VOLUNTEER,    // 봉사
-    ART,          // 예술
-    SPORTS,       // 체육
-    RELIGION,     // 종교
-    ACADEMIC,     // 학술교양
-    UNION         // 연합동아리
+    VOLUNTEER("봉사분과"),
+    ART("예술분과"),
+    SPORTS("체육분과"),
+    RELIGION("종교분과"),
+    ACADEMIC("학술교양분과");
+
+    private final String description;
+
+    CentralClubCategory(String description) {
+        this.description = description;
+    }
+
 }
