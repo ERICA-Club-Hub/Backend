@@ -16,6 +16,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // 단과대 관련
+    _DEPARTMENT_IS_NOT_BELONG_TO_COLLEGE(HttpStatus.BAD_REQUEST, "MAJOR400", "해당 단과대에 속하지 않는 전공입니다."),
+
     // 사용자 관련
     _INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "USER401", "유효하지 않은 토큰입니다."),
     _TOKEN_ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "USER400", "이미 로그아웃 처리된 토큰입니다."),
@@ -52,7 +55,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _RECRUITMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "동아리 모집 안내를 찾을 수 없습니다."),
     _RECRUITMENT_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "임시 저장 된 동아리 모집 안내를 찾을 수 없습니다."),
 
-    _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),;
+    _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
+    ;
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
