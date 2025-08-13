@@ -2,13 +2,12 @@ package kr.hanjari.backend.web.dto.club.response.draft;
 
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.draft.ClubDetailDraft;
-import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.web.dto.club.response.CategoryResponseDTO;
 
 public record ClubDetailDraftResponseDTO(
         String name,
         String description,
-        ClubCategory category,
         RecruitmentStatus recruitmentStatus,
         String leaderName,
         String leaderPhone,
@@ -16,13 +15,13 @@ public record ClubDetailDraftResponseDTO(
         Integer membershipFee,
         String snsUrl,
         String applicationUrl,
-        String profileImageUrl
-)  {
+        String profileImageUrl,
+        CategoryResponseDTO category
+) {
     public static ClubDetailDraftResponseDTO of(ClubDetailDraft clubDetailDraft, Club club, String profileImage) {
         return new ClubDetailDraftResponseDTO(
                 club.getName(),
                 club.getOneLiner(),
-                club.getCategory(),
                 clubDetailDraft.getRecruitmentStatus(),
                 clubDetailDraft.getLeaderName(),
                 clubDetailDraft.getLeaderPhone(),
@@ -30,7 +29,9 @@ public record ClubDetailDraftResponseDTO(
                 clubDetailDraft.getMembershipFee(),
                 clubDetailDraft.getSnsUrl(),
                 clubDetailDraft.getApplicationUrl(),
-                profileImage
+                profileImage,
+                CategoryResponseDTO.from(club.getCategoryInfo())
         );
     }
+
 }

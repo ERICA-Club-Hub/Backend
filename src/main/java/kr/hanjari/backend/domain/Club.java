@@ -1,11 +1,23 @@
 package kr.hanjari.backend.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import kr.hanjari.backend.domain.enums.ClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.domain.vo.ClubCategoryInfo;
 import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
+import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,10 +44,6 @@ public class Club extends BaseEntity {
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
-    private ClubCategory category;
 
     @Column(name = "leader_name", length = 30)
     private String leaderName;
@@ -68,6 +76,23 @@ public class Club extends BaseEntity {
     @Column(name = "recruitment_status", nullable = false)
     private RecruitmentStatus recruitmentStatus;
 
+    @Embedded
+    private ClubCategoryInfo categoryInfo;
+
+    // 팩토리 메서드
+    public static Club create(ClubRegistration clubRegistration) {
+        Club club = Club.builder()
+                .name(clubRegistration.getName())
+                .leaderEmail(clubRegistration.getLeaderEmail())
+                .oneLiner(clubRegistration.getOneLiner())
+                .briefIntroduction(clubRegistration.getBriefIntroduction())
+                .categoryInfo(clubRegistration.getCategoryInfo())
+                .build();
+
+        club.updateRecruitmentStatus(0);
+        return club;
+    }
+
     public void updateClubImage(File imageFile) {
         this.imageFile = imageFile;
     }
@@ -76,18 +101,18 @@ public class Club extends BaseEntity {
         this.recruitmentStatus = detail.recruitmentStatus();
         this.leaderName = detail.leaderName();
         this.leaderPhone = detail.leaderPhone();
-        this.membershipFee = detail. membershipFee();
+        this.membershipFee = detail.membershipFee();
         this.meetingSchedule = detail.activities();
         this.snsUrl = detail.snsUrl();
         this.applicationUrl = detail.applicationUrl();
     }
 
-    public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo) {
+    public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo, CategoryCommand categoryCommand) {
         this.name = commonInfo.clubName();
         this.leaderEmail = commonInfo.leaderEmail();
-        this.category = ClubCategory.valueOf(commonInfo.category());
         this.oneLiner = commonInfo.oneLiner();
         this.briefIntroduction = commonInfo.briefIntroduction();
+        this.categoryInfo.apply(categoryCommand);
     }
 
     public void updateCode(String code) {

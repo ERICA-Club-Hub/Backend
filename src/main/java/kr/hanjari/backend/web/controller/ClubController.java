@@ -3,7 +3,7 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Objects;
-import kr.hanjari.backend.domain.enums.ClubCategory;
+import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
@@ -63,6 +63,8 @@ public class ClubController {
             - **category**: 동아리 카테고리(SPORTS, ART, VOLUNTEER, UNION, ACADEMIC, RELIGION)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
+            - **clubType**: 동아리 유형(CENTRAL, UNION, COLLEGE, DEPARTMENT)
+            + 카테고리와 관련된 디테일한 내용은 슬랙을 참고해주세요.
             #### image (multipart/form-data)
             - **동아리 대표 이미지**
             ### Response
@@ -71,6 +73,7 @@ public class ClubController {
     @PostMapping("/registrations")
     public ApiResponse<Long> requestClubRegistration(@RequestPart ClubBasicInformationDTO requestBody,
                                                      @RequestPart MultipartFile image) {
+        requestBody.validate();
 
         Long result = clubCommandService.requestClubRegistration(requestBody, image);
         return ApiResponse.onSuccess(result);
@@ -114,6 +117,8 @@ public class ClubController {
             - **category**: 동아리 카테고리(SPORTS, ART)
             - **oneLiner**: 동아리 한줄소개
             - **briefIntroduction**: 동아리 간단소개
+            - **clubType**: 동아리 유형(CENTRAL, UNION, COLLEGE, DEPARTMENT)
+            + 카테고리와 관련된 디테일한 내용은 슬랙을 참고해주세요.
             ### Multipart/form-data
             - **image**: 동아리 대표 사진
             """)
@@ -144,7 +149,7 @@ public class ClubController {
     @GetMapping("")
     public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) ClubCategory category,
+            @RequestParam(required = false) CentralClubCategory category,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(defaultValue = "0") int page,
