@@ -2,14 +2,18 @@ package kr.hanjari.backend.service.club;
 
 
 import kr.hanjari.backend.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.enums.College;
+import kr.hanjari.backend.domain.enums.Department;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
+import kr.hanjari.backend.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -50,4 +54,20 @@ public interface ClubQueryService {
     ClubRecruitmentResponseDTO findClubRecruitment(Long clubId);
 
     ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId);
+
+    // 동아리 카테고리 조회
+    ClubSearchResponseDTO findCentralClubsByCondition(
+            String keyword, RecruitmentStatus status, SortBy sortBy, CentralClubCategory category, int page, int size);
+
+    ClubSearchResponseDTO findUnionClubsByCondition(
+            String keyword, RecruitmentStatus status, SortBy sortBy, UnionClubCategory unionCategory, int page,
+            int size);
+
+    ClubSearchResponseDTO findCollegeClubsByCondition(
+            String keyword, RecruitmentStatus status, SortBy sortBy, College college, int page, int size);
+
+    ClubSearchResponseDTO findDepartmentClubsByCondition(
+            String keyword, RecruitmentStatus status, SortBy sortBy, College college, Department department, int page,
+            int size);
+
 }
