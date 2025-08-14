@@ -28,13 +28,13 @@ import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRegistrationDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -81,7 +81,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findClubsByCondition(
+    public ClubDetailListResponseDTO findClubsByCondition(
             String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size) {
         List<String> profileImageUrls = new ArrayList<>();
@@ -92,7 +92,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
             }
 
-            return ClubSearchResponseDTO.of(clubs, List.of());
+            return ClubDetailListResponseDTO.of(clubs, List.of());
         }
 
         Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
@@ -101,7 +101,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         for (Club club : clubs) {
             profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
         }
-        return ClubSearchResponseDTO.of(clubs, profileImageUrls);
+        return ClubDetailListResponseDTO.of(clubs, profileImageUrls);
     }
 
     @Override

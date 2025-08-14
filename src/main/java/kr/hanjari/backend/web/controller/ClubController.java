@@ -18,12 +18,12 @@ import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubIntroductionRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubRecruitmentRequestDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubScheduleListRequestDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -147,7 +147,7 @@ public class ClubController {
             아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
     @GetMapping("")
-    public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
+    public ApiResponse<ClubDetailListResponseDTO> getClubsByCondition(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) CentralClubCategory category,
             @RequestParam(required = false) RecruitmentStatus status,
