@@ -119,7 +119,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         clubCommandService.incrementClubViewCount(clubId);
-        
+
         return ClubResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
@@ -276,7 +276,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                         club.getName(),
                         club.getOneLiner(),
                         resolveImageUrl(club),
-                        club.getCategoryInfo().getCentralCategory().getDescription(),
+                        club.getCategoryInfo().getClubType().getDescription(),
                         club.getRecruitmentStatus()
                 )
         );
