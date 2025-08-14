@@ -15,6 +15,16 @@ public record ClubSearchResponseDTO(
         return new ClubSearchResponseDTO(content, totalElements, page, size, totalPages);
     }
 
+    public static ClubSearchResponseDTO of(org.springframework.data.domain.Page<ClubSearchResult> page) {
+        return new ClubSearchResponseDTO(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalPages()
+        );
+    }
+
     public record ClubSearchResult(
             Long id,
             String name,
