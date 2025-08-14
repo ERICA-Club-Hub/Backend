@@ -146,7 +146,20 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<Club> findPopularClubs(int page, int size) {
-        return null;
+        QClub club = QClub.club;
+
+        List<Club> clubs = query.select(club)
+                .from(club)
+                .orderBy(club.viewCount.desc())
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElement = query.select(club.count())
+                .from(club)
+                .fetchOne();
+
+        return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
     }
 
     private BooleanExpression nameContains(String keyword) {
