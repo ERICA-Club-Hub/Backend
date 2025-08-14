@@ -26,4 +26,6 @@ public interface ClubSearchRepository {
     Page<Club> findDepartmentClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
             College college, Department departmentName, int page, int size);
+
+    Page<Club> findPopularClubs(int page, int size);
 }
