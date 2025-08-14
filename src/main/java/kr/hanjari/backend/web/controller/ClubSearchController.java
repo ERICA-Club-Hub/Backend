@@ -27,7 +27,7 @@ public class ClubSearchController {
     private final ClubQueryService clubQueryService;
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
+    @Tag(name = "동아리 검색 v1", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
             ## 입력한 조건에 맞는 동아리를 검색합니다. 
             - **keyword**: 동아리 이름에서 서 검색할 키워드 \n
@@ -52,7 +52,7 @@ public class ClubSearchController {
     }
 
     @GetMapping("/central")
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
+    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 중앙 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -67,7 +67,7 @@ public class ClubSearchController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
-            @RequestParam CentralClubCategory category,
+            @RequestParam(required = false) CentralClubCategory category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -77,7 +77,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/union")
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
+    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 연합 동아리 검색", description = """
             ## 연합 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -92,7 +92,7 @@ public class ClubSearchController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
-            @RequestParam UnionClubCategory category,
+            @RequestParam(required = false) UnionClubCategory category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -102,7 +102,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/college")
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
+    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 단과대 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -117,7 +117,7 @@ public class ClubSearchController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
-            @RequestParam College college,
+            @RequestParam(required = false) College college,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -127,7 +127,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/department")
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
+    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
     @Operation(summary = "[동아리 검색] 학과 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -143,8 +143,8 @@ public class ClubSearchController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) RecruitmentStatus status,
             @RequestParam(required = false) SortBy sortBy,
-            @RequestParam College college,
-            @RequestParam Department department,
+            @RequestParam(required = false) College college,
+            @RequestParam(required = false) Department department,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
