@@ -1,19 +1,41 @@
 package kr.hanjari.backend.web.dto.club.response;
 
 import java.util.List;
-import java.util.stream.IntStream;
-import kr.hanjari.backend.domain.Club;
-import org.springframework.data.domain.Page;
+import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 
 public record ClubSearchResponseDTO(
-        List<ClubResponseDTO> clubs,
-        int totalElements
+        List<ClubSearchResult> content,
+        long totalElements,
+        int page,
+        int size,
+        int totalPages
 ) {
-    public static ClubSearchResponseDTO of(Page<Club> clubs, List<String> profileImageUrls) {
-        List<ClubResponseDTO> clubResponseList = IntStream.range(0, clubs.getContent().size())
-                .mapToObj(i -> ClubResponseDTO.of(clubs.getContent().get(i), profileImageUrls.get(i)))
-                .toList();
+    public static ClubSearchResponseDTO of(List<ClubSearchResult> content, long totalElements, int page, int size) {
+        int totalPages = size > 0 ? (int) Math.ceil((double) totalElements / size) : 1;
+        return new ClubSearchResponseDTO(content, totalElements, page, size, totalPages);
+    }
 
-        return new ClubSearchResponseDTO(clubResponseList, (int) clubs.getTotalElements());
+    public static ClubSearchResponseDTO of(org.springframework.data.domain.Page<ClubSearchResult> page) {
+        return new ClubSearchResponseDTO(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalPages()
+        );
+    }
+
+    public record ClubSearchResult(
+            Long id,
+            String name,
+            String oneLiner,
+            String profileImageUrl,
+            String categoryName,
+            RecruitmentStatus recruitmentStatus
+    ) {
+        public static ClubSearchResult of(Long id, String name, String oneLiner, String profileImageUrl,
+                                          String categoryName, RecruitmentStatus recruitmentStatus) {
+            return new ClubSearchResult(id, name, oneLiner, profileImageUrl, categoryName, recruitmentStatus);
+        }
     }
 }

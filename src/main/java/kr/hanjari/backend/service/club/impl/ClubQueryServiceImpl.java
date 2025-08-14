@@ -12,8 +12,11 @@ import kr.hanjari.backend.domain.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.draft.ScheduleDraft;
 import kr.hanjari.backend.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.enums.College;
+import kr.hanjari.backend.domain.enums.Department;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
+import kr.hanjari.backend.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ClubRegistrationRepository;
@@ -25,9 +28,12 @@ import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
+import kr.hanjari.backend.repository.querydsl.ClubSearchRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
+import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.s3.S3Service;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
@@ -35,6 +41,7 @@ import kr.hanjari.backend.web.dto.club.response.ClubRegistrationDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
+import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO.ClubSearchResult;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -67,7 +74,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final ClubDetailDraftRepository clubDetailDraftRepository;
     private final ScheduleDraftRepository scheduleDraftRepository;
 
+    private final ClubSearchRepository clubSearchRepository;
+
     private final S3Service s3Service;
+    private final ClubCommandService clubCommandService;
 
 
     @Override
@@ -81,7 +91,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findClubsByCondition(
+    public ClubDetailListResponseDTO findClubsByCondition(
             String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size) {
         List<String> profileImageUrls = new ArrayList<>();
@@ -92,7 +102,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
             }
 
-            return ClubSearchResponseDTO.of(clubs, List.of());
+            return ClubDetailListResponseDTO.of(clubs, List.of());
         }
 
         Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
@@ -101,13 +111,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         for (Club club : clubs) {
             profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
         }
-        return ClubSearchResponseDTO.of(clubs, profileImageUrls);
+        return ClubDetailListResponseDTO.of(clubs, profileImageUrls);
     }
 
     @Override
     public ClubResponseDTO findClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        clubCommandService.incrementClubViewCount(clubId);
 
         return ClubResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
@@ -206,4 +217,70 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
+    @Override
+    public ClubSearchResponseDTO findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                             CentralClubCategory centralClubCategory, int page,
+                                                             int size) {
+        Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
+                keyword, status, sortBy, centralClubCategory, page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    public ClubSearchResponseDTO findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                           UnionClubCategory unionCategory, int page, int size) {
+        Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
+                keyword, status, sortBy, unionCategory, page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    public ClubSearchResponseDTO findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                             College college, int page, int size) {
+        Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
+                keyword, status, sortBy, college, page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    public ClubSearchResponseDTO findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                                College college, Department department, int page,
+                                                                int size) {
+        Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
+                keyword, status, sortBy, college, department, page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    public ClubSearchResponseDTO findPopularClubs(int page, int size) {
+        Page<Club> clubs = clubSearchRepository.findPopularClubs(page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    private String resolveImageUrl(Club club) {
+        if (club.getImageFile() == null) {
+            return null;
+        }
+        return s3Service.getDownloadUrl(club.getImageFile().getId());
+    }
+
+    private ClubSearchResponseDTO getClubSearchResponseDTO(Page<Club> clubs) {
+        Page<ClubSearchResult> dtoPage = clubs.map(club ->
+                ClubSearchResult.of(
+                        club.getId(),
+                        club.getName(),
+                        club.getOneLiner(),
+                        resolveImageUrl(club),
+                        club.getCategoryInfo().getClubType().getDescription(),
+                        club.getRecruitmentStatus()
+                )
+        );
+
+        return ClubSearchResponseDTO.of(dtoPage);
+    }
 }

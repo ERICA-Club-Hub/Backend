@@ -3,9 +3,6 @@ package kr.hanjari.backend.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Objects;
-import kr.hanjari.backend.domain.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.enums.SortBy;
 import kr.hanjari.backend.payload.ApiResponse;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
@@ -23,7 +20,6 @@ import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -134,30 +130,6 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
     }
 
-    /*------------------------ 동아리 조건 별 조회 ----------------------------*/
-    @Tag(name = "동아리 검색", description = "동아리 검색 관련 API")
-    @Operation(summary = "[동아리 검색] 동아리 검색", description = """
-            ## 입력한 조건에 맞는 동아리를 검색합니다. 
-            - **keyword**: 동아리 이름에서 서 검색할 키워드 \n
-            - **category**: 동아리 카테고리 \n
-            - **status**: 동아리 모집 상태 \n
-            - **sortBy**: 정렬 기준 \n
-            
-            ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
-            아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
-            """)
-    @GetMapping("")
-    public ApiResponse<ClubSearchResponseDTO> getClubsByCondition(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) CentralClubCategory category,
-            @RequestParam(required = false) RecruitmentStatus status,
-            @RequestParam(required = false) SortBy sortBy,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ApiResponse.onSuccess(
-                clubQueryService.findClubsByCondition(keyword, category, status, sortBy, page, size));
-    }
 
     /*----------------------------- 동아리 상세 -----------------------------*/    // 조회
     @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
