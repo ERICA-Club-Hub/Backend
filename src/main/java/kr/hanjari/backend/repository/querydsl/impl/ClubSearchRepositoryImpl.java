@@ -144,6 +144,11 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
     }
 
+    @Override
+    public Page<Club> findPopularClubs(int page, int size) {
+        return null;
+    }
+
     private BooleanExpression nameContains(String keyword) {
         return keyword != null && !keyword.isBlank()
                 ? QClub.club.name.containsIgnoreCase(keyword)
@@ -175,7 +180,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         if (sortBy == null) {
             return new OrderSpecifier<?>[]{QClub.club.name.asc()};
         }
-        
+
         QClub club = QClub.club;
         return switch (sortBy) {
             case NAME_ASC -> new OrderSpecifier<?>[]{club.name.asc()};

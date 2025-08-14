@@ -152,4 +152,17 @@ public class ClubSearchController {
                 clubQueryService.findDepartmentClubsByCondition(keyword, status, sortBy, college, department, page,
                         size));
     }
+
+    @GetMapping("/popular")
+    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Operation(summary = "[동아리 검색] 인기 동아리 검색", description = """
+            ## 인기 동아리를 검색합니다.
+            """)
+    public ApiResponse<ClubSearchResponseDTO> getPopularClubs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.onSuccess(
+                clubQueryService.findPopularClubs(page, size));
+    }
 }

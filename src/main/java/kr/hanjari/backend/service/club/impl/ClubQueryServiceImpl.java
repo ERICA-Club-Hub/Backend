@@ -252,6 +252,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return getClubSearchResponseDTO(clubs);
     }
 
+    @Override
+    public ClubSearchResponseDTO findPopularClubs(int page, int size) {
+        Page<Club> clubs = clubSearchRepository.findPopularClubs(page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
     private String resolveImageUrl(Club club) {
         if (club.getImageFile() == null) {
             return null;

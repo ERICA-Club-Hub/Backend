@@ -70,4 +70,7 @@ public interface ClubQueryService {
             String keyword, RecruitmentStatus status, SortBy sortBy, College college, Department department, int page,
             int size);
 
+    // 현재 인기있는 동아리 조회
+    ClubSearchResponseDTO findPopularClubs(int page, int size);
+
 }
