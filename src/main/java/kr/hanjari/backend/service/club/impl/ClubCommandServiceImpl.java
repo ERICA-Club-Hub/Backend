@@ -319,4 +319,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         return save.getClubId();
     }
 
+    @Override
+    public void incrementClubViewCount(Long clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        club.incrementViewCount();
+        clubRepository.save(club);
+    }
+
 }

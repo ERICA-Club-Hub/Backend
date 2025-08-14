@@ -30,6 +30,7 @@ import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.repository.querydsl.ClubSearchRepository;
 import kr.hanjari.backend.repository.specification.ClubSpecifications;
+import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubQueryService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
@@ -76,6 +77,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final ClubSearchRepository clubSearchRepository;
 
     private final S3Service s3Service;
+    private final ClubCommandService clubCommandService;
 
 
     @Override
@@ -116,7 +118,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubResponseDTO findClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
+        clubCommandService.incrementClubViewCount(clubId);
+        
         return ClubResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 

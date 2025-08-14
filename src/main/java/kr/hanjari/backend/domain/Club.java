@@ -72,6 +72,10 @@ public class Club extends BaseEntity {
     @Column(name = "application_url")
     private String applicationUrl;
 
+    @Column(name = "view_count", nullable = false)
+    @Builder.Default
+    private Long viewCount = 0L;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "recruitment_status", nullable = false)
     private RecruitmentStatus recruitmentStatus;
@@ -125,6 +129,10 @@ public class Club extends BaseEntity {
             case 1 -> this.recruitmentStatus = RecruitmentStatus.OPEN;
             case 2 -> this.recruitmentStatus = RecruitmentStatus.CLOSED;
         }
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 
 }
