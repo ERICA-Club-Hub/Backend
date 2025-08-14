@@ -4,12 +4,12 @@ package kr.hanjari.backend.service.club;
 import kr.hanjari.backend.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.enums.SortBy;
+import kr.hanjari.backend.web.dto.club.response.ClubDetailListResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubIntroductionResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubOverviewResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubRecruitmentResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.web.dto.club.response.ClubSearchResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.GetRegistrationsResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubBasicInfoResponseDTO;
 import kr.hanjari.backend.web.dto.club.response.draft.ClubDetailDraftResponseDTO;
@@ -23,7 +23,7 @@ public interface ClubQueryService {
     GetRegistrationsResponseDTO getRegistrations();
 
     // 조건 별 동아리 검색
-    ClubSearchResponseDTO findClubsByCondition(
+    ClubDetailListResponseDTO findClubsByCondition(
             String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size);
 
