@@ -1,6 +1,10 @@
 package kr.hanjari.backend.service.activity.impl;
 
+import static kr.hanjari.backend.web.dto.activity.response.RecentActivityLogResponse.RecentActivityLog.of;
+
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.stream.IntStream;
 import kr.hanjari.backend.domain.Activity;
 import kr.hanjari.backend.domain.Club;
 import kr.hanjari.backend.domain.File;
@@ -11,7 +15,6 @@ import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.ActivityImageRepository;
 import kr.hanjari.backend.repository.ActivityRepository;
 import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.security.token.JwtTokenProvider;
 import kr.hanjari.backend.service.activity.ActivityService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.activity.request.CreateActivityRequest;
@@ -20,17 +23,19 @@ import kr.hanjari.backend.web.dto.activity.response.ActivityImageDTO;
 import kr.hanjari.backend.web.dto.activity.response.ActivityThumbnailDTO;
 import kr.hanjari.backend.web.dto.activity.response.GetAllActivityResponse;
 import kr.hanjari.backend.web.dto.activity.response.GetSpecificActivityResponse;
+import kr.hanjari.backend.web.dto.activity.response.RecentActivityLogResponse;
+import kr.hanjari.backend.web.dto.activity.response.RecentActivityLogResponse.RecentActivityLog;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
+
+    private static final int MAX_RECENT_ACTIVITY = 4;
 
     private final ActivityRepository activityRepository;
     private final ActivityImageRepository activityImageRepository;
@@ -65,7 +70,8 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void updateActivity(Long activityId, UpdateActivityRequest updateActivityRequest, List<MultipartFile> images) {
+    public void updateActivity(Long activityId, UpdateActivityRequest updateActivityRequest,
+                               List<MultipartFile> images) {
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
@@ -134,7 +140,8 @@ public class ActivityServiceImpl implements ActivityService {
         Activity activity = activityRepository.findByIdWithClubAndImageFile(activityId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
-        List<ActivityImageDTO> activityImageDTOList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(activityId).stream()
+        List<ActivityImageDTO> activityImageDTOList = activityImageRepository.findAllByActivityIdOrderByOrderIndexAsc(
+                        activityId).stream()
                 .map(activityImage
                         -> {
                     Long fileId = activityImage.getImageFile().getId();
@@ -144,5 +151,19 @@ public class ActivityServiceImpl implements ActivityService {
 
         return GetSpecificActivityResponse.of(
                 activity, s3Service.getDownloadUrl(activity.getClub().getImageFile().getId()), activityImageDTOList);
+    }
+
+    @Override
+    public RecentActivityLogResponse getRecentActivities() {
+        List<Activity> activities = activityRepository.findRecentActivities(PageRequest.of(0, MAX_RECENT_ACTIVITY));
+
+        List<RecentActivityLog> list = activities.stream()
+                .map((activity) ->
+                        of(s3Service.getDownloadUrl(
+                                        activityImageRepository.findFirstByActivityIdOrderByIdAsc(activity.getId())
+                                                .get().getImageFile().getId()), activity.getClub(),
+                                s3Service.getDownloadUrl(activity.getClub().getImageFile().getId())))
+                .toList();
+        return RecentActivityLogResponse.of(list);
     }
 }
