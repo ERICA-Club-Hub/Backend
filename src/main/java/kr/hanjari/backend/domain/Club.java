@@ -91,6 +91,7 @@ public class Club extends BaseEntity {
                 .oneLiner(clubRegistration.getOneLiner())
                 .briefIntroduction(clubRegistration.getBriefIntroduction())
                 .categoryInfo(clubRegistration.getCategoryInfo())
+                .imageFile(clubRegistration.getImageFile())
                 .build();
 
         club.updateRecruitmentStatus(0);
