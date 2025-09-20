@@ -1,6 +1,7 @@
 package kr.hanjari.backend.web.dto.club.response;
 
 import kr.hanjari.backend.domain.Club;
+import kr.hanjari.backend.domain.enums.ClubType;
 import kr.hanjari.backend.domain.enums.RecruitmentStatus;
 
 public record ClubResponseDTO(
@@ -16,7 +17,8 @@ public record ClubResponseDTO(
         Integer membershipFee,
         String snsUrl,
         String applicationUrl,
-        CategoryResponseDTO category
+        ClubType clubType
+//        CategoryResponseDTO category
 ) {
     public static ClubResponseDTO of(Club club, String profileImageUrl) {
         return new ClubResponseDTO(
@@ -32,7 +34,8 @@ public record ClubResponseDTO(
                 club.getMembershipFee(),
                 club.getSnsUrl(),
                 club.getApplicationUrl(),
-                CategoryResponseDTO.from(club.getCategoryInfo())
+                club.getCategoryInfo().getClubType()
+//                CategoryResponseDTO.from(club.getCategoryInfo())
         );
     }
 }
