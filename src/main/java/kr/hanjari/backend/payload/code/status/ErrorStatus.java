@@ -42,6 +42,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "동아리를 찾을 수 없습니다."),
     _INVALID_CODE(HttpStatus.BAD_REQUEST, "CLUB400", "유효하지 않은 코드입니다."),
     _CLUB_DETAIL_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUB404", "임시 저장 된 동아리 상세 정보를 찾을 수 없습니다."),
+    _CLUB_REGISTRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "CLUBREGISTRATION404", "동아리 등록 요청을 찾을 수 없습니다."),
 
     _ACTIVITY_NOT_FOUND(HttpStatus.NOT_FOUND, "ACTIVITY404", "활동로그를 찾을 수 없습니다."),
 
@@ -57,6 +58,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _RECRUITMENT_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "임시 저장 된 동아리 모집 안내를 찾을 수 없습니다."),
 
     _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
+
+    // S3 관련
+    _S3_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3500", "오브젝트 삭제에 실패했습니다.")
     ;
     private final HttpStatus httpStatus;
     private final String code;

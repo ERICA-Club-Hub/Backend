@@ -26,6 +26,7 @@ import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubUtil;
+import kr.hanjari.backend.service.file.FileService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
@@ -63,6 +64,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ScheduleDraftRepository scheduleDraftRepository;
 
     private final ClubUtil clubUtil;
+    private final FileService fileService;
     private final S3Service s3Service;
 
     @Override
@@ -83,7 +85,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public Long acceptClubRegistration(Long clubRegistrationId) {
 
         ClubRegistration clubRegistration = clubRegistrationRepository.findById(clubRegistrationId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
 
         Club newClub = Club.create(clubRegistration);
         clubRepository.save(newClub);
@@ -94,6 +96,17 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
 
         return newClub.getId();
+    }
+
+    @Override
+    public void deleteClubRegistration(Long clubRegistrationId) {
+
+        ClubRegistration clubRegistrationToDelete = clubRegistrationRepository.findById(clubRegistrationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
+
+        fileService.deleteFileAndObject(clubRegistrationToDelete.getImageFile().getId());
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+
     }
 
     @Override

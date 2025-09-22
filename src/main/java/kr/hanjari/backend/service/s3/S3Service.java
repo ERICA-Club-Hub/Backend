@@ -63,6 +63,14 @@ public class S3Service {
         return s3Operations.createSignedGetURL(bucket, file.getFileKey(), Duration.ofHours(1)).toString();
     }
 
+    public void deleteObject(String fileKey) {
+        try {
+            s3Operations.deleteObject(bucket, fileKey);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus._S3_DELETE_FAILED);
+        }
+    }
+
     public void deleteFile(Long fileId) {
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FILE_NOT_FOUND));
