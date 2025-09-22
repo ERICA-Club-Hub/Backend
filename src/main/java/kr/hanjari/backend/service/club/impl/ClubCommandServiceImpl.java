@@ -15,11 +15,7 @@ import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.draft.ScheduleDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.ClubRegistrationRepository;
-import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.repository.IntroductionRepository;
-import kr.hanjari.backend.repository.RecruitmentRepository;
-import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.*;
 import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
@@ -49,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
 
+    private final FileRepository fileRepository;
     @Value("${login.url}")
     private String loginURL;
 
@@ -68,12 +65,14 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final S3Service s3Service;
 
     @Override
-    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile image) {
+    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
                 requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
 
-        File imageFile = s3Service.uploadFile(image);
+        Long fileId = fileService.uploadObjectAndSaveFile(file);
+        File imageFile = fileRepository.getReferenceById(fileId);
+
         clubRegistration.updateImageFile(imageFile);
 
         clubRegistrationRepository.save(clubRegistration);
@@ -104,7 +103,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         ClubRegistration clubRegistrationToDelete = clubRegistrationRepository.findById(clubRegistrationId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
 
-        fileService.deleteFileAndObject(clubRegistrationToDelete.getImageFile().getId());
+        fileService.deleteObjectAndFile(clubRegistrationToDelete.getImageFile().getId());
         clubRegistrationRepository.deleteById(clubRegistrationId);
 
     }
@@ -129,7 +128,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         club.updateClubCommonInfo(request, request.toCategoryCommand());
 
         if (file != null) {
-            File imageFile = s3Service.uploadFile(file);
+            Long fileId = fileService.uploadObjectAndSaveFile(file);
+            fileService.deleteObjectAndFile(club.getImageFile().getId());
+            File imageFile = fileRepository.getReferenceById(fileId);
             club.updateClubImage(imageFile);
         }
 

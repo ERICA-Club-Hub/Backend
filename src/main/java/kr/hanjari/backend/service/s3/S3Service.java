@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import kr.hanjari.backend.domain.File;
+import kr.hanjari.backend.domain.vo.S3UploadResultDTO;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
 import kr.hanjari.backend.repository.FileRepository;
@@ -28,6 +29,28 @@ public class S3Service {
 
     private final FileRepository fileRepository;
 
+    public S3UploadResultDTO uploadObject(MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+
+            String fileName = file.getOriginalFilename();
+            String fileKey = s3Util.generateFileKey(fileName);
+            String fileExtension = s3Util.getFileExtension(fileName);
+            Long fileSize = file.getSize();
+            String contentType = file.getContentType();
+
+            s3Operations.upload(bucket, fileKey, inputStream,
+                    ObjectMetadata.builder()
+                            .contentLength(fileSize)
+                            .contentType(contentType)
+                            .build()
+            );
+
+            return S3UploadResultDTO.of(fileName, fileKey, fileExtension, fileSize);
+
+        } catch (IOException e) {
+            throw new GeneralException(ErrorStatus._S3_UPLOAD_FAILED);
+        }
+    }
     public File uploadFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
 
