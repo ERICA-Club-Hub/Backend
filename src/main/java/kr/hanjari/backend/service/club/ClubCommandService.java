@@ -16,6 +16,8 @@ public interface ClubCommandService {
 
     Long acceptClubRegistration(Long clubRegistrationId);
 
+    void deleteClubRegistration(Long clubRegistrationId);
+
     // 동아리 기본 정보
     Long updateClubBasicInformation(Long clubId, ClubBasicInformationDTO request, MultipartFile file);
 
