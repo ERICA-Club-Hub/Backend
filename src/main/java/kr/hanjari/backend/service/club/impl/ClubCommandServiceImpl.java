@@ -15,17 +15,14 @@ import kr.hanjari.backend.domain.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.draft.ScheduleDraft;
 import kr.hanjari.backend.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.repository.ClubRegistrationRepository;
-import kr.hanjari.backend.repository.ClubRepository;
-import kr.hanjari.backend.repository.IntroductionRepository;
-import kr.hanjari.backend.repository.RecruitmentRepository;
-import kr.hanjari.backend.repository.ScheduleRepository;
+import kr.hanjari.backend.repository.*;
 import kr.hanjari.backend.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.service.club.ClubCommandService;
 import kr.hanjari.backend.service.club.ClubUtil;
+import kr.hanjari.backend.service.file.FileService;
 import kr.hanjari.backend.service.s3.S3Service;
 import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
 import kr.hanjari.backend.web.dto.club.request.ClubDetailRequestDTO;
@@ -48,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
 
+    private final FileRepository fileRepository;
     @Value("${login.url}")
     private String loginURL;
 
@@ -63,15 +61,18 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ScheduleDraftRepository scheduleDraftRepository;
 
     private final ClubUtil clubUtil;
+    private final FileService fileService;
     private final S3Service s3Service;
 
     @Override
-    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile image) {
+    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
                 requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
 
-        File imageFile = s3Service.uploadFile(image);
+        Long fileId = fileService.uploadObjectAndSaveFile(file);
+        File imageFile = fileRepository.getReferenceById(fileId);
+
         clubRegistration.updateImageFile(imageFile);
 
         clubRegistrationRepository.save(clubRegistration);
@@ -83,7 +84,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public Long acceptClubRegistration(Long clubRegistrationId) {
 
         ClubRegistration clubRegistration = clubRegistrationRepository.findById(clubRegistrationId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._BAD_REQUEST));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
 
         Club newClub = Club.create(clubRegistration);
         clubRepository.save(newClub);
@@ -94,6 +95,17 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
 
         return newClub.getId();
+    }
+
+    @Override
+    public void deleteClubRegistration(Long clubRegistrationId) {
+
+        ClubRegistration clubRegistrationToDelete = clubRegistrationRepository.findById(clubRegistrationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
+
+        fileService.deleteObjectAndFile(clubRegistrationToDelete.getImageFile().getId());
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+
     }
 
     @Override
@@ -116,7 +128,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         club.updateClubCommonInfo(request, request.toCategoryCommand());
 
         if (file != null) {
-            File imageFile = s3Service.uploadFile(file);
+            Long fileId = fileService.uploadObjectAndSaveFile(file);
+            fileService.deleteObjectAndFile(club.getImageFile().getId());
+            File imageFile = fileRepository.getReferenceById(fileId);
             club.updateClubImage(imageFile);
         }
 

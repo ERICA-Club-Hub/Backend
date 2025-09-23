@@ -103,6 +103,22 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
+    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Operation(summary = "[동아리 등록] 동아리 등록 요청 삭제", description = """
+            ## 동아리 등록 요청을 삭제합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 삭제하려는 clubRegistration의 ID
+            ### Response
+            - 없음
+            """)
+    @DeleteMapping("/service-admin/registrations/{clubRegistrationId}")
+    public ApiResponse<Void> deleteClubRegistration(@PathVariable Long clubRegistrationId) {
+
+        clubCommandService.deleteClubRegistration(clubRegistrationId);
+
+        return ApiResponse.onSuccess();
+    }
+
     /*------------------------ 동아리 기본 ----------------------------*/
     @Tag(name = "동아리 기본", description = "동아리 기본 API")
     @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
