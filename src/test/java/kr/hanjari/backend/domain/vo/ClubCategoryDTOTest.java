@@ -4,17 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import kr.hanjari.backend.domain.Club;
+import kr.hanjari.backend.domain.club.domain.entity.Club;
+import kr.hanjari.backend.domain.club.domain.entity.ClubCategoryInfo;
 import kr.hanjari.backend.domain.command.CategoryCommand;
-import kr.hanjari.backend.domain.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.enums.ClubType;
-import kr.hanjari.backend.domain.enums.College;
-import kr.hanjari.backend.domain.enums.Department;
-import kr.hanjari.backend.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.enums.UnionClubCategory;
-import kr.hanjari.backend.payload.exception.GeneralException;
-import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.web.dto.club.request.ClubBasicInformationDTO.CategoryDTO;
+import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.enums.ClubType;
+import kr.hanjari.backend.domain.club.enums.College;
+import kr.hanjari.backend.domain.club.enums.Department;
+import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO.CategoryDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
