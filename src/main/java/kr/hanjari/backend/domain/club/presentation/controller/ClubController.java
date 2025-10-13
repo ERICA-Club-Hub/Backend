@@ -11,12 +11,15 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCodeResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -67,11 +70,11 @@ public class ClubController {
             - **생성된 ClubRegistration의 id**
             """)
     @PostMapping("/registrations")
-    public ApiResponse<Long> requestClubRegistration(@RequestPart ClubBasicInformationRequest requestBody,
-                                                     @RequestPart MultipartFile image) {
+    public ApiResponse<ClubCommandResponse> requestClubRegistration(
+            @RequestPart ClubBasicInformationRequest requestBody,
+            @RequestPart MultipartFile image) {
         requestBody.validate();
-
-        Long result = clubCommandService.requestClubRegistration(requestBody, image);
+        ClubCommandResponse result = clubCommandService.requestClubRegistration(requestBody, image);
         return ApiResponse.onSuccess(result);
     }
 
@@ -97,9 +100,9 @@ public class ClubController {
             - **수락 후 새로 등록된 club의 id**
             """)
     @PostMapping("/service-admin/registrations/{clubRegistrationId}")
-    public ApiResponse<Long> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
+    public ApiResponse<ClubCommandResponse> acceptClubRegistration(@PathVariable Long clubRegistrationId) {
 
-        Long result = clubCommandService.acceptClubRegistration(clubRegistrationId);
+        ClubCommandResponse result = clubCommandService.acceptClubRegistration(clubRegistrationId);
         return ApiResponse.onSuccess(result);
     }
 
@@ -135,10 +138,10 @@ public class ClubController {
             - **image**: 동아리 대표 사진
             """)
     @PostMapping("{clubId}/update")
-    public ApiResponse<Long> updateClubInfo(@RequestPart ClubBasicInformationRequest requestBody,
-                                            @RequestPart MultipartFile image,
-                                            @PathVariable Long clubId,
-                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ApiResponse<ClubCommandResponse> updateClubInfo(@RequestPart ClubBasicInformationRequest requestBody,
+                                                           @RequestPart MultipartFile image,
+                                                           @PathVariable Long clubId,
+                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
@@ -195,7 +198,7 @@ public class ClubController {
             - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/club-admin/{clubId}")
-    public ApiResponse<Long> postSpecificClub(
+    public ApiResponse<ClubCommandResponse> postSpecificClub(
             @PathVariable Long clubId,
             @RequestBody ClubDetailRequest clubDetailDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -233,7 +236,7 @@ public class ClubController {
             - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/club-admin/{clubId}/draft")
-    public ApiResponse<Long> postSpecificClubDraft(
+    public ApiResponse<ClubCommandResponse> postSpecificClubDraft(
             @PathVariable Long clubId,
             @RequestBody ClubDetailRequest clubDetailDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubDetailDraft(clubId, clubDetailDTO));
@@ -263,7 +266,7 @@ public class ClubController {
             - **scheduleId**: 일정 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules")
-    public ApiResponse<?> postClubSchedules(
+    public ApiResponse<ScheduleListResponse> postClubSchedules(
             @PathVariable Long clubId,
             @RequestBody ClubScheduleListRequest clubActivityDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -282,7 +285,7 @@ public class ClubController {
             - **scheduleId**: 삭제할 일정의 ID
             """)
     @DeleteMapping("/club-admin/{clubId}/schedules/{scheduleId}")
-    public ApiResponse<?> deleteClubSchedules(
+    public ApiResponse<Void> deleteClubSchedules(
             @PathVariable Long clubId,
             @PathVariable Long scheduleId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -316,7 +319,7 @@ public class ClubController {
             - **scheduleId**: 일정 ID (수정 시에만 필요)
             """)
     @PostMapping("/club-admin/{clubId}/schedules/draft")
-    public ApiResponse<?> postClubSchedulesDraft(
+    public ApiResponse<ClubScheduleDraftResponse> postClubSchedulesDraft(
             @PathVariable Long clubId,
             @RequestBody ClubScheduleListRequest clubActivityDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubScheduleDraft(clubId, clubActivityDTO));
@@ -346,7 +349,7 @@ public class ClubController {
             - **recruitment**: 원하는 동아리 원 설명 (string, 500자 미만) \n
             """)
     @PostMapping("/club-admin/{clubId}/introduction")
-    public ApiResponse<?> postClubIntroduction(
+    public ApiResponse<ClubCommandResponse> postClubIntroduction(
             @PathVariable Long clubId,
             @RequestBody ClubIntroductionRequest clubIntroductionDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -379,7 +382,7 @@ public class ClubController {
             - **recruitment**: 원하는 동아리 원 설명 (string, 500자 미만) \n
             """)
     @PostMapping("/club-admin/{clubId}/introduction/draft")
-    public ApiResponse<?> postClubIntroductionDraft(
+    public ApiResponse<ClubCommandResponse> postClubIntroductionDraft(
             @PathVariable Long clubId,
             @RequestBody ClubIntroductionRequest clubIntroductionDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubIntroductionDraft(clubId, clubIntroductionDTO));
@@ -409,7 +412,7 @@ public class ClubController {
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
     @PostMapping("/club-admin/{clubId}/recruitment")
-    public ApiResponse<?> postClubRecruitment(
+    public ApiResponse<ClubCommandResponse> postClubRecruitment(
             @PathVariable Long clubId,
             @RequestBody ClubRecruitmentRequest clubRecruitmentDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -442,7 +445,7 @@ public class ClubController {
             - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
             """)
     @PostMapping("/club-admin/{clubId}/recruitment/draft")
-    public ApiResponse<?> postClubRecruitmentDraft(
+    public ApiResponse<ClubCommandResponse> postClubRecruitmentDraft(
             @PathVariable Long clubId,
             @RequestBody ClubRecruitmentRequest clubRecruitmentDTO) {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitmentDraft(clubId, clubRecruitmentDTO));
@@ -454,9 +457,7 @@ public class ClubController {
             - **clubId**: 동아리 ID
             """)
     @PostMapping("/service-admin/reissue")
-    public ApiResponse<String> reissueClubCode(@RequestParam Long clubId) {
-
-        String result = clubUtil.reissueClubCode(clubId);
-        return ApiResponse.onSuccess(result);
+    public ApiResponse<ClubCodeResponse> reissueClubCode(@RequestParam Long clubId) {
+        return ApiResponse.onSuccess(ClubCodeResponse.of(clubUtil.reissueClubCode(clubId)));
     }
 }

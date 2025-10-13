@@ -29,6 +29,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionR
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
 import kr.hanjari.backend.domain.file.application.FileService;
@@ -36,7 +37,6 @@ import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
-import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,26 +67,24 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     private final ClubUtil clubUtil;
     private final FileService fileService;
-    private final S3Service s3Service;
 
     @Override
-    public Long requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
+    public ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
                 requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
 
         Long fileId = fileService.uploadObjectAndSaveFile(file);
         File imageFile = fileRepository.getReferenceById(fileId);
-
         clubRegistration.updateImageFile(imageFile);
 
         clubRegistrationRepository.save(clubRegistration);
 
-        return clubRegistration.getId();
+        return ClubCommandResponse.of(clubRegistration.getId());
     }
 
     @Override
-    public Long acceptClubRegistration(Long clubRegistrationId) {
+    public ClubCommandResponse acceptClubRegistration(Long clubRegistrationId) {
 
         ClubRegistration clubRegistration = clubRegistrationRepository.findById(clubRegistrationId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
@@ -99,7 +97,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         String code = clubUtil.reissueClubCode(newClubId);
         clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
 
-        return newClub.getId();
+        return ClubCommandResponse.of(newClub.getId());
     }
 
     @Override
@@ -114,7 +112,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO) {
+    public ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubDetails(clubDetailDTO);
@@ -123,11 +121,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (clubDetailDraftRepository.existsById(clubId)) {
             clubDetailDraftRepository.deleteById(clubId);
         }
-        return saved.getId();
+        return ClubCommandResponse.of(saved.getId());
     }
 
     @Override
-    public Long updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request, MultipartFile file) {
+    public ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request,
+                                                          MultipartFile file) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubCommonInfo(request, request.toCategoryCommand());
@@ -140,11 +139,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         }
 
         Club saved = clubRepository.save(club);
-        return saved.getId();
+        return ClubCommandResponse.of(saved.getId());
     }
 
     @Override
-    public Long saveClubDetailDraft(Long clubId, ClubDetailRequest clubDetailDTO) {
+    public ClubCommandResponse saveClubDetailDraft(Long clubId, ClubDetailRequest clubDetailDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -156,7 +155,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         ClubDetailDraft saved = clubDetailDraftRepository.save(clubDetailDraft);
 
-        return saved.getClubId();
+        return ClubCommandResponse.of(saved.getClubId());
     }
 
     @Override
@@ -259,7 +258,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubIntroduction(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
+    public ClubCommandResponse saveClubIntroduction(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
 
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
@@ -280,11 +279,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             introductionDraftRepository.removeByClubId(clubId);
         }
 
-        return saved.getClubId();
+        return ClubCommandResponse.of(saved.getClubId());
     }
 
     @Override
-    public Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
+    public ClubCommandResponse saveClubIntroductionDraft(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -300,12 +299,12 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         // 저장
         IntroductionDraft saved = introductionDraftRepository.save(introductionDraft);
 
-        return saved.getClubId();
+        return ClubCommandResponse.of(saved.getClubId());
     }
 
 
     @Override
-    public Long saveClubRecruitment(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
+    public ClubCommandResponse saveClubRecruitment(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -320,11 +319,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             recruitmentDraftRepository.removeByClubId(clubId);
         }
 
-        return save.getClubId();
+        return ClubCommandResponse.of(save.getClubId());
     }
 
     @Override
-    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
+    public ClubCommandResponse saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -335,7 +334,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         recruitment.updateRecruitment(clubRecruitmentDTO);
         RecruitmentDraft save = recruitmentDraftRepository.save(recruitment);
 
-        return save.getClubId();
+        return ClubCommandResponse.of(save.getClubId());
     }
 
     @Override
