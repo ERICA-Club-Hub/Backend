@@ -2,8 +2,9 @@ package kr.hanjari.backend.domain.club.application.query.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
+import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
@@ -11,14 +12,6 @@ import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.College;
-import kr.hanjari.backend.domain.club.enums.Department;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.enums.SortBy;
-import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
-import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
@@ -30,24 +23,30 @@ import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRe
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
-import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
-import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
-import kr.hanjari.backend.infrastructure.s3.S3Service;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRegistrationDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponseDTO.ClubSearchResult;
+import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.enums.College;
+import kr.hanjari.backend.domain.club.enums.Department;
+import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.enums.SortBy;
+import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRegistrationResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse.ClubSearchResult;
 import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecruitmentDraftResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecruitmentDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -82,16 +81,16 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public GetRegistrationsResponseDTO getRegistrations() {
-        List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
-        List<ClubRegistrationDTO> clubRegistrationDTOList = clubRegistrationList.stream()
-                .map(ClubRegistrationDTO::from)
+        List<kr.hanjari.backend.domain.club.domain.entity.ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+        List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
+                .map(ClubRegistrationResponse::from)
                 .toList();
 
-        return GetRegistrationsResponseDTO.of(clubRegistrationDTOList);
+        return GetRegistrationsResponseDTO.of(clubRegistrationResponseDTOList);
     }
 
     @Override
-    public ClubDetailListResponseDTO findClubsByCondition(
+    public ClubDetailListResponse findClubsByCondition(
             String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
             int size) {
         List<String> profileImageUrls = new ArrayList<>();
@@ -102,7 +101,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
             }
 
-            return ClubDetailListResponseDTO.of(clubs, List.of());
+            return ClubDetailListResponse.of(clubs, List.of());
         }
 
         Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
@@ -111,116 +110,116 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         for (Club club : clubs) {
             profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
         }
-        return ClubDetailListResponseDTO.of(clubs, profileImageUrls);
+        return ClubDetailListResponse.of(clubs, profileImageUrls);
     }
 
     @Override
-    public ClubResponseDTO findClubDetail(Long clubId) {
+    public ClubResponse findClubDetail(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         clubCommandService.incrementClubViewCount(clubId);
 
-        return ClubResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
-    public ClubOverviewResponseDTO findClubOverview(Long clubId) {
+    public ClubOverviewResponse findClubOverview(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-        return ClubOverviewResponseDTO.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubOverviewResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
-    public ClubBasicInfoResponseDTO findClubBasicInfo(Long clubId) {
+    public ClubBasicInfoResponse findClubBasicInfo(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-        return ClubBasicInfoResponseDTO.of(club);
+        return ClubBasicInfoResponse.of(club);
     }
 
     @Override
-    public ClubDetailDraftResponseDTO findClubDetailDraft(Long clubId) {
+    public ClubDetailDraftResponse findClubDetailDraft(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
 
-        return ClubDetailDraftResponseDTO.of(clubDetailDraft, club,
+        return ClubDetailDraftResponse.of(clubDetailDraft, club,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
-    public ClubScheduleResponseDTO findAllClubActivities(Long clubId) {
+    public ClubScheduleResponse findAllClubActivities(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
 
         List<Schedule> schedules = scheduleRepository.findAllByClubId(clubId);
 
-        return ClubScheduleResponseDTO.of(schedules);
+        return ClubScheduleResponse.of(schedules);
     }
 
     @Override
-    public ClubScheduleDraftResponseDTO findAllClubActivitiesDraft(Long clubId) {
+    public ClubScheduleDraftResponse findAllClubActivitiesDraft(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
         List<ScheduleDraft> schedules = scheduleDraftRepository.findAllByClubIdOrderByMonth(clubId);
 
-        return ClubScheduleDraftResponseDTO.of(schedules);
+        return ClubScheduleDraftResponse.of(schedules);
     }
 
 
     @Override
-    public ClubIntroductionResponseDTO findClubIntroduction(Long clubId) {
+    public ClubIntroductionResponse findClubIntroduction(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
         Introduction introduction = introductionRepository.findByClubId(clubId)
                 .orElse(null);
 
-        return ClubIntroductionResponseDTO.of(introduction);
+        return ClubIntroductionResponse.of(introduction);
     }
 
     @Override
-    public ClubIntroductionDraftResponseDTO findClubIntroductionDraft(Long clubId) {
+    public ClubIntroductionDraftResponse findClubIntroductionDraft(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         IntroductionDraft introduction = introductionDraftRepository.findByClubId(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_DRAFT_NOT_FOUND));
 
-        return ClubIntroductionDraftResponseDTO.of(club, introduction,
+        return ClubIntroductionDraftResponse.of(club, introduction,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
-    public ClubRecruitmentResponseDTO findClubRecruitment(Long clubId) {
+    public ClubRecruitmentResponse findClubRecruitment(Long clubId) {
         Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
                 .orElse(null);
         Introduction introduction = introductionRepository.findByClubId(clubId)
                 .orElse(null);
 
         String target = (introduction != null) ? introduction.getContent2() : null;
-        return ClubRecruitmentResponseDTO.of(recruitment, target);
+        return ClubRecruitmentResponse.of(recruitment, target);
     }
 
     @Override
-    public ClubRecruitmentDraftResponseDTO findClubRecruitmentDraft(Long clubId) {
+    public ClubRecruitmentDraftResponse findClubRecruitmentDraft(Long clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         RecruitmentDraft recruitment = recruitmentDraftRepository.findByClubId(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
 
-        return ClubRecruitmentDraftResponseDTO.of(club, recruitment,
+        return ClubRecruitmentDraftResponse.of(club, recruitment,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
-    public ClubSearchResponseDTO findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                             CentralClubCategory centralClubCategory, int page,
-                                                             int size) {
+    public ClubSearchResponse findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                          CentralClubCategory centralClubCategory, int page,
+                                                          int size) {
         Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
                 keyword, status, sortBy, centralClubCategory, page, size);
 
@@ -228,8 +227,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                           UnionClubCategory unionCategory, int page, int size) {
+    public ClubSearchResponse findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                        UnionClubCategory unionCategory, int page, int size) {
         Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
                 keyword, status, sortBy, unionCategory, page, size);
 
@@ -237,8 +236,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                             College college, int page, int size) {
+    public ClubSearchResponse findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                          College college, int page, int size) {
         Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
                 keyword, status, sortBy, college, page, size);
 
@@ -246,9 +245,9 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                                College college, Department department, int page,
-                                                                int size) {
+    public ClubSearchResponse findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+                                                             College college, Department department, int page,
+                                                             int size) {
         Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
                 keyword, status, sortBy, college, department, page, size);
 
@@ -256,7 +255,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubSearchResponseDTO findPopularClubs(int page, int size) {
+    public ClubSearchResponse findPopularClubs(int page, int size) {
         Page<Club> clubs = clubSearchRepository.findPopularClubs(page, size);
 
         return getClubSearchResponseDTO(clubs);
@@ -269,7 +268,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return s3Service.getDownloadUrl(club.getImageFile().getId());
     }
 
-    private ClubSearchResponseDTO getClubSearchResponseDTO(Page<Club> clubs) {
+    private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
         Page<ClubSearchResult> dtoPage = clubs.map(club ->
                 ClubSearchResult.of(
                         club.getId(),
@@ -281,6 +280,6 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 )
         );
 
-        return ClubSearchResponseDTO.of(dtoPage);
+        return ClubSearchResponse.of(dtoPage);
     }
 }
