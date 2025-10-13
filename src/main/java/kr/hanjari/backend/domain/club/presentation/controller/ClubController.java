@@ -52,7 +52,7 @@ public class ClubController {
     private final ClubUtil clubUtil;
 
     /*------------------------ 동아리 등록 ----------------------------*/
-    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """
             ## 동아리 등록을 요청합니다.
             ### Request
@@ -78,7 +78,7 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
-    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 등록 요청 동아리 조회", description = """
             ## 등록 요청된 동아리를 조회합니다.
             ### Response
@@ -91,7 +91,7 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
-    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
             ### PathVariable
@@ -106,7 +106,7 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
-    @Tag(name = "동아리 등록", description = "동아리 등록 관련 API")
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 삭제", description = """
             ## 동아리 등록 요청을 삭제합니다.
             ### PathVariable
@@ -123,7 +123,7 @@ public class ClubController {
     }
 
     /*------------------------ 동아리 기본 ----------------------------*/
-    @Tag(name = "동아리 기본", description = "동아리 기본 API")
+    @Tag(name = "Club Basic", description = "Club Basic API")
     @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
             ## 동아리 기본 정보를 수정합니다.
             ### RequestBody
@@ -151,7 +151,7 @@ public class ClubController {
 
 
     /*----------------------------- 동아리 상세 -----------------------------*/    // 조회
-    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 정보] 동아리 상세 정보 조회", description = """
             ## 동아리 상세 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -162,7 +162,7 @@ public class ClubController {
     }
 
     // 조회
-    @Tag(name = "동아리 상세", description = "동아리 상세 v2 - 동아리 오버뷰 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 정보] 동아리 오버뷰 정보 조회", description = """
             ## 동아리  오버뷰 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -172,7 +172,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubOverview(clubId));
     }
 
-    @Tag(name = "동아리 상세", description = "동아리 상세 v2 - 동아리 기본 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 정보] 동아리 기본 정보 조회", description = """
             ## 동아리 기본 정보 를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -182,7 +182,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubBasicInfo(clubId));
     }
 
-    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 상세] 동아리 상세 정보 입력 및 수정", description = """
             ## 동아리 상세 정보를 입력합니다.
             ### Path Variable
@@ -209,7 +209,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubDetail(clubId, clubDetailDTO));
     }
 
-    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 상세] 임시 저장된 동아리 상세 정보 조회", description = """
             ## 동아리 상세 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -220,7 +220,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubDetailDraft(clubId));
     }
 
-    @Tag(name = "동아리 상세", description = "동아리 상세 정보 API")
+    @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 상세] 동아리 상세 정보 임시저장", description = """
             ## 동아리 상세 정보를 임시저장합니다.
             ### Path Variable
@@ -243,7 +243,7 @@ public class ClubController {
     }
 
     /*--------------------------- 동아리 월 별 일정 ---------------------------*/
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Schedules", description = "Club Intro - Schedules API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정", description = """
             ## 동아리 월 별 일정을 전체 조회합니다.
             ### Path Variable
@@ -254,7 +254,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findAllClubActivities(clubId));
     }
 
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Schedules", description = "Club Intro - Schedules API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 입력 및 수정", description = """
             ## 동아리 월 별 일정을 입력 및 수정합니다.
             ### Path Variable
@@ -277,7 +277,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveAndUpdateClubSchedule(clubId, clubActivityDTO));
     }
 
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Schedules", description = "Club Intro - Schedules API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 삭제", description = """
             ## 동아리 월 별 일정을 삭제합니다. 
             ### Path Variable
@@ -297,7 +297,7 @@ public class ClubController {
         return ApiResponse.onSuccess();
     }
 
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Schedules", description = "Club Intro - Schedules API")
     @Operation(summary = "[동아리 소개] 임시 저장된 동아리 월 별 일정 조회", description = """
             ## 임시 저장 된 동아리 월 별 일정을 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -307,7 +307,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findAllClubActivitiesDraft(clubId));
     }
 
-    @Tag(name = "동아리 소개 - 월 별 일정", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Schedules", description = "Club Intro - Schedules API")
     @Operation(summary = "[동아리 소개] 동아리 월 별 일정 임시 저장", description = """
             ## 동아리 월 별 일정을 임시 저장합니다.
             ### Path Variable
@@ -327,7 +327,7 @@ public class ClubController {
 
 
     /*----------------------------- 동아리 소개글 ------------------------------*/
-    @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 조회", description = """
             ## 동아리 소개글을 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -337,7 +337,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroduction(clubId));
     }
 
-    @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 입력 및 수정", description = """
             ## 동아리 소개글을 입력 및 수정합니다. 입력된 동아리 소개글이 없을 경우 새로 생성됩니다.
             ### Path Variable
@@ -360,7 +360,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubIntroduction(clubId, clubIntroductionDTO));
     }
 
-    @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 임시 저장된 동아리 소개 조회", description = """
             ## 임시 저장 된 동아리 소개글을 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -370,7 +370,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroductionDraft(clubId));
     }
 
-    @Tag(name = "동아리 소개 - 소개글", description = "동아리 소개 관련 API")
+    @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 임시 저장", description = """
             ## 동아리 소개글을 임시 저장 합니다. 
             ### Path Variable
@@ -390,7 +390,7 @@ public class ClubController {
 
 
     /*----------------------------- 동아리 모집 안내 ------------------------------*/
-    @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
+    @Tag(name = "Club Intro - Recruitment", description = "Club Intro - Recruitment API")
     @Operation(summary = "[동아리 모집 안내] 동아리 모집 안내 조회", description = """
             ## 동아리 모집 안내를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -400,7 +400,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubRecruitment(clubId));
     }
 
-    @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
+    @Tag(name = "Club Intro - Recruitment", description = "Club Intro - Recruitment API")
     @Operation(summary = "[동아리 모집 안내] 동아리 모집 안내 입력 및 수정", description = """
             ## 동아리 모집 안내를 입력 및 수정합니다. 입력된 동아리 모집 안내가 없을 경우 새로 생성됩니다.
             ### Path Variable
@@ -423,7 +423,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitment(clubId, clubRecruitmentDTO));
     }
 
-    @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
+    @Tag(name = "Club Intro - Recruitment", description = "Club Intro - Recruitment API")
     @Operation(summary = "[동아리 모집 안내] 임시 저장 된 동아리 모집 안내 조회", description = """
             ## 임시 저장 된 동아리 모집 안내를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
@@ -433,7 +433,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubRecruitmentDraft(clubId));
     }
 
-    @Tag(name = "동아리 모집 안내", description = "동아리 모집 안내 관련 API")
+    @Tag(name = "Club Intro - Recruitment", description = "Club Intro - Recruitment API")
     @Operation(summary = "[동아리 모집 안내] 동아리 모집 안내 임시 저장", description = """
             ## 동아리 모집 안내를 임시저장 합니다.
             ### Path Variable
@@ -451,7 +451,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubRecruitmentDraft(clubId, clubRecruitmentDTO));
     }
 
-    @Tag(name = "동아리 인증 코드", description = "동아리 인증 코드 발급 API")
+    @Tag(name = "Club Verification Code", description = "Club Verification Code API")
     @Operation(summary = "[인증] 동아리 인증 코드 재발급", description = """
             ## 동아리의 인증 코드를 재발급합니다(기존 인증 코드 대체).
             - **clubId**: 동아리 ID

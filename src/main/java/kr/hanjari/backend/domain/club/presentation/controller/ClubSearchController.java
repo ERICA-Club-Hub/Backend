@@ -27,7 +27,7 @@ public class ClubSearchController {
     private final ClubQueryService clubQueryService;
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
-    @Tag(name = "동아리 검색 v1", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v1", description = "Club Search v1 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
             ## 입력한 조건에 맞는 동아리를 검색합니다. 
             - **keyword**: 동아리 이름에서 서 검색할 키워드 \n
@@ -52,7 +52,7 @@ public class ClubSearchController {
     }
 
     @GetMapping("/central")
-    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 중앙 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -77,7 +77,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/union")
-    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 연합 동아리 검색", description = """
             ## 연합 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -102,7 +102,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/college")
-    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 단과대 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -127,7 +127,7 @@ public class ClubSearchController {
 
 
     @GetMapping("/department")
-    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 학과 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
@@ -154,7 +154,7 @@ public class ClubSearchController {
     }
 
     @GetMapping("/popular")
-    @Tag(name = "동아리 검색 v2", description = "동아리 검색 관련 API")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 인기 동아리 검색", description = """
             ## 인기 동아리를 검색합니다.
             """)

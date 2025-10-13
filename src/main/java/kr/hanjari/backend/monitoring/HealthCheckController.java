@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/health-check")
 public class HealthCheckController {
 
-    @Tag(name = "서버 상태 확인")
+    @Tag(name = "Health Check")
     @GetMapping("")
     public ApiResponse<String> healthCheck() {
         return ApiResponse.onSuccess("서버 켜져있어용");
