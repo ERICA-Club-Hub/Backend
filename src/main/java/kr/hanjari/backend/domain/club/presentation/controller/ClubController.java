@@ -16,7 +16,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResp
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -82,8 +82,8 @@ public class ClubController {
             - clubRegistrationDTOList: 등록 요청한 동아리 리스트
             """)
     @GetMapping("/service-admin/registrations")
-    public ApiResponse<GetRegistrationsResponseDTO> getAllClubRegistrations() {
-        GetRegistrationsResponseDTO result = clubQueryService.getRegistrations();
+    public ApiResponse<GetRegistrationsResponse> getAllClubRegistrations() {
+        GetRegistrationsResponse result = clubQueryService.getRegistrations();
 
         return ApiResponse.onSuccess(result);
     }

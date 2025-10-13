@@ -14,7 +14,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentR
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -24,7 +24,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubSchedu
 public interface ClubQueryService {
 
     // 등록 요청 동아리 조회
-    GetRegistrationsResponseDTO getRegistrations();
+    GetRegistrationsResponse getRegistrations();
 
     // 조건 별 동아리 검색
     ClubDetailListResponse findClubsByCondition(
