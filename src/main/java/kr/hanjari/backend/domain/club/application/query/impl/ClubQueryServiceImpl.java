@@ -38,7 +38,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse.ClubSearchResult;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -80,13 +80,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
 
     @Override
-    public GetRegistrationsResponseDTO getRegistrations() {
+    public GetRegistrationsResponse getRegistrations() {
         List<kr.hanjari.backend.domain.club.domain.entity.ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
                 .map(ClubRegistrationResponse::from)
                 .toList();
 
-        return GetRegistrationsResponseDTO.of(clubRegistrationResponseDTOList);
+        return GetRegistrationsResponse.of(clubRegistrationResponseDTOList);
     }
 
     @Override
