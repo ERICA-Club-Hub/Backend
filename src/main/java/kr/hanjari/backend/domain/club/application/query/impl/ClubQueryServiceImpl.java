@@ -5,6 +5,7 @@ import java.util.List;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
+import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
@@ -81,7 +82,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public GetRegistrationsResponse getRegistrations() {
-        List<kr.hanjari.backend.domain.club.domain.entity.ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+        List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
                 .map(ClubRegistrationResponse::from)
                 .toList();
@@ -90,33 +92,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubDetailListResponse findClubsByCondition(
-            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
-            int size) {
-        List<String> profileImageUrls = new ArrayList<>();
-        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
-            Page<Club> clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, status,
-                    PageRequest.of(page, size));
-            for (Club club : clubs) {
-                profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
-            }
-
-            return ClubDetailListResponse.of(clubs, List.of());
-        }
-
-        Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Club> clubs = clubRepository.findAll(ClubSpecifications.findByCondition(name, category, status), pageable);
-        for (Club club : clubs) {
-            profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
-        }
-        return ClubDetailListResponse.of(clubs, profileImageUrls);
-    }
-
-    @Override
     public ClubResponse findClubDetail(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = getClub(clubId);
         clubCommandService.incrementClubViewCount(clubId);
 
         return ClubResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
@@ -124,25 +101,20 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubOverviewResponse findClubOverview(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = getClub(clubId);
         return ClubOverviewResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
     }
 
     @Override
     public ClubBasicInfoResponse findClubBasicInfo(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Club club = getClub(clubId);
         return ClubBasicInfoResponse.of(club);
     }
 
     @Override
     public ClubDetailDraftResponse findClubDetailDraft(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
+        Club club = getClub(clubId);
+        ClubDetailDraft clubDetailDraft = getClubDetailDraft(clubId);
 
         return ClubDetailDraftResponse.of(clubDetailDraft, club,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
@@ -150,10 +122,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubScheduleResponse findAllClubActivities(Long clubId) {
-        if (!clubRepository.existsById(clubId)) {
-            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
-
+        validateIsClubExistsById(clubId);
         List<Schedule> schedules = scheduleRepository.findAllByClubId(clubId);
 
         return ClubScheduleResponse.of(schedules);
@@ -161,9 +130,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubScheduleDraftResponse findAllClubActivitiesDraft(Long clubId) {
-        if (!clubRepository.existsById(clubId)) {
-            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
+        validateIsClubExistsById(clubId);
         List<ScheduleDraft> schedules = scheduleDraftRepository.findAllByClubIdOrderByMonth(clubId);
 
         return ClubScheduleDraftResponse.of(schedules);
@@ -172,22 +139,16 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubIntroductionResponse findClubIntroduction(Long clubId) {
-        if (!clubRepository.existsById(clubId)) {
-            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
-        }
-        Introduction introduction = introductionRepository.findByClubId(clubId)
-                .orElse(null);
+        validateIsClubExistsById(clubId);
+        Introduction introduction = getIntroductionOrElseNull(clubId);
 
         return ClubIntroductionResponse.of(introduction);
     }
 
     @Override
     public ClubIntroductionDraftResponse findClubIntroductionDraft(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        IntroductionDraft introduction = introductionDraftRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_DRAFT_NOT_FOUND));
+        Club club = getClub(clubId);
+        IntroductionDraft introduction = getIntroduction(clubId);
 
         return ClubIntroductionDraftResponse.of(club, introduction,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
@@ -195,10 +156,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubRecruitmentResponse findClubRecruitment(Long clubId) {
-        Recruitment recruitment = recruitmentRepository.findByClubId(clubId)
-                .orElse(null);
-        Introduction introduction = introductionRepository.findByClubId(clubId)
-                .orElse(null);
+        Recruitment recruitment = getRecruitmentOrElseNull(clubId);
+        Introduction introduction = getIntroductionOrElseNull(clubId);
 
         String target = (introduction != null) ? introduction.getContent2() : null;
         return ClubRecruitmentResponse.of(recruitment, target);
@@ -206,11 +165,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubRecruitmentDraftResponse findClubRecruitmentDraft(Long clubId) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
-
-        RecruitmentDraft recruitment = recruitmentDraftRepository.findByClubId(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
+        Club club = getClub(clubId);
+        RecruitmentDraft recruitment = getRecruitment(clubId);
 
         return ClubRecruitmentDraftResponse.of(club, recruitment,
                 s3Service.getDownloadUrl(club.getImageFile().getId()));
@@ -259,6 +215,68 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Page<Club> clubs = clubSearchRepository.findPopularClubs(page, size);
 
         return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    @Deprecated
+    public ClubDetailListResponse findClubsByCondition(
+            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
+            int size) {
+        List<String> profileImageUrls = new ArrayList<>();
+        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
+            Page<Club> clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, status,
+                    PageRequest.of(page, size));
+            for (Club club : clubs) {
+                profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
+            }
+
+            return ClubDetailListResponse.of(clubs, List.of());
+        }
+
+        Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Club> clubs = clubRepository.findAll(ClubSpecifications.findByCondition(name, category, status), pageable);
+        for (Club club : clubs) {
+            profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
+        }
+        return ClubDetailListResponse.of(clubs, profileImageUrls);
+    }
+
+
+    private void validateIsClubExistsById(Long clubId) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
+        }
+    }
+
+    private Club getClub(Long clubId) {
+        return clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+    }
+
+    private IntroductionDraft getIntroduction(Long clubId) {
+        return introductionDraftRepository.findByClubId(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INTRODUCTION_DRAFT_NOT_FOUND));
+    }
+
+    private RecruitmentDraft getRecruitment(Long clubId) {
+        return recruitmentDraftRepository.findByClubId(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._RECRUITMENT_DRAFT_NOT_FOUND));
+    }
+
+    private ClubDetailDraft getClubDetailDraft(Long clubId) {
+        return clubDetailDraftRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
+    }
+
+    private Introduction getIntroductionOrElseNull(Long clubId) {
+        return introductionRepository.findByClubId(clubId)
+                .orElse(null);
+    }
+
+    private Recruitment getRecruitmentOrElseNull(Long clubId) {
+        return recruitmentRepository.findByClubId(clubId)
+                .orElse(null);
     }
 
     private String resolveImageUrl(Club club) {
