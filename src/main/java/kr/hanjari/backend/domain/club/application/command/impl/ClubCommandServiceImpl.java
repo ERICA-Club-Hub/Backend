@@ -3,12 +3,10 @@ package kr.hanjari.backend.domain.club.application.command.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.hanjari.backend.domain.club.application.ClubUtil;
+import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
-import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
-import kr.hanjari.backend.domain.club.domain.repository.detail.RecruitmentRepository;
-import kr.hanjari.backend.domain.club.domain.repository.detail.ScheduleRepository;
-import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
@@ -16,26 +14,29 @@ import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
-import kr.hanjari.backend.domain.club.domain.repository.*;
-import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
-import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
+import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
+import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
+import kr.hanjari.backend.domain.club.domain.repository.detail.RecruitmentRepository;
+import kr.hanjari.backend.domain.club.domain.repository.detail.ScheduleRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
-import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
-import kr.hanjari.backend.domain.club.application.ClubUtil;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
 import kr.hanjari.backend.domain.file.application.FileService;
+import kr.hanjari.backend.domain.file.domain.entity.File;
+import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
+import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,7 +70,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final S3Service s3Service;
 
     @Override
-    public Long requestClubRegistration(ClubBasicInformationDTO requestBody, MultipartFile file) {
+    public Long requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
                 requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
@@ -113,7 +114,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
+    public Long saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubDetails(clubDetailDTO);
@@ -126,7 +127,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long updateClubBasicInformation(Long clubId, ClubBasicInformationDTO request, MultipartFile file) {
+    public Long updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request, MultipartFile file) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
         club.updateClubCommonInfo(request, request.toCategoryCommand());
@@ -143,7 +144,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO) {
+    public Long saveClubDetailDraft(Long clubId, ClubDetailRequest clubDetailDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -159,13 +160,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubScheduleDTO) {
+    public ScheduleListResponse saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequest clubScheduleDTO) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         List<Schedule> schedules = new ArrayList<>();
 
-        for (ClubScheduleRequestDTO request : clubScheduleDTO.schedules()) {
+        for (ClubScheduleRequest request : clubScheduleDTO.schedules()) {
             if (request.scheduleId() == null) {
                 Schedule schedule = Schedule.builder()
                         .club(club)
@@ -187,19 +188,19 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 scheduleDraftRepository.deleteByClubId(clubId);
             }
         }
-        return ScheduleListResponseDTO.of(schedules);
+        return ScheduleListResponse.of(schedules);
     }
 
     @Override
-    public ClubScheduleDraftResponseDTO saveAndUpdateClubScheduleDraft(Long clubId,
-                                                                       ClubScheduleListRequestDTO clubActivityDTO) {
+    public ClubScheduleDraftResponse saveAndUpdateClubScheduleDraft(Long clubId,
+                                                                    ClubScheduleListRequest clubActivityDTO) {
 
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
 
         List<ScheduleDraft> scheduleDrafts = new ArrayList<>();
 
-        for (ClubScheduleRequestDTO request : clubActivityDTO.schedules()) {
+        for (ClubScheduleRequest request : clubActivityDTO.schedules()) {
             if (request.scheduleId() == null) {
                 ScheduleDraft scheduleDraft = ScheduleDraft.builder()
                         .club(club)
@@ -219,7 +220,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 scheduleDrafts.add(scheduleDraftRepository.save(scheduleDraft));
             }
         }
-        return ClubScheduleDraftResponseDTO.of(scheduleDrafts);
+        return ClubScheduleDraftResponse.of(scheduleDrafts);
     }
 
 //    @Override
@@ -258,7 +259,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubIntroduction(Long clubId, ClubIntroductionRequestDTO clubIntroductionDTO) {
+    public Long saveClubIntroduction(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
 
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
@@ -283,7 +284,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequestDTO clubIntroductionDTO) {
+    public Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequest clubIntroductionDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -304,7 +305,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
 
     @Override
-    public Long saveClubRecruitment(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+    public Long saveClubRecruitment(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
@@ -323,7 +324,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+    public Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequest clubRecruitmentDTO) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }

@@ -1,8 +1,14 @@
 package kr.hanjari.backend.domain.club.domain.entity.detail;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequestDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +40,7 @@ public class Recruitment {
     @Column(name = "content3", length = 600)
     private String content3;
 
-    public void updateRecruitment(ClubRecruitmentRequestDTO clubRecruitmentDTO) {
+    public void updateRecruitment(ClubRecruitmentRequest clubRecruitmentDTO) {
         this.content1 = clubRecruitmentDTO.due();
         this.content2 = clubRecruitmentDTO.notice();
         this.content3 = clubRecruitmentDTO.etc();

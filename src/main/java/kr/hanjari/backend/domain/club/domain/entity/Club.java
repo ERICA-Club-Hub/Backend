@@ -12,12 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import kr.hanjari.backend.domain.file.domain.entity.File;
+import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.common.BaseEntity;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.domain.file.domain.entity.File;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -102,7 +102,7 @@ public class Club extends BaseEntity {
         this.imageFile = imageFile;
     }
 
-    public void updateClubDetails(ClubDetailRequestDTO detail) {
+    public void updateClubDetails(ClubDetailRequest detail) {
         this.recruitmentStatus = detail.recruitmentStatus();
         this.leaderName = detail.leaderName();
         this.leaderPhone = detail.leaderPhone();
@@ -112,7 +112,7 @@ public class Club extends BaseEntity {
         this.applicationUrl = detail.applicationUrl();
     }
 
-    public void updateClubCommonInfo(ClubBasicInformationDTO commonInfo, CategoryCommand categoryCommand) {
+    public void updateClubCommonInfo(ClubBasicInformationRequest commonInfo, CategoryCommand categoryCommand) {
         this.name = commonInfo.clubName();
         this.leaderEmail = commonInfo.leaderEmail();
         this.oneLiner = commonInfo.oneLiner();
