@@ -2,7 +2,7 @@ package kr.hanjari.backend.domain.club.presentation.dto.request;
 
 import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
 
-public record ClubDetailRequestDTO(
+public record ClubDetailRequest(
         RecruitmentStatus recruitmentStatus,
         String leaderName,
         String leaderPhone,

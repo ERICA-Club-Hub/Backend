@@ -4,7 +4,7 @@ import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.enums.ClubType;
 import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
 
-public record ClubResponseDTO(
+public record ClubResponse(
         Long id,
         String name,
         String description,
@@ -20,8 +20,8 @@ public record ClubResponseDTO(
         ClubType clubType
 //        CategoryResponseDTO category
 ) {
-    public static ClubResponseDTO of(Club club, String profileImageUrl) {
-        return new ClubResponseDTO(
+    public static ClubResponse of(Club club, String profileImageUrl) {
+        return new ClubResponse(
                 club.getId(),
                 club.getName(),
                 club.getOneLiner(),

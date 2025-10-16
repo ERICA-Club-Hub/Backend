@@ -2,16 +2,16 @@ package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 
-public record ClubIntroductionResponseDTO(
+public record ClubIntroductionResponse(
         String introduction,
         String activity
 ) {
-    public static ClubIntroductionResponseDTO of(Introduction introduction) {
+    public static ClubIntroductionResponse of(Introduction introduction) {
         if (introduction == null) {
-            return new ClubIntroductionResponseDTO(
+            return new ClubIntroductionResponse(
                     null, null);
         }
-        return new ClubIntroductionResponseDTO(
+        return new ClubIntroductionResponse(
                 introduction.getContent1(),
                 introduction.getContent2()
         );

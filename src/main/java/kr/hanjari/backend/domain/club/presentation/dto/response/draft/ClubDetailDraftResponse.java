@@ -3,9 +3,9 @@ package kr.hanjari.backend.domain.club.presentation.dto.response.draft;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.presentation.dto.response.CategoryResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.CategoryResponse;
 
-public record ClubDetailDraftResponseDTO(
+public record ClubDetailDraftResponse(
         String name,
         String description,
         RecruitmentStatus recruitmentStatus,
@@ -16,10 +16,10 @@ public record ClubDetailDraftResponseDTO(
         String snsUrl,
         String applicationUrl,
         String profileImageUrl,
-        CategoryResponseDTO category
+        CategoryResponse category
 ) {
-    public static ClubDetailDraftResponseDTO of(ClubDetailDraft clubDetailDraft, Club club, String profileImage) {
-        return new ClubDetailDraftResponseDTO(
+    public static ClubDetailDraftResponse of(ClubDetailDraft clubDetailDraft, Club club, String profileImage) {
+        return new ClubDetailDraftResponse(
                 club.getName(),
                 club.getOneLiner(),
                 clubDetailDraft.getRecruitmentStatus(),
@@ -30,7 +30,7 @@ public record ClubDetailDraftResponseDTO(
                 clubDetailDraft.getSnsUrl(),
                 clubDetailDraft.getApplicationUrl(),
                 profileImage,
-                CategoryResponseDTO.from(club.getCategoryInfo())
+                CategoryResponse.from(club.getCategoryInfo())
         );
     }
 
