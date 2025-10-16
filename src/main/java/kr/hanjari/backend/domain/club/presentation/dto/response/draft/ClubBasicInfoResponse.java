@@ -2,7 +2,7 @@ package kr.hanjari.backend.domain.club.presentation.dto.response.draft;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 
-public record ClubBasicInfoResponseDTO(
+public record ClubBasicInfoResponse(
         String leaderName,
         String leaderEmail,
         String leaderPhone,
@@ -10,8 +10,8 @@ public record ClubBasicInfoResponseDTO(
         Integer membershipFee,
         String snsUrl
 ) {
-    public static ClubBasicInfoResponseDTO of(Club club) {
-        return new ClubBasicInfoResponseDTO(
+    public static ClubBasicInfoResponse of(Club club) {
+        return new ClubBasicInfoResponse(
                 club.getLeaderName(),
                 club.getLeaderEmail(),
                 club.getLeaderPhone(),

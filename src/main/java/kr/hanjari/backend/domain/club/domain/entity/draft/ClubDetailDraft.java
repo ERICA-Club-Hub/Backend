@@ -7,7 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequestDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClubDetailDraft  {
+public class ClubDetailDraft {
 
     @Id
     @Column(name = "club_id")
@@ -49,7 +49,7 @@ public class ClubDetailDraft  {
     @Column(name = "application_url")
     String applicationUrl;
 
-    public void updateClubDetails(ClubDetailRequestDTO request) {
+    public void updateClubDetails(ClubDetailRequest request) {
         this.leaderName = request.leaderName();
         this.leaderPhone = request.leaderPhone();
         this.activities = request.activities();

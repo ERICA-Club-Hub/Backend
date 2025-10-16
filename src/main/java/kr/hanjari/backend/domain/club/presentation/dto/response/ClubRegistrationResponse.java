@@ -1,24 +1,22 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
-import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
-
-
-public record ClubRegistrationDTO(
+public record ClubRegistrationResponse(
         Long clubRegistrationId,
         String clubName,
         String leaderEmail,
         String oneLiner,
         String briefIntroduction,
-        CategoryResponseDTO category
+        CategoryResponse category
 ) {
-    public static ClubRegistrationDTO from(ClubRegistration clubRegistration) {
-        return new ClubRegistrationDTO(
+    public static ClubRegistrationResponse from(
+            kr.hanjari.backend.domain.club.domain.entity.ClubRegistration clubRegistration) {
+        return new ClubRegistrationResponse(
                 clubRegistration.getId(),
                 clubRegistration.getName(),
                 clubRegistration.getLeaderEmail(),
                 clubRegistration.getOneLiner(),
                 clubRegistration.getBriefIntroduction(),
-                CategoryResponseDTO.from(clubRegistration.getCategoryInfo())
+                CategoryResponse.from(clubRegistration.getCategoryInfo())
         );
     }
 }

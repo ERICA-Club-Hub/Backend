@@ -6,20 +6,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubCategoryInfo;
-import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.enums.ClubType;
 import kr.hanjari.backend.domain.club.enums.College;
 import kr.hanjari.backend.domain.club.enums.Department;
 import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest.Category;
+import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO.CategoryDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ClubCategoryDTOTest {
+class ClubCategoryTest {
 
     private Club newClub() {
         return Club.builder()
@@ -28,7 +28,13 @@ class ClubCategoryDTOTest {
                 .recruitmentStatus(RecruitmentStatus.UPCOMING)
                 .oneLiner("old one")
                 .briefIntroduction("old brief")
-                .categoryInfo(new ClubCategoryInfo())
+                .categoryInfo(ClubCategoryInfo.from(CategoryCommand.of(
+                        ClubType.UNION,
+                        null,
+                        UnionClubCategory.IT,
+                        null,
+                        null)
+                ))
                 .build();
     }
 
@@ -37,11 +43,11 @@ class ClubCategoryDTOTest {
     void centralCategory_set_and_clear_others() {
         Club club = newClub();
 
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "보안동아리",
                 "lead@univ.ac.kr",
                 ClubType.CENTRAL,
-                new CategoryDTO(CentralClubCategory.ACADEMIC,
+                new Category(CentralClubCategory.ACADEMIC,
                         null,
                         null,
                         null),
@@ -67,11 +73,11 @@ class ClubCategoryDTOTest {
     void unionCategory_set_and_clear_others() {
         Club club = newClub();
 
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "연합마케팅",
                 "lead@univ.ac.kr",
                 ClubType.UNION,
-                new CategoryDTO(null, UnionClubCategory.MARKETING_AD, null, null),
+                new Category(null, UnionClubCategory.MARKETING_AD, null, null),
                 "실전 마케팅",
                 "프로모션 실습"
         );
@@ -93,11 +99,11 @@ class ClubCategoryDTOTest {
     void college_only_set_and_clear_others() {
         Club club = newClub();
 
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "공대 세미나",
                 "lead@univ.ac.kr",
                 ClubType.COLLEGE,
-                new CategoryDTO(null, null, College.ENGINEERING, null),
+                new Category(null, null, College.ENGINEERING, null),
                 "공대 전체 세미나",
                 "격주 세미나"
         );
@@ -119,11 +125,11 @@ class ClubCategoryDTOTest {
     void department_set_with_valid_relation() {
         Club club = newClub();
 
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "기계과 CAD 연구회",
                 "lead@univ.ac.kr",
                 ClubType.DEPARTMENT,
-                new CategoryDTO(null, null, College.ENGINEERING, Department.MECHANICAL),
+                new Category(null, null, College.ENGINEERING, Department.MECHANICAL),
                 "CAD 마스터",
                 "설계 툴 스터디"
         );
@@ -146,11 +152,11 @@ class ClubCategoryDTOTest {
         Club club = newClub();
 
         // 가정: Department.MECHANICAL 은 College.ENGINEERING 소속
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "잘못된 소속 테스트",
                 "lead@univ.ac.kr",
                 ClubType.DEPARTMENT,
-                new CategoryDTO(null, null, College.SOFTWARE, Department.MECHANICAL),
+                new Category(null, null, College.SOFTWARE, Department.MECHANICAL),
                 "invalid",
                 "invalid"
         );
@@ -165,11 +171,11 @@ class ClubCategoryDTOTest {
     @DisplayName("DTO validate: 타입별 필수/금지 필드 검증 동작")
     void dto_validate_should_work() {
         // UNION 타입인데 central을 채우면 실패해야 함
-        ClubBasicInformationDTO bad = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest bad = new ClubBasicInformationRequest(
                 "연합동아리",
                 "lead@univ.ac.kr",
                 ClubType.UNION,
-                new CategoryDTO(CentralClubCategory.ACADEMIC, null, null, null),
+                new Category(CentralClubCategory.ACADEMIC, null, null, null),
                 "bad",
                 "bad"
         );
@@ -180,11 +186,11 @@ class ClubCategoryDTOTest {
     @Test
     @DisplayName("DTO → CategoryCommand 변환 확인")
     void dto_to_command() {
-        ClubBasicInformationDTO dto = new ClubBasicInformationDTO(
+        ClubBasicInformationRequest dto = new ClubBasicInformationRequest(
                 "기계과 CAD 연구회",
                 "lead@univ.ac.kr",
                 ClubType.DEPARTMENT,
-                new CategoryDTO(null, null, College.ENGINEERING, Department.MECHANICAL),
+                new Category(null, null, College.ENGINEERING, Department.MECHANICAL),
                 "CAD",
                 "설계"
         );

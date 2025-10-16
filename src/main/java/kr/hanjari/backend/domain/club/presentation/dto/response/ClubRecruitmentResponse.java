@@ -2,17 +2,17 @@ package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 
-public record ClubRecruitmentResponseDTO(
+public record ClubRecruitmentResponse(
         String due,
         String target,
         String notice,
         String etc
 ) {
-    public static ClubRecruitmentResponseDTO of(Recruitment recruitment, String target) {
+    public static ClubRecruitmentResponse of(Recruitment recruitment, String target) {
         if (recruitment == null) {
-            return new ClubRecruitmentResponseDTO(null, null, null, null);
+            return new ClubRecruitmentResponse(null, null, null, null);
         }
-        return new ClubRecruitmentResponseDTO(
+        return new ClubRecruitmentResponse(
                 recruitment.getContent1(),
                 target,
                 recruitment.getContent2(),

@@ -3,13 +3,13 @@ package kr.hanjari.backend.domain.activity.presentation.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.domain.activity.application.service.ActivityService;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.CreateActivityRequest;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.UpdateActivityRequest;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetAllActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetSpecificActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivityLogResponse;
+import kr.hanjari.backend.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
-@Tag(name = "활동로그", description = "활동로그 관련 API")
+@Tag(name = "Activity Logs", description = "Activity Logs API")
 public class ActivityController {
 
     private final ActivityService activityService;

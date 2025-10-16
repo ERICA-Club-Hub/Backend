@@ -1,48 +1,50 @@
 package kr.hanjari.backend.domain.club.application.command;
 
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequestDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponseDTO;
-import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponseDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ClubCommandService {
 
     //동아리 등록 신청
-    Long requestClubRegistration(ClubBasicInformationDTO reqeustBody, MultipartFile image);
+    ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile image);
 
-    Long acceptClubRegistration(Long clubRegistrationId);
+    ClubCommandResponse acceptClubRegistration(Long clubRegistrationId);
 
     void deleteClubRegistration(Long clubRegistrationId);
 
     // 동아리 기본 정보
-    Long updateClubBasicInformation(Long clubId, ClubBasicInformationDTO request, MultipartFile file);
+    ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request,
+                                                   MultipartFile file);
 
     // 동아리 상세 정보
-    Long saveClubDetail(Long clubId, ClubDetailRequestDTO clubDetailDTO);
+    ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO);
 
-    Long saveClubDetailDraft(Long clubId, ClubDetailRequestDTO clubDetailDTO);
+    ClubCommandResponse saveClubDetailDraft(Long clubId, ClubDetailRequest clubDetailDTO);
 
     // 동아리 월 별 일정
-    ScheduleListResponseDTO saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequestDTO clubActivityDTO);
+    ScheduleListResponse saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequest clubActivityDTO);
 
-    ClubScheduleDraftResponseDTO saveAndUpdateClubScheduleDraft(Long clubId,
-                                                                ClubScheduleListRequestDTO clubActivityDTO);
+    ClubScheduleDraftResponse saveAndUpdateClubScheduleDraft(Long clubId,
+                                                             ClubScheduleListRequest clubActivityDTO);
 
     void deleteClubSchedule(Long clubId, Long scheduleId);
 
     // 동아리 소개
-    Long saveClubIntroduction(Long clubId, ClubIntroductionRequestDTO introduction);
+    ClubCommandResponse saveClubIntroduction(Long clubId, ClubIntroductionRequest introduction);
 
-    Long saveClubIntroductionDraft(Long clubId, ClubIntroductionRequestDTO introduction);
+    ClubCommandResponse saveClubIntroductionDraft(Long clubId, ClubIntroductionRequest introduction);
 
     // 동아리 모집 안내
-    Long saveClubRecruitment(Long clubId, ClubRecruitmentRequestDTO recruitment);
+    ClubCommandResponse saveClubRecruitment(Long clubId, ClubRecruitmentRequest recruitment);
 
-    Long saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequestDTO recruitment);
+    ClubCommandResponse saveClubRecruitmentDraft(Long clubId, ClubRecruitmentRequest recruitment);
 
     // 조회 수 증가
     void incrementClubViewCount(Long clubId);

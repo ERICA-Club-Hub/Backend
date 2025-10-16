@@ -1,22 +1,22 @@
 package kr.hanjari.backend.domain.club.presentation.dto.request;
 
-import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.enums.ClubType;
 import kr.hanjari.backend.domain.club.enums.College;
 import kr.hanjari.backend.domain.club.enums.Department;
 import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.command.CategoryCommand;
 
-public record ClubBasicInformationDTO(
+public record ClubBasicInformationRequest(
         String clubName,    // 동아리 이름
         String leaderEmail, // 동아리장 이메일
         ClubType clubType,  // 동아리 유형 (CENTRAL, UNION, COLLEGE, DEPARTMENT)
-        CategoryDTO category,  // 카테고리 정보 (유형별로 필요한 필드만 채움)
+        Category category,  // 카테고리 정보 (유형별로 필요한 필드만 채움)
         String oneLiner,    // 한 줄 소개
         String briefIntroduction // 간단한 설명
 ) {
 
-    public record CategoryDTO(
+    public record Category(
             CentralClubCategory central, // 중앙동아리 카테고리
             UnionClubCategory union,     // 연합동아리 카테고리
             College college,             // 단과대
