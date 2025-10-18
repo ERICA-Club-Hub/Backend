@@ -6,12 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import kr.hanjari.backend.domain.command.CategoryCommand;
 import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.enums.ClubType;
 import kr.hanjari.backend.domain.club.enums.College;
 import kr.hanjari.backend.domain.club.enums.Department;
 import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.common.command.CategoryCommand;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import lombok.AccessLevel;
@@ -43,7 +43,7 @@ public class ClubCategoryInfo {
     @Enumerated(EnumType.STRING)
     @Column(name = "department")
     private Department department;
-    
+
     private ClubCategoryInfo(ClubType type,
                              CentralClubCategory central,
                              UnionClubCategory union,
