@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.command;
+package kr.hanjari.backend.domain.common.command;
 
 import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.enums.ClubType;

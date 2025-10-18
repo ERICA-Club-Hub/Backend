@@ -5,7 +5,7 @@ import kr.hanjari.backend.domain.club.enums.ClubType;
 import kr.hanjari.backend.domain.club.enums.College;
 import kr.hanjari.backend.domain.club.enums.Department;
 import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
-import kr.hanjari.backend.domain.command.CategoryCommand;
+import kr.hanjari.backend.domain.common.command.CategoryCommand;
 
 public record ClubBasicInformationRequest(
         String clubName,    // 동아리 이름

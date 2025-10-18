@@ -14,7 +14,7 @@ import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest.Category;
-import kr.hanjari.backend.domain.command.CategoryCommand;
+import kr.hanjari.backend.domain.common.command.CategoryCommand;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
