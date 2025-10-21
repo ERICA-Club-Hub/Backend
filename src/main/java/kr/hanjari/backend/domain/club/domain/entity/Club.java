@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
+import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
@@ -140,8 +141,14 @@ public class Club extends BaseEntity {
     }
 
     // 해당 동아리에 속하는 월 별 활동인지
-    public void validateIsContainsInClub(Schedule schedule) {
+    public void validateIsScheduleContainsInClub(Schedule schedule) {
         if (!this.getId().equals(schedule.getClub().getId())) {
+            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+        }
+    }
+
+    public void validateIsScheduleDraftContainsInClub(ScheduleDraft scheduleDraft) {
+        if (!this.getId().equals(scheduleDraft.getClub().getId())) {
             throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
         }
     }
