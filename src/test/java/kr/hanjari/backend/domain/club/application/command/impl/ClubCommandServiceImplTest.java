@@ -6,6 +6,7 @@ import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.SCHEDULE_I
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.clubDetailRequest;
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClub;
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClubBasicInformationRequest;
+import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClubDetailDraft;
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClubIntroductionRequest;
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClubRecruitmentRequest;
 import static kr.hanjari.backend.domain.club.fixtures.ClubTestFixture.createClubRegistration;
@@ -186,7 +187,7 @@ class ClubCommandServiceImplTest {
         MockMultipartFile newFile = new MockMultipartFile("file", "new_test.jpg", "image/jpeg", "new_test".getBytes());
 
         when(clubRepository.findById(CLUB_ID)).thenReturn(Optional.of(club));
-        when(fileService.uploadObjectAndSaveFile(any(MockMultipartFile.class))).thenReturn(100L); // New file ID
+        when(fileService.uploadObjectAndSaveFile(any(MockMultipartFile.class))).thenReturn(100L);
         when(fileRepository.getReferenceById(100L)).thenReturn(File.builder().id(100L).build());
         when(clubRepository.save(any(Club.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -211,7 +212,7 @@ class ClubCommandServiceImplTest {
         // given
         when(clubRepository.existsById(CLUB_ID)).thenReturn(true);
         when(clubDetailDraftRepository.findById(CLUB_ID)).thenReturn(Optional.empty());
-        when(clubDetailDraftRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(clubDetailDraftRepository.save(any())).thenReturn(createClubDetailDraft(CLUB_ID));
 
         // when
         clubCommandService.saveClubDetailDraft(CLUB_ID, clubDetailRequest());

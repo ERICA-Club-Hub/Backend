@@ -140,15 +140,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ClubCommandResponse saveClubDetailDraft(Long clubId, ClubDetailRequest clubDetailDTO) {
         validateIsExistClub(clubId);
-
-        ClubDetailDraft clubDetailDraft = clubDetailDraftRepository.findById(clubId)
-                .orElseGet(() -> ClubDetailDraft.builder().clubId(clubId).build());
-
+        ClubDetailDraft clubDetailDraft = getClubDetailDraftOrCreate(clubId);
         clubDetailDraft.updateClubDetails(clubDetailDTO);
-
-        ClubDetailDraft saved = clubDetailDraftRepository.save(clubDetailDraft);
-
-        return ClubCommandResponse.of(saved.getClubId());
+        ClubDetailDraft save = clubDetailDraftRepository.save(clubDetailDraft);
+        return ClubCommandResponse.of(save.getClubId());
     }
 
 
@@ -168,8 +163,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 schedules.add(scheduleRepository.save(schedule));
                 scheduleDraftRepository.deleteByClubId(clubId);
             } else {
-                Schedule schedule = scheduleRepository.findById(request.scheduleId())
-                        .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+                Schedule schedule = getSchedule(request.scheduleId());
 
                 if (!club.getId().equals(schedule.getClub().getId())) {
                     throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
@@ -237,15 +231,9 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public void deleteClubSchedule(Long clubId, Long scheduleId) {
         Club club = getClub(clubId);
-
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
-
-        if (!club.getId().equals(schedule.getClub().getId())) {
-            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
-        }
-
-        scheduleRepository.deleteById(scheduleId); // 기존 스케줄 삭제
+        Schedule schedule = getSchedule(scheduleId);
+        club.validateIsContainsInClub(schedule);
+        scheduleRepository.deleteById(scheduleId);
     }
 
     @Override
@@ -333,6 +321,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
     }
 
+    private Schedule getSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_NOT_FOUND));
+    }
+
     private void validateIsExistClub(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
@@ -359,5 +352,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 .orElseGet(() -> RecruitmentDraft.builder().clubId(clubId).build());
     }
 
-
+    private ClubDetailDraft getClubDetailDraftOrCreate(Long clubId) {
+        return clubDetailDraftRepository.findById(clubId)
+                .orElseGet(() -> ClubDetailDraft.builder().clubId(clubId).build());
+    }
 }
