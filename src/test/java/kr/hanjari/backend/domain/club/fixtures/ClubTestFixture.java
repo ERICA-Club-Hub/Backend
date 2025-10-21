@@ -240,6 +240,16 @@ public class ClubTestFixture {
         );
     }
 
+    public static ClubScheduleListRequest createNewClubScheduleListRequest() {
+        return new ClubScheduleListRequest(
+                List.of(new ClubScheduleRequest(
+                        SCHEDULE_MONTH,
+                        SCHEDULE_CONTENT,
+                        null)
+                )
+        );
+    }
+
     public static ClubIntroductionRequest createClubIntroductionRequest() {
         return new ClubIntroductionRequest(
                 INTRODUCTION_CONTENT_1,
