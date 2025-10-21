@@ -25,7 +25,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import kr.hanjari.backend.domain.club.application.ClubUtil;
+import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
+import kr.hanjari.backend.domain.club.application.query.MailSender;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
@@ -77,7 +78,9 @@ class ClubCommandServiceImplTest {
     @Mock
     private ScheduleDraftRepository scheduleDraftRepository;
     @Mock
-    private ClubUtil clubUtil;
+    private CodeGenerator codeGenerator;
+    @Mock
+    private MailSender mailSender;
     @Mock
     private FileService fileService;
 
@@ -105,7 +108,7 @@ class ClubCommandServiceImplTest {
         Long clubRegistrationId = 1L;
         ClubRegistration clubRegistration = createClubRegistration();
         when(clubRegistrationRepository.findById(clubRegistrationId)).thenReturn(Optional.of(clubRegistration));
-        when(clubUtil.reissueClubCode(anyLong())).thenReturn(NEW_CLUB_CODE);
+        when(codeGenerator.reissueCode(anyLong())).thenReturn(NEW_CLUB_CODE);
         when(clubRepository.save(any(Club.class))).thenReturn(createClub());
 
         // when
@@ -115,8 +118,8 @@ class ClubCommandServiceImplTest {
         assertNotNull(response);
         verify(clubRepository, times(1)).save(any(Club.class));
         verify(clubRegistrationRepository, times(1)).deleteById(clubRegistrationId);
-        verify(clubUtil, times(1)).reissueClubCode(anyLong());
-        verify(clubUtil, times(1)).sendEmail(anyString(), anyString(), anyString(), any());
+        verify(codeGenerator, times(1)).reissueCode(anyLong());
+        verify(mailSender, times(1)).sendEmail(anyString(), anyString(), anyString(), any());
     }
 
     @Test

@@ -3,8 +3,9 @@ package kr.hanjari.backend.domain.club.application.command.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.hanjari.backend.domain.club.application.ClubUtil;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
+import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
+import kr.hanjari.backend.domain.club.application.query.MailSender;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
@@ -65,7 +66,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final ClubDetailDraftRepository clubDetailDraftRepository;
     private final ScheduleDraftRepository scheduleDraftRepository;
 
-    private final ClubUtil clubUtil;
+    private final CodeGenerator codeGenerator;
+    private final MailSender mailSender;
     private final FileService fileService;
 
     @Override
@@ -92,8 +94,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         clubRegistrationRepository.deleteById(clubRegistrationId);
 
         Long newClubId = newClub.getId();
-        String code = clubUtil.reissueClubCode(newClubId);
-        clubUtil.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
+        String code = codeGenerator.reissueCode(newClubId);
+        mailSender.sendEmail(newClub.getLeaderEmail(), newClub.getName(), code, loginURL);
 
         return ClubCommandResponse.of(newClub.getId());
     }
