@@ -21,6 +21,10 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRe
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleRequest;
 import kr.hanjari.backend.domain.common.command.CategoryCommand;
+import kr.hanjari.backend.domain.file.domain.entity.File;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 public class ClubTestFixture {
 
@@ -91,6 +95,8 @@ public class ClubTestFixture {
     public static final String NEW_CLUB_EMAIL = "new.leader@email.com";
     public static final String NEW_ONE_LINER = "New one-liner";
     public static final String NEW_BRIEF_INTRODUCTION = "New brief introduction";
+    public static final long FILE_ID = 1L;
+    public static final String FILE_KEY = "FILE_KEY";
 
     public static Club createClub() {
         return Club.builder()
@@ -108,7 +114,15 @@ public class ClubTestFixture {
                 .applicationUrl(CLUB_APPLICATION_URL)
                 .viewCount(CLUB_VIEW_COUNT)
                 .recruitmentStatus(CLUB_RECRUITMENT_STATUS)
+                .imageFile(createFile())
                 .categoryInfo(createClubCategoryInfo())
+                .build();
+    }
+
+    public static File createFile() {
+        return File.builder()
+                .id(FILE_ID)
+                .fileKey(FILE_KEY)
                 .build();
     }
 
@@ -264,6 +278,10 @@ public class ClubTestFixture {
                 RECRUITMENT_CONTENT_2,
                 RECRUITMENT_CONTENT_3
         );
+    }
+
+    public static Page<Club> createClubPage() {
+        return new PageImpl<>(List.of(createClub()), PageRequest.of(0, 1), 1);
     }
 }
 
