@@ -1,11 +1,9 @@
-package kr.hanjari.backend.domain.vo;
+package kr.hanjari.backend.domain.club.domain.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.domain.entity.ClubCategoryInfo;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
 import kr.hanjari.backend.domain.club.domain.enums.College;
