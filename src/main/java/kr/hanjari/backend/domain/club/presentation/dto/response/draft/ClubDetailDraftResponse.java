@@ -2,7 +2,7 @@ package kr.hanjari.backend.domain.club.presentation.dto.response.draft;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.presentation.dto.response.CategoryResponse;
 
 public record ClubDetailDraftResponse(

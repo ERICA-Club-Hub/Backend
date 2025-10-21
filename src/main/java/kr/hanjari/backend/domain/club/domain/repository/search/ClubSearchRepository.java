@@ -1,12 +1,12 @@
 package kr.hanjari.backend.domain.club.domain.repository.search;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.College;
-import kr.hanjari.backend.domain.club.enums.Department;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.enums.SortBy;
-import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.College;
+import kr.hanjari.backend.domain.club.domain.enums.Department;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.SortBy;
+import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import org.springframework.data.domain.Page;
 
 public interface ClubSearchRepository {
