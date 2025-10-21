@@ -50,10 +50,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
 
-    private final FileRepository fileRepository;
     @Value("${login.url}")
     private String loginURL;
 
+    private final FileRepository fileRepository;
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
@@ -88,8 +88,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         ClubRegistration clubRegistration = getClubRegistration(clubRegistrationId);
 
-        Club newClub = Club.create(clubRegistration);
-        clubRepository.save(newClub);
+        Club newClub = clubRepository.save(Club.create(clubRegistration));
         clubRegistrationRepository.deleteById(clubRegistrationId);
 
         Long newClubId = newClub.getId();
@@ -323,7 +322,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         club.incrementViewCount();
         clubRepository.save(club);
     }
-    
+
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));

@@ -1,10 +1,10 @@
 package kr.hanjari.backend.domain.common.command;
 
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.ClubType;
-import kr.hanjari.backend.domain.club.enums.College;
-import kr.hanjari.backend.domain.club.enums.Department;
-import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.ClubType;
+import kr.hanjari.backend.domain.club.domain.enums.College;
+import kr.hanjari.backend.domain.club.domain.enums.Department;
+import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 
 public record CategoryCommand(
         ClubType type,

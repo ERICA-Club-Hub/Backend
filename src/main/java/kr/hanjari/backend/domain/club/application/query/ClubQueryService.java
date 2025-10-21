@@ -1,12 +1,12 @@
 package kr.hanjari.backend.domain.club.application.query;
 
 
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.College;
-import kr.hanjari.backend.domain.club.enums.Department;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.enums.SortBy;
-import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.College;
+import kr.hanjari.backend.domain.club.domain.enums.Department;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.SortBy;
+import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
