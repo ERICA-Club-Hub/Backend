@@ -1,5 +1,7 @@
 package kr.hanjari.backend.domain.announcement.presentation.dto.response;
 
+import kr.hanjari.backend.domain.announcement.presentation.dto.AnnouncementDTO;
+
 import java.util.List;
 
 public record GetAllAnnouncementResponse(

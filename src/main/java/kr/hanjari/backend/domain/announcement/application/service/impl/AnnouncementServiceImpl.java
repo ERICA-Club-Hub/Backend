@@ -8,7 +8,7 @@ import kr.hanjari.backend.domain.announcement.domain.repository.AnnouncementRepo
 import kr.hanjari.backend.domain.announcement.application.service.AnnouncementService;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
 import kr.hanjari.backend.domain.announcement.presentation.dto.request.CommonAnnouncementRequest;
-import kr.hanjari.backend.domain.announcement.presentation.dto.response.AnnouncementDTO;
+import kr.hanjari.backend.domain.announcement.presentation.dto.AnnouncementDTO;
 import kr.hanjari.backend.domain.announcement.presentation.dto.response.GetAllAnnouncementResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

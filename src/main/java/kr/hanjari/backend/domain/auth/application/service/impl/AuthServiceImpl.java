@@ -7,7 +7,7 @@ import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.infrastructure.jwt.JwtUtil;
 import kr.hanjari.backend.domain.auth.application.service.AuthService;
 import kr.hanjari.backend.domain.auth.presentation.dto.LoginResultDTO;
-import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequestDTO;
+import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private String UNION_ADMIN_CODE;
 
     @Override
-    public LoginResultDTO login(LoginRequestDTO request) {
+    public LoginResultDTO login(LoginRequest request) {
         String code = request.code();
         String token;
 

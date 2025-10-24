@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.activity.presentation.dto.response;
+package kr.hanjari.backend.domain.activity.presentation.dto;
 
 public record ActivityThumbnailDTO(
         Long activityId,

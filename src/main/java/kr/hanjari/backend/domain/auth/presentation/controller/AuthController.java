@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.hanjari.backend.domain.auth.application.service.AuthService;
 import kr.hanjari.backend.domain.auth.presentation.dto.LoginResultDTO;
-import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequestDTO;
-import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponseDTO;
+import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequest;
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.infrastructure.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +34,12 @@ public class AuthController {
             - **clubName**: 동아리명
             """)
     @PostMapping("/login")
-    public ApiResponse<LoginResponseDTO> login(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
+    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
         LoginResultDTO loginResultDTO = authService.login(request);
         response.addHeader("Authorization", "Bearer " + loginResultDTO.token());
 
-        LoginResponseDTO result = LoginResponseDTO.of(loginResultDTO.clubId(), loginResultDTO.clubName());
+        LoginResponse result = LoginResponse.of(loginResultDTO.clubId(), loginResultDTO.clubName());
         return ApiResponse.onSuccess(result);
     }
 
