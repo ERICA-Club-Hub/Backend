@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(name = "announcement")
@@ -34,7 +35,7 @@ public class Announcement extends BaseEntity {
         this.thumbnailImage = imageFile;
     }
 
-    public void updateTitleAndUrl(String title, String url) {
+    public void update(String title, String url) {
         this.title = title;
         this.url = url;
     }

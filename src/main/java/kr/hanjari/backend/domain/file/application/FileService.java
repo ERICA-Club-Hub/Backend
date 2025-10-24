@@ -38,4 +38,18 @@ public class FileService {
         s3Service.deleteObject(fileToDelete.getFileKey());
         fileRepository.deleteById(fileId);
     }
+
+    public File getReferenceById(Long fileId) {
+        return fileRepository.getReferenceById(fileId);
+    }
+
+    private File getEntityById(Long fileId) {
+        return fileRepository.findById(fileId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FILE_NOT_FOUND));
+    }
+
+    public String getFileDownloadUrl(Long fileId) {
+        File file = getEntityById(fileId);
+        return s3Service.getDownloadUrl(file.getFileKey());
+    }
 }
