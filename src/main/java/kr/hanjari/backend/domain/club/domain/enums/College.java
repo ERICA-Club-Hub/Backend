@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.club.enums;
+package kr.hanjari.backend.domain.club.domain.enums;
 
 import lombok.Getter;
 

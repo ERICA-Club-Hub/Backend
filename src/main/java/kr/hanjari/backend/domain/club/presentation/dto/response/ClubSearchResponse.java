@@ -1,7 +1,7 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import java.util.List;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 
 public record ClubSearchResponse(
         List<ClubSearchResult> content,

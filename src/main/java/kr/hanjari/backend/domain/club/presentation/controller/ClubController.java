@@ -3,8 +3,8 @@ package kr.hanjari.backend.domain.club.presentation.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Objects;
-import kr.hanjari.backend.domain.club.application.ClubUtil;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
+import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
@@ -49,7 +49,7 @@ public class ClubController {
 
     private final ClubQueryService clubQueryService;
     private final ClubCommandService clubCommandService;
-    private final ClubUtil clubUtil;
+    private final CodeGenerator codeGenerator;
 
     /*------------------------ 동아리 등록 ----------------------------*/
     @Tag(name = "Club Registration", description = "Club Registration API")
@@ -458,6 +458,6 @@ public class ClubController {
             """)
     @PostMapping("/service-admin/reissue")
     public ApiResponse<ClubCodeResponse> reissueClubCode(@RequestParam Long clubId) {
-        return ApiResponse.onSuccess(ClubCodeResponse.of(clubUtil.reissueClubCode(clubId)));
+        return ApiResponse.onSuccess(ClubCodeResponse.of(codeGenerator.reissueCode(clubId)));
     }
 }
