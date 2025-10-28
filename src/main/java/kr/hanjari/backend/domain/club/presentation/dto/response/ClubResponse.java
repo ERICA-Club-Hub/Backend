@@ -1,8 +1,8 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.enums.ClubType;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.ClubType;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 
 public record ClubResponse(
         Long id,

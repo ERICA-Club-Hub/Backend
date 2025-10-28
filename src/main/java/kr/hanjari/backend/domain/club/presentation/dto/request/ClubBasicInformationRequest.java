@@ -1,11 +1,11 @@
 package kr.hanjari.backend.domain.club.presentation.dto.request;
 
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.ClubType;
-import kr.hanjari.backend.domain.club.enums.College;
-import kr.hanjari.backend.domain.club.enums.Department;
-import kr.hanjari.backend.domain.club.enums.UnionClubCategory;
-import kr.hanjari.backend.domain.command.CategoryCommand;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.ClubType;
+import kr.hanjari.backend.domain.club.domain.enums.College;
+import kr.hanjari.backend.domain.club.domain.enums.Department;
+import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.common.command.CategoryCommand;
 
 public record ClubBasicInformationRequest(
         String clubName,    // 동아리 이름

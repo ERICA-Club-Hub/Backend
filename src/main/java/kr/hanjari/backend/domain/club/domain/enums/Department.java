@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.club.enums;
+package kr.hanjari.backend.domain.club.domain.enums;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +66,7 @@ public enum Department {
     SPORTS_SCIENCE("스포츠과학부", College.SPORT_ARTS),
     DANCE("무용학과", College.SPORT_ARTS),
     MUSIC("실용음악학과", College.SPORT_ARTS);
-    
+
     private final String description;
     private final College college;
 

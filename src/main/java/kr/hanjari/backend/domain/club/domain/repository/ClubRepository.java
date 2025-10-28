@@ -2,8 +2,8 @@ package kr.hanjari.backend.domain.club.domain.repository;
 
 import java.util.Optional;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
