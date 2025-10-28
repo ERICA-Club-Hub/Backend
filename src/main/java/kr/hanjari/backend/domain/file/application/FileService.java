@@ -1,5 +1,6 @@
 package kr.hanjari.backend.domain.file.application;
 
+import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
 import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.infrastructure.s3.S3UploadResultDTO;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
@@ -51,5 +52,12 @@ public class FileService {
     public String getFileDownloadUrl(Long fileId) {
         File file = getEntityById(fileId);
         return s3Service.getDownloadUrl(file.getFileKey());
+    }
+
+    public FileDownloadDTO getFileDownloadDTO(Long fileId) {
+        File file = getEntityById(fileId);
+        String fileKey = file.getFileKey();
+        String downloadUrl = s3Service.getDownloadUrl(fileKey);
+        return FileDownloadDTO.of(file, downloadUrl);
     }
 }
