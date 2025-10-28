@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hanjari.backend.domain.announcement.application.service.AnnouncementService;
 import kr.hanjari.backend.domain.announcement.presentation.dto.request.AnnouncementRequest;
+import kr.hanjari.backend.domain.announcement.presentation.dto.response.AnnouncementCommandResponse;
 import kr.hanjari.backend.domain.announcement.presentation.dto.response.GetAllAnnouncementResponse;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +42,10 @@ public class AnnouncementController {
             """
     )
     @PostMapping(value = "/union-admin", consumes = {"application/json", "multipart/form-data"})
-    public ApiResponse<Long> postNewAnnouncement(
+    public ApiResponse<AnnouncementCommandResponse> postNewAnnouncement(
             @RequestPart(name = "requestBody") AnnouncementRequest requestBody,
             @RequestPart(name = "thumbnail") MultipartFile thumbnail) {
-        Long result = announcementService.createAnnouncement(requestBody, thumbnail);
+        AnnouncementCommandResponse result = announcementService.createAnnouncement(requestBody, thumbnail);
         return ApiResponse.onSuccess(result);
     }
 
@@ -86,12 +87,12 @@ public class AnnouncementController {
             """
     )
     @PatchMapping(value = "/union-admin/{announcementId}", consumes = {"application/json", "multipart/form-data"})
-    public ApiResponse<Void> updateAnnouncement(@PathVariable Long announcementId,
+    public ApiResponse<AnnouncementCommandResponse> updateAnnouncement(@PathVariable Long announcementId,
                                                 @RequestPart(name = "requestBody") AnnouncementRequest requestBody,
                                                 @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) {
 
-        announcementService.updateAnnouncement(announcementId, requestBody, thumbnail);
-        return ApiResponse.onSuccess();
+        AnnouncementCommandResponse result = announcementService.updateAnnouncement(announcementId, requestBody, thumbnail);
+        return ApiResponse.onSuccess(result);
     }
 
     @Operation(summary = "[총동연 공지사항] 총동연 공지사항 삭제", description = """

@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.announcement.application.service.impl;
 
 import kr.hanjari.backend.domain.announcement.domain.entity.Announcement;
+import kr.hanjari.backend.domain.announcement.presentation.dto.response.AnnouncementCommandResponse;
 import kr.hanjari.backend.domain.file.application.FileService;
 import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
@@ -27,7 +28,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private final FileService fileService;
 
     @Transactional
-    public Long createAnnouncement(AnnouncementRequest request, MultipartFile imageFile) {
+    public AnnouncementCommandResponse createAnnouncement(AnnouncementRequest request, MultipartFile imageFile) {
 
         Announcement newAnnouncement = request.toAnnouncement();
 
@@ -36,12 +37,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
         newAnnouncement.updateThumbnailImage(thumbnail);
 
-        save(newAnnouncement);
-        return newAnnouncement.getId();
+        return AnnouncementCommandResponse.of(save(newAnnouncement).getId());
     }
 
     @Transactional
-    public void updateAnnouncement(Long announcementId, AnnouncementRequest announcementRequest, MultipartFile imageFile) {
+    public AnnouncementCommandResponse updateAnnouncement(Long announcementId, AnnouncementRequest announcementRequest, MultipartFile imageFile) {
 
         Announcement announcementToUpdate = getEntityById(announcementId);
 
@@ -58,6 +58,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
             fileService.deleteObjectAndFile(fileToDelete.getId());
         }
+
+        return AnnouncementCommandResponse.of(save(announcementToUpdate).getId());
+
     }
 
     @Transactional
@@ -84,8 +87,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                         .toList());
     }
 
-    private void save(Announcement announcement) {
-        announcementRepository.save(announcement);
+    private Announcement save(Announcement announcement) {
+        return announcementRepository.save(announcement);
     }
 
     private void delete(Long announcementId) {
