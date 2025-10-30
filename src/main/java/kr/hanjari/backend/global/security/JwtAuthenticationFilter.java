@@ -9,6 +9,7 @@ import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.global.payload.dto.ErrorReasonDTO;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.infrastructure.jwt.JwtUtil;
+import kr.hanjari.backend.infrastructure.web.WebUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtUtil.resolveToken(request);
+        String token = WebUtil.resolveToken(request);
         if (token != null) {
             try {
                 jwtUtil.validateJwtToken(token);

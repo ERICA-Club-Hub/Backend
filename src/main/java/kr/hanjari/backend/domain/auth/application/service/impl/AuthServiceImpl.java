@@ -1,5 +1,6 @@
 package kr.hanjari.backend.domain.auth.application.service.impl;
 
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
@@ -31,11 +32,11 @@ public class AuthServiceImpl implements AuthService {
 
         if (code.equals(SERVICE_ADMIN_CODE)) {
             token = jwtUtil.createServiceAdminToken();
-            return LoginResultDTO.of(token, 0L, "Service Admin");
+            return LoginResultDTO.of(token, LoginResponse.of(0L, "Service Admin"));
         }
         if (code.equals(UNION_ADMIN_CODE)) {
             token = jwtUtil.createUnionAdminToken();
-            return LoginResultDTO.of(token, 0L, "Union Admin");
+            return LoginResultDTO.of(token, LoginResponse.of(0L, "Union Admin"));
         }
 
         Club club = clubRepository.findByCode(code)
@@ -44,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         String clubName = club.getName();
         token = jwtUtil.createClubAdminToken(clubId);
 
-        return LoginResultDTO.of(token, clubId, clubName);
+        return LoginResultDTO.of(token, LoginResponse.of(clubId, clubName));
     }
 
     @Override

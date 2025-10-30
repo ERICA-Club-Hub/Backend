@@ -5,6 +5,6 @@ import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequest;
 
 public interface AuthService {
 
-    public LoginResultDTO login(LoginRequest request);
-    public void logout(String token);
+    LoginResultDTO login(LoginRequest request);
+    void logout(String token);
 }
