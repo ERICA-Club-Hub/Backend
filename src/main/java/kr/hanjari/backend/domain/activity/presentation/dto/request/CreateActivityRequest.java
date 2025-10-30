@@ -8,7 +8,7 @@ public record CreateActivityRequest(
         String content,
         LocalDate date
 ) {
-    public Activity toActivity() {
+    public Activity toEntity() {
         return Activity.builder()
                 .content(content)
                 .date(date)

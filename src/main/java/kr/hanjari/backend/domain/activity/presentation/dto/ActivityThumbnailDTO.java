@@ -1,10 +1,12 @@
 package kr.hanjari.backend.domain.activity.presentation.dto;
 
+import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
+
 public record ActivityThumbnailDTO(
         Long activityId,
-        String thumbnailUrl
+        FileDownloadDTO fileDownloadDTO
 ) {
-    public static ActivityThumbnailDTO of(Long activityId, String thumbnailUrl) {
-        return new ActivityThumbnailDTO(activityId, thumbnailUrl);
+    public static ActivityThumbnailDTO of(Long activityId, FileDownloadDTO fileDownloadDTO) {
+        return new ActivityThumbnailDTO(activityId, fileDownloadDTO);
     }
 }

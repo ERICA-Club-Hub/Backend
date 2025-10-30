@@ -15,5 +15,5 @@ public interface DocumentFileRepository extends JpaRepository<DocumentFile, Docu
     void deleteAllByDocumentId(Long documentId);
 
     @Query("SELECT df.file.id FROM DocumentFile df where df.document.id = :documentId")
-    List<Long> findAllFileIdByDocumentId(Long documentId);
+    List<Long> findAllFileIdsByDocumentId(Long documentId);
 }

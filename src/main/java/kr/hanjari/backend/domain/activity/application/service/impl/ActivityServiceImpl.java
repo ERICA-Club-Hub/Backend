@@ -5,8 +5,14 @@ import static kr.hanjari.backend.domain.activity.presentation.dto.response.Recen
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import kr.hanjari.backend.domain.activity.application.service.ActivityImageService;
 import kr.hanjari.backend.domain.activity.domain.entity.Activity;
+import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityCommandResponse;
+import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
+import kr.hanjari.backend.domain.file.application.FileService;
+import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
 import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.activity.domain.entity.ActivityImageId;
 import kr.hanjari.backend.domain.activity.domain.entity.ActivityImage;
@@ -14,7 +20,6 @@ import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.domain.activity.domain.repository.ActivityImageRepository;
 import kr.hanjari.backend.domain.activity.domain.repository.ActivityRepository;
-import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.activity.application.service.ActivityService;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.CreateActivityRequest;
@@ -39,97 +44,83 @@ public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityRepository activityRepository;
     private final ActivityImageRepository activityImageRepository;
-    private final ClubRepository clubRepository;
 
+    private final ActivityImageService activityImageService;
+    private final FileService fileService;
     private final S3Service s3Service;
+    private final ClubQueryService clubQueryService;
 
     @Override
-    public Long createActivity(Long clubId, CreateActivityRequest createActivityRequest, List<MultipartFile> images) {
+    public ActivityCommandResponse createActivity(Long clubId, CreateActivityRequest createActivityRequest, List<MultipartFile> images) {
 
-        Activity newActivity = createActivityRequest.toActivity();
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+        Activity activity = createActivityRequest.toEntity();
+        Club club = clubQueryService.getReference(clubId);
 
-        newActivity.setClub(club);
-        activityRepository.save(newActivity);
+        activity.setClub(club);
+        activityRepository.save(activity);
+        Long activityId = activity.getId();
 
         IntStream.range(0, images.size())
-                .forEach(i -> {
-                    File newImage = s3Service.uploadFile(images.get(i));
-                    ActivityImageId activityImageId = new ActivityImageId();
-                    ActivityImage activityImage = ActivityImage.builder()
-                            .id(activityImageId)
-                            .activity(newActivity)
-                            .imageFile(newImage)
-                            .orderIndex(i)
-                            .build();
-                    activityImageRepository.save(activityImage);
+                .forEach(orderIndex -> {
+                    Long fileId = fileService.uploadObjectAndSaveFile(images.get(orderIndex));
+                    activityImageService.saveNewActivityImage(activityId, fileId, orderIndex);
                 });
 
-        return newActivity.getId();
+        return ActivityCommandResponse.of(activityId);
     }
 
     @Override
     public void updateActivity(Long activityId, UpdateActivityRequest updateActivityRequest,
                                List<MultipartFile> images) {
-        Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
 
+        Activity activity = getEntityById(activityId);
         activity.updateContentAndDate(updateActivityRequest.content(), updateActivityRequest.date());
 
         if (images != null) {
-            List<ActivityImage> activityImageList = activityImageRepository.findAllByActivityId(activityId);
-            List<Long> fileIdToDeleteList = activityImageList.stream()
-                    .map(activityImage -> {
-                        Long fileId = activityImage.getImageFile().getId();
-                        activityImageRepository.delete(activityImage);
-                        return fileId;
-                    }).toList();
+            List<Long> fileIds = activityImageService.getAllFileIds(activityId);
 
+            // 매핑 삭제
+            activityImageService.deleteAllByActivityId(activityId);
+
+            // 파일 삭제
+            fileIds.forEach(fileService::deleteObjectAndFile);
+
+            // 새로 등록
             IntStream.range(0, images.size())
-                    .forEach(i -> {
-                        File newImage = s3Service.uploadFile(images.get(i));
-                        ActivityImageId activityImageId = new ActivityImageId();
-                        ActivityImage activityImage = ActivityImage.builder()
-                                .id(activityImageId)
-                                .activity(activity)
-                                .imageFile(newImage)
-                                .orderIndex(i)
-                                .build();
-                        activityImageRepository.save(activityImage);
+                    .forEach(orderIndex -> {
+                        Long fileId = fileService.uploadObjectAndSaveFile(images.get(orderIndex));
+                        activityImageService.saveNewActivityImage(activityId, fileId, orderIndex);
                     });
-
-            fileIdToDeleteList.forEach(s3Service::deleteFile);
         }
+
     }
 
     @Override
     public void deleteActivity(Long activityId) {
-        if (!activityRepository.existsById(activityId)) {
-            throw new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND);
-        }
+        List<Long> fileIds = activityImageService.getAllFileIds(activityId);
 
-        List<ActivityImage> activityImages = activityImageRepository.findAllByActivityId(activityId);
-        activityImages.forEach(
-                activityImage -> {
-                    Long fileIdForDelete = activityImage.getImageFile().getId();
-                    activityImageRepository.delete(activityImage);
-                    s3Service.deleteFile(fileIdForDelete);
-                }
-        );
-        activityRepository.deleteById(activityId);
+        // 매핑 삭제
+        activityImageService.deleteAllByActivityId(activityId);
+
+        // 파일 삭제
+        fileIds.forEach(fileService::deleteObjectAndFile);
+
+        // 엔티티 삭제
+        delete(activityId);
     }
 
     @Override
     public GetAllActivityResponse getAllActivity(Long clubId) {
-        List<Activity> activityList = activityRepository.findAllByClubId(clubId);
+
+        List<Activity> activityList = getAllByClubId(clubId);
+
         List<ActivityThumbnailDTO> activityThumbnailDTOList = activityList.stream()
                 .map(activity -> {
                     Long activityId = activity.getId();
-                    File thumbnail = activityImageRepository.findFirstByActivityIdOrderByIdAsc(activityId)
-                            .get().getImageFile();
-                    String thumbnailUrl = s3Service.getDownloadUrl(thumbnail.getId());
-                    return ActivityThumbnailDTO.of(activityId, thumbnailUrl);
+                    Long thumbnailId = activityImageService.getActivityThumbnailId(activity.getId());
+                    FileDownloadDTO fileDownloadDTO = fileService.getFileDownloadDTO(thumbnailId);
+
+                    return ActivityThumbnailDTO.of(activityId, fileDownloadDTO);
                 }).toList();
 
         return GetAllActivityResponse.of(activityThumbnailDTOList);
@@ -166,4 +157,18 @@ public class ActivityServiceImpl implements ActivityService {
                 .toList();
         return RecentActivityLogResponse.of(list);
     }
+
+    private Activity getEntityById(Long activityId) {
+        return activityRepository.findById(activityId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ACTIVITY_NOT_FOUND));
+    }
+
+    private void delete(Long activityId) {
+        activityRepository.deleteById(activityId);
+    }
+
+    private List<Activity> getAllByClubId(Long clubId) {
+        return activityRepository.findAllByClubId(clubId);
+    }
+
 }

@@ -44,7 +44,7 @@ public class DocumentFileService {
     }
 
     public List<Long> getAllFileIdsByDocumentId(Long documentId) {
-        return documentFileRepository.findAllFileIdByDocumentId(documentId);
+        return documentFileRepository.findAllFileIdsByDocumentId(documentId);
     }
 
     public void deleteAllByDocumentId(Long documentId) {
