@@ -1,5 +1,9 @@
 package kr.hanjari.backend.domain.club.presentation.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
 import kr.hanjari.backend.domain.club.domain.enums.College;
@@ -7,55 +11,74 @@ import kr.hanjari.backend.domain.club.domain.enums.Department;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.common.command.CategoryCommand;
 
+@Schema(description = "DTO for basic club information request")
 public record ClubBasicInformationRequest(
-        String clubName,    // 동아리 이름
-        String leaderEmail, // 동아리장 이메일
-        ClubType clubType,  // 동아리 유형 (CENTRAL, UNION, COLLEGE, DEPARTMENT)
-        Category category,  // 카테고리 정보 (유형별로 필요한 필드만 채움)
-        String oneLiner,    // 한 줄 소개
-        String briefIntroduction // 간단한 설명
+        @NotBlank(message = "Club name is required.")
+        @Schema(description = "Club name", nullable = false, example = "Hanjari", requiredMode = Schema.RequiredMode.REQUIRED)
+        String clubName,
+        @NotBlank(message = "Leader's email is required.")
+        @Email(message = "Invalid email format.")
+        @Schema(description = "Leader's email", nullable = false, example = "leader@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
+        String leaderEmail,
+        @NotNull(message = "Club type is required.")
+        @Schema(description = "Club type", nullable = false, example = "CENTRAL", requiredMode = Schema.RequiredMode.REQUIRED)
+        ClubType clubType,
+        @NotNull(message = "Category is required.")
+        @Schema(description = "Category information", requiredMode = Schema.RequiredMode.REQUIRED)
+        Category category,
+        @NotBlank(message = "One-liner is required.")
+        @Schema(description = "A short introduction of the club", nullable = false, example = "The best central club at Hanyang University ERICA", requiredMode = Schema.RequiredMode.REQUIRED)
+        String oneLiner,
+        @NotBlank(message = "Brief introduction is required.")
+        @Schema(description = "A brief introduction of the club", nullable = false, example = "Hanjari is a central club at Hanyang University ERICA.", requiredMode = Schema.RequiredMode.REQUIRED)
+        String briefIntroduction
 ) {
 
+    @Schema(description = "Club Category")
     public record Category(
-            CentralClubCategory central, // 중앙동아리 카테고리
-            UnionClubCategory union,     // 연합동아리 카테고리
-            College college,             // 단과대
-            Department department        // 학과
+            @Schema(description = "Central club category", example = "ACADEMIC")
+            CentralClubCategory central,
+            @Schema(description = "Union club category", example = "IT")
+            UnionClubCategory union,
+            @Schema(description = "College", example = "SOFTWARE_CONVERGENCE")
+            College college,
+            @Schema(description = "Department", example = "COMPUTER_SCIENCE_ENGINEERING")
+            Department department
     ) {
     }
 
     public void validate() {
         if (clubType == null) {
-            throw new IllegalArgumentException("clubType은 필수 값입니다.");
+            throw new IllegalArgumentException("clubType is required.");
         }
         if (category == null) {
-            throw new IllegalArgumentException("category는 필수 값입니다.");
+            throw new IllegalArgumentException("category is required.");
         }
 
         switch (clubType) {
-            case CENTRAL -> { // 중앙 동아리
-                requireNonNull(category.central(), "CENTRAL 유형에서는 centralCategory가 필수입니다.");
-                requireNull(category.union(), "CENTRAL 유형에서는 unionCategory를 지정할 수 없습니다.");
-                requireNull(category.college(), "CENTRAL 유형에서는 college를 지정할 수 없습니다.");
-                requireNull(category.department(), "CENTRAL 유형에서는 department를 지정할 수 없습니다.");
+            case CENTRAL -> { // Central Club
+                requireNonNull(category.central(), "For CENTRAL type, centralCategory is required.");
+                requireNull(category.union(), "For CENTRAL type, unionCategory cannot be specified.");
+                requireNull(category.college(), "For CENTRAL type, college cannot be specified.");
+                requireNull(category.department(), "For CENTRAL type, department cannot be specified.");
             }
-            case UNION -> { // 연합 동아리
-                requireNonNull(category.union(), "UNION 유형에서는 unionCategory가 필수입니다.");
-                requireNull(category.central(), "UNION 유형에서는 centralCategory를 지정할 수 없습니다.");
-                requireNull(category.college(), "UNION 유형에서는 college를 지정할 수 없습니다.");
-                requireNull(category.department(), "UNION 유형에서는 department를 지정할 수 없습니다.");
+            case UNION -> { // Union Club
+                requireNonNull(category.union(), "For UNION type, unionCategory is required.");
+                requireNull(category.central(), "For UNION type, centralCategory cannot be specified.");
+                requireNull(category.college(), "For UNION type, college cannot be specified.");
+                requireNull(category.department(), "For UNION type, department cannot be specified.");
             }
-            case COLLEGE -> { // 단과대 학회 (과 정보 없음)
-                requireNonNull(category.college(), "COLLEGE 유형에서는 college가 필수입니다.");
-                requireNull(category.central(), "COLLEGE 유형에서는 centralCategory를 지정할 수 없습니다.");
-                requireNull(category.union(), "COLLEGE 유형에서는 unionCategory를 지정할 수 없습니다.");
-                requireNull(category.department(), "COLLEGE 유형에서는 department를 지정할 수 없습니다.");
+            case COLLEGE -> { // College Club (no department info)
+                requireNonNull(category.college(), "For COLLEGE type, college is required.");
+                requireNull(category.central(), "For COLLEGE type, centralCategory cannot be specified.");
+                requireNull(category.union(), "For COLLEGE type, unionCategory cannot be specified.");
+                requireNull(category.department(), "For COLLEGE type, department cannot be specified.");
             }
-            case DEPARTMENT -> { // 과 학회 (과 정보 있음)
-                requireNull(category.union(), "DEPARTMENT 유형에서는 unionCategory를 지정할 수 없습니다.");
-                requireNull(category.central(), "DEPARTMENT 유형에서는 centralCategory를 지정할 수 없습니다.");
-                requireNonNull(category.college(), "DEPARTMENT 유형에서는 college가 필수입니다.");
-                requireNonNull(category.department(), "DEPARTMENT 유형에서는 department가 필수입니다.");
+            case DEPARTMENT -> { // Department Club (with department info)
+                requireNull(category.union(), "For DEPARTMENT type, unionCategory cannot be specified.");
+                requireNull(category.central(), "For DEPARTMENT type, centralCategory cannot be specified.");
+                requireNonNull(category.college(), "For DEPARTMENT type, college is required.");
+                requireNonNull(category.department(), "For DEPARTMENT type, department is required.");
             }
         }
     }
