@@ -1,5 +1,7 @@
 package kr.hanjari.backend.domain.auth.presentation.dto;
 
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
 
