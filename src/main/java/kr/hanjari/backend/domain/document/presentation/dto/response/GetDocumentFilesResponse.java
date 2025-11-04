@@ -1,13 +1,13 @@
 package kr.hanjari.backend.domain.document.presentation.dto.response;
 
-import kr.hanjari.backend.domain.file.domain.dto.FileDTO;
+import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
 
 import java.util.List;
 
 public record GetDocumentFilesResponse(
-        List<FileDTO> fileDTOList
+        List<FileDownloadDTO> fileDTOList
 ) {
-    public static GetDocumentFilesResponse of(List<FileDTO> fileDTOList) {
-        return new GetDocumentFilesResponse(fileDTOList);
+    public static GetDocumentFilesResponse of(List<FileDownloadDTO> fileDownloadDTOList) {
+        return new GetDocumentFilesResponse(fileDownloadDTOList);
     }
 }

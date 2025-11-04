@@ -2,7 +2,7 @@ package kr.hanjari.backend.domain.announcement.presentation.dto.request;
 
 import kr.hanjari.backend.domain.announcement.domain.entity.Announcement;
 
-public record CommonAnnouncementRequest(
+public record AnnouncementRequest(
         String title,
         String url
 ) {

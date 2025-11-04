@@ -9,6 +9,7 @@ import lombok.*;
 
 @Embeddable
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 @Getter
 public class DocumentFileId implements Serializable {

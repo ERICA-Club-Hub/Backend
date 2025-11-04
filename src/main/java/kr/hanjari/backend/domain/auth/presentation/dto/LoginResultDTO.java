@@ -1,11 +1,12 @@
 package kr.hanjari.backend.domain.auth.presentation.dto;
 
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
+
 public record LoginResultDTO(
         String token,
-        Long clubId,
-        String clubName
+        LoginResponse loginResponse
 ) {
-    public static LoginResultDTO of(String token, Long clubId, String clubName) {
-        return new LoginResultDTO(token, clubId, clubName);
+    public static LoginResultDTO of(String token, LoginResponse loginResponse) {
+        return new LoginResultDTO(token, loginResponse);
     }
 }

@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.activity.presentation.dto.response;
 
 import kr.hanjari.backend.domain.activity.domain.entity.Activity;
+import kr.hanjari.backend.domain.activity.presentation.dto.ActivityImageDTO;
 
 import java.time.LocalDate;
 import java.util.List;
