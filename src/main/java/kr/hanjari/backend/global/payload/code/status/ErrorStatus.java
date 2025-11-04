@@ -39,6 +39,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE404", "파일을 찾을 수 없습니다."),
     _FILE_NAME_EMPTY(HttpStatus.BAD_REQUEST, "FILE400", "파일명이 비어있습니다."),
 
+    // 자료 관련
+    _DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "DATA404", "자료를 찾을 수 없습니다."),
+    _DATA_EMPTY(HttpStatus.BAD_REQUEST, "DATA400", "파일을 업로드해주세요."),
+
     // S3 관련
     _S3_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3500", "오브젝트 업로드에 실패했습니다."),
     _S3_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S3500", "오브젝트 삭제에 실패했습니다."),

@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.club.application.query;
 
 
+import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.College;
 import kr.hanjari.backend.domain.club.domain.enums.Department;
@@ -73,4 +74,5 @@ public interface ClubQueryService {
     // 현재 인기있는 동아리 조회
     ClubSearchResponse findPopularClubs(int page, int size);
 
+    Club getReference(Long clubId);
 }

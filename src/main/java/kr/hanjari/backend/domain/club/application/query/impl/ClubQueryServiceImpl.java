@@ -300,4 +300,9 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
         return ClubSearchResponse.of(dtoPage);
     }
+
+    @Override
+    public Club getReference(Long clubId) {
+        return clubRepository.getReferenceById(clubId);
+    }
 }

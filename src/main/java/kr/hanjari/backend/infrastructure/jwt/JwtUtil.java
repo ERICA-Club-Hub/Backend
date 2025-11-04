@@ -109,16 +109,4 @@ public class JwtUtil {
         return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(BLACKLIST_KEY, token));
     }
 
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null) {
-            return null;
-        }
-        if (bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        } else {
-            throw new GeneralException(ErrorStatus._INVALID_TOKEN_FORMAT);
-        }
-    }
-
 }

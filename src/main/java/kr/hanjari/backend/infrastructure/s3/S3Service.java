@@ -78,6 +78,11 @@ public class S3Service {
         }
     }
 
+
+    public String getDownloadUrl(String fileKey) {
+        return s3Operations.createSignedGetURL(bucket, fileKey, Duration.ofHours(1)).toString();
+    }
+
     public String getDownloadUrl(Long fileId) {
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FILE_NOT_FOUND));

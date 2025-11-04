@@ -6,10 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.hanjari.backend.domain.auth.application.service.AuthService;
 import kr.hanjari.backend.domain.auth.presentation.dto.LoginResultDTO;
-import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequestDTO;
-import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponseDTO;
+import kr.hanjari.backend.domain.auth.presentation.dto.request.LoginRequest;
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.infrastructure.jwt.JwtUtil;
+import kr.hanjari.backend.infrastructure.web.WebUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,13 +35,12 @@ public class AuthController {
             - **clubName**: 동아리명
             """)
     @PostMapping("/login")
-    public ApiResponse<LoginResponseDTO> login(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
+    public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
-        LoginResultDTO loginResultDTO = authService.login(request);
-        response.addHeader("Authorization", "Bearer " + loginResultDTO.token());
+        LoginResultDTO result = authService.login(request);
+        response.addHeader("Authorization", "Bearer " + result.token());
 
-        LoginResponseDTO result = LoginResponseDTO.of(loginResultDTO.clubId(), loginResultDTO.clubName());
-        return ApiResponse.onSuccess(result);
+        return ApiResponse.onSuccess(result.loginResponse());
     }
 
     @Operation(summary = "[인증] 로그아웃", description = """
@@ -49,7 +49,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ApiResponse<Void> logout(HttpServletRequest request) {
 
-        String token = jwtUtil.resolveToken(request);
+        String token = WebUtil.resolveToken(request);
         authService.logout(token);
 
         return ApiResponse.onSuccess();

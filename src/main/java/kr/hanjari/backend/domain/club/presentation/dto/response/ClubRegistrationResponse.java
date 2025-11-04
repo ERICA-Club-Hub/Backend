@@ -1,6 +1,5 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
-
 public record ClubRegistrationResponse(
         Long clubRegistrationId,
         String clubName,

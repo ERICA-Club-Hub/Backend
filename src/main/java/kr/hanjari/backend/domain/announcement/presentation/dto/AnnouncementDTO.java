@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.announcement.presentation.dto.response;
+package kr.hanjari.backend.domain.announcement.presentation.dto;
 
 import kr.hanjari.backend.domain.announcement.domain.entity.Announcement;
 

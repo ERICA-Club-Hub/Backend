@@ -1,6 +1,6 @@
 package kr.hanjari.backend.domain.auth.presentation.dto.request;
 
-public record LoginRequestDTO(
+public record LoginRequest(
         String code
 ) {
 }

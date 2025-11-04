@@ -6,6 +6,7 @@ import java.util.List;
 import kr.hanjari.backend.domain.activity.application.service.ActivityService;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.CreateActivityRequest;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.UpdateActivityRequest;
+import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityCommandResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetAllActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetSpecificActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivityLogResponse;
@@ -47,11 +48,11 @@ public class ActivityController {
             - **생성된 activity의 ID**
             """)
     @PostMapping("/club-admin/{clubId}")
-    public ApiResponse<Long> postNewActivity(@PathVariable Long clubId,
-                                             @RequestPart CreateActivityRequest requestBody,
-                                             @RequestPart List<MultipartFile> images) {
+    public ApiResponse<ActivityCommandResponse> postNewActivity(@PathVariable Long clubId,
+                                                                @RequestPart CreateActivityRequest requestBody,
+                                                                @RequestPart List<MultipartFile> images) {
 
-        Long result = activityService.createActivity(clubId, requestBody, images);
+        ActivityCommandResponse result = activityService.createActivity(clubId, requestBody, images);
         return ApiResponse.onSuccess(result);
     }
 
