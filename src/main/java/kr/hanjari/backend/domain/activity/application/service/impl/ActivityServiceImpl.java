@@ -2,7 +2,6 @@ package kr.hanjari.backend.domain.activity.application.service.impl;
 
 import static kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivityLogResponse.RecentActivityLog.of;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -13,9 +12,6 @@ import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.file.application.FileService;
 import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
-import kr.hanjari.backend.domain.file.domain.entity.File;
-import kr.hanjari.backend.domain.activity.domain.entity.ActivityImageId;
-import kr.hanjari.backend.domain.activity.domain.entity.ActivityImage;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.domain.activity.domain.repository.ActivityImageRepository;
@@ -33,10 +29,11 @@ import kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivi
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
 
@@ -51,6 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ClubQueryService clubQueryService;
 
     @Override
+    @Transactional
     public ActivityCommandResponse createActivity(Long clubId, CreateActivityRequest createActivityRequest, List<MultipartFile> images) {
 
         Activity activity = createActivityRequest.toEntity();
@@ -70,6 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void updateActivity(Long activityId, UpdateActivityRequest updateActivityRequest,
                                List<MultipartFile> images) {
 
@@ -96,6 +95,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    @Transactional
     public void deleteActivity(Long activityId) {
         List<Long> fileIds = activityImageService.getAllFileIds(activityId);
 

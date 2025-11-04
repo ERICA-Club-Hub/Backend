@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/feedbacks")
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Tag(name = "Feedback", description = "Feedback API")
 public class FeedbackController {
 
