@@ -59,7 +59,5 @@ public class ActivityImageService {
                 .getId();
     }
 
-    public List<>
-
 
 }
