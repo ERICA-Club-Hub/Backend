@@ -1,5 +1,5 @@
 # Base Image
-FROM openjdk:21
+FROM eclipse-temurin:21-jdk
 
 # Directory
 WORKDIR /app
