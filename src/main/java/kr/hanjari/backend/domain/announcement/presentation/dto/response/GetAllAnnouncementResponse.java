@@ -1,5 +1,7 @@
 package kr.hanjari.backend.domain.announcement.presentation.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import kr.hanjari.backend.domain.announcement.presentation.dto.AnnouncementDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,6 +1,6 @@
 package kr.hanjari.backend.domain.activity.presentation.dto.response;
 
-import kr.hanjari.backend.domain.activity.presentation.dto.ActivityThumbnailDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
