@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.activity.presentation.dto;
+package kr.hanjari.backend.domain.activity.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
