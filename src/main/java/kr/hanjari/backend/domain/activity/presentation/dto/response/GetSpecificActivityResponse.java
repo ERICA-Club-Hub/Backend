@@ -1,11 +1,9 @@
 package kr.hanjari.backend.domain.activity.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.hanjari.backend.domain.activity.domain.entity.Activity;
-import kr.hanjari.backend.domain.activity.presentation.dto.ActivityImageDTO;
-
 import java.time.LocalDate;
 import java.util.List;
+import kr.hanjari.backend.domain.activity.domain.entity.Activity;
 
 @Schema(description = "DTO for getting a specific activity response")
 public record GetSpecificActivityResponse(
@@ -20,7 +18,8 @@ public record GetSpecificActivityResponse(
         @Schema(description = "List of activity image DTOs", nullable = false)
         List<ActivityImageDTO> activityImageDTOList
 ) {
-    public static GetSpecificActivityResponse of(Activity activity, String clubImageUrl, List<ActivityImageDTO> activityImageUrlList) {
+    public static GetSpecificActivityResponse of(Activity activity, String clubImageUrl,
+                                                 List<ActivityImageDTO> activityImageUrlList) {
         return new GetSpecificActivityResponse(activity.getClub().getName(), clubImageUrl,
                 activity.getContent(), activity.getDate(), activityImageUrlList);
     }

@@ -4,28 +4,26 @@ import static kr.hanjari.backend.domain.activity.presentation.dto.response.Recen
 
 import java.util.List;
 import java.util.stream.IntStream;
-
 import kr.hanjari.backend.domain.activity.application.service.ActivityImageService;
+import kr.hanjari.backend.domain.activity.application.service.ActivityService;
 import kr.hanjari.backend.domain.activity.domain.entity.Activity;
-import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityCommandResponse;
-import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
-import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.file.application.FileService;
-import kr.hanjari.backend.domain.file.domain.dto.FileDownloadDTO;
-import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
-import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.domain.activity.domain.repository.ActivityImageRepository;
 import kr.hanjari.backend.domain.activity.domain.repository.ActivityRepository;
-import kr.hanjari.backend.domain.activity.application.service.ActivityService;
-import kr.hanjari.backend.infrastructure.s3.S3Service;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.CreateActivityRequest;
 import kr.hanjari.backend.domain.activity.presentation.dto.request.UpdateActivityRequest;
-import kr.hanjari.backend.domain.activity.presentation.dto.ActivityImageDTO;
-import kr.hanjari.backend.domain.activity.presentation.dto.ActivityThumbnailDTO;
+import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityCommandResponse;
+import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityImageDTO;
+import kr.hanjari.backend.domain.activity.presentation.dto.response.ActivityThumbnailDTO;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetAllActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.GetSpecificActivityResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivityLogResponse;
 import kr.hanjari.backend.domain.activity.presentation.dto.response.RecentActivityLogResponse.RecentActivityLog;
+import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
+import kr.hanjari.backend.domain.club.domain.entity.Club;
+import kr.hanjari.backend.domain.file.application.FileService;
+import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -49,7 +47,8 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    public ActivityCommandResponse createActivity(Long clubId, CreateActivityRequest createActivityRequest, List<MultipartFile> images) {
+    public ActivityCommandResponse createActivity(Long clubId, CreateActivityRequest createActivityRequest,
+                                                  List<MultipartFile> images) {
 
         Activity activity = createActivityRequest.toEntity();
         Club club = clubQueryService.getReference(clubId);
@@ -118,9 +117,9 @@ public class ActivityServiceImpl implements ActivityService {
                 .map(activity -> {
                     Long activityId = activity.getId();
                     Long thumbnailId = activityImageService.getActivityThumbnailId(activity.getId());
-                    FileDownloadDTO fileDownloadDTO = fileService.getFileDownloadDTO(thumbnailId);
+                    String url = fileService.getFileDownloadUrl(thumbnailId);
 
-                    return ActivityThumbnailDTO.of(activityId, fileDownloadDTO);
+                    return ActivityThumbnailDTO.of(activityId, url);
                 }).toList();
 
         return GetAllActivityResponse.of(activityThumbnailDTOList);
