@@ -2,7 +2,12 @@ package kr.hanjari.backend.domain.auth.presentation.dto;
 
 import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hanjari.backend.domain.auth.presentation.dto.response.LoginResponse;
+
+@Schema(description = "DTO for login result")
 public record LoginResultDTO(
+        @Schema(description = "JWT token", nullable = false, example = "eyJhbGciOiJIUzI1NiJ9...")
         String token,
         LoginResponse loginResponse
 ) {
