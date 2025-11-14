@@ -1,11 +1,6 @@
 package kr.hanjari.backend.domain.activity.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import kr.hanjari.backend.domain.activity.presentation.dto.ActivityThumbnailDTO;
-
 import java.util.List;
 
 @Schema(description = "DTO for getting all activities response")
