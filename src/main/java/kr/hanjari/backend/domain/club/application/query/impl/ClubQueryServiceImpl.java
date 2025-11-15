@@ -13,6 +13,12 @@ import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
+import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.College;
+import kr.hanjari.backend.domain.club.domain.enums.Department;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.enums.SortBy;
+import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
@@ -24,12 +30,6 @@ import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRe
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
-import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.domain.enums.College;
-import kr.hanjari.backend.domain.club.domain.enums.Department;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.domain.enums.SortBy;
-import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
@@ -63,6 +63,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ClubQueryServiceImpl implements ClubQueryService {
 
+    public static final int FIRST_PAGE = 0;
+    public static final int MAIN_PAGE_OFFSET = 3;
+    
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
@@ -213,6 +216,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubSearchResponse findPopularClubs(int page, int size) {
         Page<Club> clubs = clubSearchRepository.findPopularClubs(page, size);
+
+        return getClubSearchResponseDTO(clubs);
+    }
+
+    @Override
+    public ClubSearchResponse findThreeRecentUpdatedClubs() {
+        Page<Club> clubs = clubSearchRepository.findRecentUpdateClubs(FIRST_PAGE, MAIN_PAGE_OFFSET);
 
         return getClubSearchResponseDTO(clubs);
     }

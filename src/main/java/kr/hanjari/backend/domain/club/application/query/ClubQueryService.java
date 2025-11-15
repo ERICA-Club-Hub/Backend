@@ -74,5 +74,7 @@ public interface ClubQueryService {
     // 현재 인기있는 동아리 조회
     ClubSearchResponse findPopularClubs(int page, int size);
 
+    ClubSearchResponse findThreeRecentUpdatedClubs();
+
     Club getReference(Long clubId);
 }
