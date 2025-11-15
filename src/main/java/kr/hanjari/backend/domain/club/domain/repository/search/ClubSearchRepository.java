@@ -28,4 +28,6 @@ public interface ClubSearchRepository {
             College college, Department departmentName, int page, int size);
 
     Page<Club> findPopularClubs(int page, int size);
+
+    Page<Club> findRecentUpdateClubs(int page, int size);
 }
