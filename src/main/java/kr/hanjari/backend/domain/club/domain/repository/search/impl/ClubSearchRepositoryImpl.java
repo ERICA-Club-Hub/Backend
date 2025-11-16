@@ -52,7 +52,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         centralCategoryEq(category))
                 .fetchOne();
 
-        return new PageImpl<>(clubs, of(page, size), totalElements != null ? totalElements : 0);
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElements));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         unionCategoryEq(category))
                 .fetchOne();
 
-        return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         collegeEq(college))
                 .fetchOne();
 
-        return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         departmentEq(departmentName))
                 .fetchOne();
 
-        return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
     }
 
     @Override
@@ -155,11 +155,35 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .limit(size)
                 .fetch();
 
-        Long totalElement = query.select(club.count())
+        Long totalElement = getTotalElement(club);
+
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
+    }
+
+    @Override
+    public Page<Club> findRecentUpdateClubs(int page, int size) {
+        QClub club = QClub.club;
+
+        List<Club> clubs = query.select(club)
+                .from(club)
+                .orderBy(club.updatedAt.desc())
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElement = getTotalElement(club);
+
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
+    }
+
+    private long getTotal(Long totalElement) {
+        return totalElement != null ? totalElement : 0;
+    }
+
+    private Long getTotalElement(QClub club) {
+        return query.select(club.count())
                 .from(club)
                 .fetchOne();
-
-        return new PageImpl<>(clubs, of(page, size), totalElement != null ? totalElement : 0);
     }
 
     private BooleanExpression nameContains(String keyword) {

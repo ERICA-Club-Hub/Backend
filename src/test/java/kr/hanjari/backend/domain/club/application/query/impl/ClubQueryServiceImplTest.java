@@ -643,4 +643,22 @@ class ClubQueryServiceImplTest {
         verify(clubSearchRepository, times(1)).findPopularClubs(anyInt(), anyInt());
         verify(s3Service, times(1)).getDownloadUrl(anyLong());
     }
+
+    @Test
+    @DisplayName("최근 업데이트된 3개의 동아리를 성공적으로 검색한다")
+    void should_find_three_recent_updated_clubs_successfully() {
+        // Given
+        Page<Club> clubPage = createClubPage();
+        when(clubSearchRepository.findRecentUpdateClubs(0, 3)).thenReturn(clubPage);
+
+        // When
+        ClubSearchResponse response = clubQueryService.findThreeRecentUpdatedClubs();
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.content()).hasSize(1);
+        assertThat(response.content().getFirst().name()).isEqualTo(club.getName());
+        verify(clubSearchRepository, times(1)).findRecentUpdateClubs(0, 3);
+        verify(s3Service, times(1)).getDownloadUrl(anyLong());
+    }
 }

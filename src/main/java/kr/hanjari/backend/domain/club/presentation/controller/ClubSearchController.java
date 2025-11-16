@@ -165,4 +165,14 @@ public class ClubSearchController {
         return ApiResponse.onSuccess(
                 clubQueryService.findPopularClubs(page, size));
     }
+
+    @GetMapping("/recent")
+    @Tag(name = "Club Search v2", description = "Club Search v2 API")
+    @Operation(summary = "[동아리 검색] 최근 업데이트된 동아리 조회", description = """
+            ## 최근 업데이트된 동아리를 3개 조회합니다.
+            """)
+    public ApiResponse<ClubSearchResponse> getRecentUpdatedClubs() {
+        return ApiResponse.onSuccess(
+                clubQueryService.findThreeRecentUpdatedClubs());
+    }
 }
