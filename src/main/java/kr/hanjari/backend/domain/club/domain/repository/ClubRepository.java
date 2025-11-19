@@ -1,5 +1,6 @@
 package kr.hanjari.backend.domain.club.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
@@ -29,4 +30,6 @@ public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificat
     Page<Club> findClubsOrderByRecruitmentStatus(String name, CentralClubCategory category, RecruitmentStatus status,
                                                  Pageable pageable);
 
+    @Query(value = "SELECT * FROM club ORDER BY RAND() LIMIT :limit", nativeQuery = true)
+    List<Club> findRandomClubsByLimit(int limit);
 }
