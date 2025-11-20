@@ -11,15 +11,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCodeResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -459,5 +451,12 @@ public class ClubController {
     @PostMapping("/service-admin/reissue")
     public ApiResponse<ClubCodeResponse> reissueClubCode(@RequestParam Long clubId) {
         return ApiResponse.onSuccess(ClubCodeResponse.of(codeGenerator.reissueCode(clubId)));
+    }
+
+    @GetMapping("/official-accounts")
+    public ApiResponse<GetOfficialAccounts> getOfficialAccounts() {
+        GetOfficialAccounts result = clubQueryService.fetchOfficialAccountsWithProfileImage();
+
+        return ApiResponse.onSuccess(result);
     }
 }

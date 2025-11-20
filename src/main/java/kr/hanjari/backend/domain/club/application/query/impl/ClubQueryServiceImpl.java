@@ -6,6 +6,7 @@ import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
+import kr.hanjari.backend.domain.club.domain.entity.detail.ClubInstagramImage;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
@@ -21,6 +22,7 @@ import kr.hanjari.backend.domain.club.domain.enums.SortBy;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
+import kr.hanjari.backend.domain.club.domain.repository.ClubInstagramImageRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.RecruitmentRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.ScheduleRepository;
@@ -30,16 +32,9 @@ import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRe
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRegistrationResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.ClubInstaAccountDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse.ClubSearchResult;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -47,6 +42,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecrui
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.infrastructure.crawl.InstagramCrawler;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,12 +61,16 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     public static final int FIRST_PAGE = 0;
     public static final int MAIN_PAGE_OFFSET = 3;
-    
+    public static final int MAIN_ACCOUNT_OFFSET = 3;
+
+    public static final String INSTAGRAM_URL = "https://www.instagram.com/";
+
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
     private final ScheduleRepository scheduleRepository;
+    private final ClubInstagramImageRepository clubInstagramImageRepository;
 
     private final IntroductionDraftRepository introductionDraftRepository;
     private final RecruitmentDraftRepository recruitmentDraftRepository;
@@ -81,6 +81,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final S3Service s3Service;
     private final ClubCommandService clubCommandService;
+
+    private final InstagramCrawler instagramCrawler;
 
 
     @Override
@@ -289,11 +291,25 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 .orElse(null);
     }
 
+    private String getInstagramProfileUrlOrElseNull(Long clubId) {
+        ClubInstagramImage instaImage = clubInstagramImageRepository.findById(clubId)
+                .orElse(null);
+
+        if (instaImage != null) {
+            return instaImage.getUrl();
+        }
+        return null;
+    }
+
     private String resolveImageUrl(Club club) {
         if (club.getImageFile() == null) {
             return null;
         }
         return s3Service.getDownloadUrl(club.getImageFile().getId());
+    }
+
+    private List<Club> getRandomClubsByLimit(int limit) {
+        return clubRepository.findRandomClubsByLimit(limit);
     }
 
     private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
@@ -314,5 +330,24 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public Club getReference(Long clubId) {
         return clubRepository.getReferenceById(clubId);
+    }
+
+    @Override
+    public GetOfficialAccounts fetchOfficialAccountsWithProfileImage() {
+
+        List<Club> clubs = getRandomClubsByLimit(MAIN_ACCOUNT_OFFSET);
+
+        List<ClubInstaAccountDTO> accountDTOList = clubs.stream()
+                .map(club -> {
+                    String clubName = club.getName();
+                    String account = club.getSnsUrl();
+                    String instagramProfileImageUrl = getInstagramProfileUrlOrElseNull(club.getImageFile().getId());
+                    String instagramProfileUrl = INSTAGRAM_URL + account;
+                    return ClubInstaAccountDTO.of(clubName, account, instagramProfileImageUrl, instagramProfileUrl);
+                })
+                .toList();
+
+        return GetOfficialAccounts.of(accountDTOList);
+
     }
 }
