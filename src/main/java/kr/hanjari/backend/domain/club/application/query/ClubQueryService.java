@@ -8,14 +8,7 @@ import kr.hanjari.backend.domain.club.domain.enums.Department;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.enums.SortBy;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubIntroductionResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubOverviewResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubRecruitmentResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubScheduleResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetRegistrationsResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -77,4 +70,6 @@ public interface ClubQueryService {
     ClubSearchResponse findThreeRecentUpdatedClubs();
 
     Club getReference(Long clubId);
+
+    GetOfficialAccounts fetchOfficialAccountsWithProfileImage();
 }
