@@ -341,7 +341,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 .map(club -> {
                     String clubName = club.getName();
                     String account = club.getSnsUrl();
-                    String instagramProfileImageUrl = getInstagramProfileUrlOrElseNull(club.getImageFile().getId());
+                    String instagramProfileImageUrl = getInstagramProfileUrlOrElseNull(club.getId());
                     String instagramProfileUrl = INSTAGRAM_URL + account;
                     return ClubInstaAccountDTO.of(clubName, account, instagramProfileImageUrl, instagramProfileUrl);
                 })
