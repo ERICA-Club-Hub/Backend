@@ -29,7 +29,7 @@ import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchReposit
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
 import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubSearchResponse.ClubSearchResult;
-import kr.hanjari.backend.domain.club.presentation.dto.response.GetOfficialAccounts.ClubInstagramDTO;
+import kr.hanjari.backend.domain.club.presentation.dto.response.GetInstagrams.ClubInstagramDTO;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
@@ -328,21 +328,21 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public GetOfficialAccounts findInstagramsByCategory(ClubType type, int page, int size) {
+    public GetInstagrams findInstagramsByCategory(ClubType type, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findClubsByType(type, page, size);
 
-        return getGetOfficialAccountsDTO(clubs);
+        return getGetInstagramsDTO(clubs);
     }
 
     @Override
-    public GetOfficialAccounts findInstagramsByRandom() {
+    public GetInstagrams findInstagramsByRandom() {
         Page<Club> clubs = clubSearchRepository.findRecentUpdateClubs(FIRST_PAGE, MAIN_ACCOUNT_OFFSET);
 
-        return getGetOfficialAccountsDTO(clubs);
+        return getGetInstagramsDTO(clubs);
     }
 
-    private GetOfficialAccounts getGetOfficialAccountsDTO(Page<Club> clubs) {
+    private GetInstagrams getGetInstagramsDTO(Page<Club> clubs) {
 
         Page<ClubInstagramDTO> dtoPage = clubs.map(club -> {
             String clubName = club.getName();
@@ -352,6 +352,6 @@ public class ClubQueryServiceImpl implements ClubQueryService {
             return ClubInstagramDTO.of(clubName, account, profileImageUrl, profileUrl);
         });
 
-        return GetOfficialAccounts.from(dtoPage);
+        return GetInstagrams.from(dtoPage);
     }
 }

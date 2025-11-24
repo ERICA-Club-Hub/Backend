@@ -68,7 +68,7 @@ public interface ClubQueryService {
 
     // 인스타그램 조회
 
-    GetOfficialAccounts findInstagramsByCategory(ClubType type, int page, int size);
+    GetInstagrams findInstagramsByCategory(ClubType type, int page, int size);
 
-    GetOfficialAccounts findInstagramsByRandom();
+    GetInstagrams findInstagramsByRandom();
 }
