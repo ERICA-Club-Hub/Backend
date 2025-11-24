@@ -2,12 +2,7 @@ package kr.hanjari.backend.domain.club.application.query;
 
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
-import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
-import kr.hanjari.backend.domain.club.domain.enums.College;
-import kr.hanjari.backend.domain.club.domain.enums.Department;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.domain.enums.SortBy;
-import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
+import kr.hanjari.backend.domain.club.domain.enums.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
@@ -71,5 +66,9 @@ public interface ClubQueryService {
 
     Club getReference(Long clubId);
 
-    GetOfficialAccounts fetchOfficialAccountsWithProfileImage();
+    // 인스타그램 조회
+
+    GetInstagrams findInstagramsByCategory(ClubType type, int page, int size);
+
+    GetInstagrams findInstagramsByRandom();
 }
