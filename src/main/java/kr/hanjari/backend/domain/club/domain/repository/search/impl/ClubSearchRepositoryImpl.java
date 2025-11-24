@@ -176,6 +176,22 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
     }
 
+    @Override
+    public Page<Club> findClubsByType(ClubType type, int page, int size) {
+        QClub club = QClub.club;
+
+        List<Club> clubs = query.select(club)
+                .from(club)
+                .where(clubTypeEq(type))
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElement = getTotalElement(club);
+
+        return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
+    }
+
     private long getTotal(Long totalElement) {
         return totalElement != null ? totalElement : 0;
     }
@@ -190,6 +206,10 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return keyword != null && !keyword.isBlank()
                 ? QClub.club.name.containsIgnoreCase(keyword)
                 : null;
+    }
+
+    private BooleanExpression clubTypeEq(ClubType type) {
+        return type != null ? QClub.club.categoryInfo.clubType.eq(type) : null;
     }
 
     private BooleanExpression statusEq(RecruitmentStatus status) {

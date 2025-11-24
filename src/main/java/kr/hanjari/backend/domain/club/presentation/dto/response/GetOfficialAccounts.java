@@ -1,13 +1,34 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
-import kr.hanjari.backend.domain.club.presentation.dto.ClubInstaAccountDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public record GetOfficialAccounts(
-        List<ClubInstaAccountDTO> officialAccounts
+        List<ClubInstagramDTO> officialAccounts,
+        Long totalElements,
+        Integer page,
+        Integer size,
+        Integer totalPage
 ) {
-    public static GetOfficialAccounts of(List<ClubInstaAccountDTO> officialAccounts) {
-        return new GetOfficialAccounts(officialAccounts);
+    public static GetOfficialAccounts from(Page<ClubInstagramDTO> page) {
+        return new GetOfficialAccounts(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalPages()
+        );
+    }
+
+    public record ClubInstagramDTO(
+            String clubName,
+            String accountName,
+            String profileImage,
+            String instagramProfileUrl
+    ) {
+        public static ClubInstagramDTO of(String clubName, String accountName, String profileImage, String instagramProfileUrl) {
+            return new ClubInstagramDTO(clubName, accountName, profileImage, instagramProfileUrl);
+        }
     }
 }
