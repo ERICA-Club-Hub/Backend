@@ -453,10 +453,4 @@ public class ClubController {
         return ApiResponse.onSuccess(ClubCodeResponse.of(codeGenerator.reissueCode(clubId)));
     }
 
-    @GetMapping("/official-accounts")
-    public ApiResponse<GetOfficialAccounts> getOfficialAccounts() {
-        GetOfficialAccounts result = clubQueryService.fetchOfficialAccountsWithProfileImage();
-
-        return ApiResponse.onSuccess(result);
-    }
 }
