@@ -70,5 +70,13 @@ public interface ClubQueryService {
 
     GetInstagrams findInstagramsByCategory(ClubType type, int page, int size);
 
+    GetInstagrams findInstagramsCentral(CentralClubCategory category, int page, int size);
+
+    GetInstagrams findInstagramsUnion(UnionClubCategory category, int page, int size);
+
+    GetInstagrams findInstagramsCollege(College college, int page, int size);
+
+    GetInstagrams findInstagramsDepartment(Department department, int page, int size);
+
     GetInstagrams findInstagramsByRandom();
 }
