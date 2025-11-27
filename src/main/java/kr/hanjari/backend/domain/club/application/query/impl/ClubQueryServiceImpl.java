@@ -41,6 +41,7 @@ import kr.hanjari.backend.infrastructure.crawl.InstagramCrawler;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -331,6 +332,45 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public GetInstagrams findInstagramsByCategory(ClubType type, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findClubsByType(type, page, size);
+
+        return getGetInstagramsDTO(clubs);
+    }
+
+    @Override
+    public GetInstagrams findInstagramsCentral(CentralClubCategory category, int page, int size) {
+
+        Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
+                null, null, null, category, page, size);
+
+        return getGetInstagramsDTO(clubs);
+    }
+
+    @Override
+    public GetInstagrams findInstagramsUnion(UnionClubCategory category, int page, int size) {
+
+        Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
+                null, null, null, category, page, size
+        );
+
+        return getGetInstagramsDTO(clubs);
+    }
+
+    @Override
+    public GetInstagrams findInstagramsCollege(College college, int page, int size) {
+
+        Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
+                null, null, null, college, page, size
+        );
+
+        return getGetInstagramsDTO(clubs);
+    }
+
+    @Override
+    public GetInstagrams findInstagramsDepartment(Department department, int page, int size) {
+
+        Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
+                null, null, null, null, department, page, size
+        );
 
         return getGetInstagramsDTO(clubs);
     }
