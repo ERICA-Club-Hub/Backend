@@ -7,10 +7,10 @@ public record ClubIdResponse(
     long totalElements
 ) {
 
-  public static ClubIdResponse of(
-      List<Long> clubIds,
-      long totalElements
-  ) {
-    return new ClubIdResponse(clubIds, totalElements);
-  }
+    public static ClubIdResponse of(
+        List<Long> clubIds,
+        long totalElements
+    ) {
+      return new ClubIdResponse(clubIds, totalElements);
+    }
 }
