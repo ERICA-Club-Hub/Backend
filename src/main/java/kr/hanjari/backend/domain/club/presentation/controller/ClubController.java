@@ -43,6 +43,16 @@ public class ClubController {
     private final ClubCommandService clubCommandService;
     private final CodeGenerator codeGenerator;
 
+    /*----------------------- 동아리 오버뷰 ---------------------------*/
+    @Tag(name = "Club Overview", description = "Club Overview API")
+    @Operation(summary = "[동아리 조회] 동아리 ID 전체 조회", description = """
+            ## 동아리의 ID를 전체 조회합니다.
+            """)
+    @GetMapping("/ids")
+    public ApiResponse<ClubIdResponse> getAllClubIds() {
+        return ApiResponse.onSuccess(clubQueryService.getAllClubIds());
+    }
+
     /*------------------------ 동아리 등록 ----------------------------*/
     @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청", description = """

@@ -82,6 +82,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
 
     @Override
+    public ClubIdResponse getAllClubIds() {
+        List<Long> clubIds = clubRepository.findAll().stream()
+                .map(Club::getId)
+                .toList();
+        return ClubIdResponse.of(clubIds, clubIds.size());
+    }
+
+    @Override
     public GetRegistrationsResponse getRegistrations() {
         List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
 

@@ -12,6 +12,8 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubSchedu
 
 public interface ClubQueryService {
 
+    ClubIdResponse getAllClubIds();
+
     // 등록 요청 동아리 조회
     GetRegistrationsResponse getRegistrations();
 
