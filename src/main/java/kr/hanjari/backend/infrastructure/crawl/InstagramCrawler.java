@@ -33,15 +33,17 @@ public class InstagramCrawler {
         WebDriver driver = null;
 
         try {
-            driver = new ChromeDriver();
+            driver = getDriver();
 
             List<Club> clubList = clubRepository.findAll();
             for (Club club : clubList) {
+
+                Long clubId = club.getId();
                 String account = club.getSnsUrl();
                 String profileImageUrl = getProfileImageUrl(account, driver);
 
-                ClubInstagramImage clubInstagramImage = clubInstagramImageRepository.findById(club.getId())
-                        .orElse(new ClubInstagramImage(club.getId(), club, profileImageUrl));
+                ClubInstagramImage clubInstagramImage = clubInstagramImageRepository.findById(clubId)
+                        .orElseGet(() -> new ClubInstagramImage(clubId));
 
                 clubInstagramImage.update(profileImageUrl);
                 clubInstagramImageRepository.save(clubInstagramImage);
