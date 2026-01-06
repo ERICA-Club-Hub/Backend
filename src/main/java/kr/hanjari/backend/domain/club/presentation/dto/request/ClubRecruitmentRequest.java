@@ -8,6 +8,8 @@ public record ClubRecruitmentRequest(
         @NotBlank(message = "Due date is required.")
         @Schema(description = "Recruitment due date", nullable = false, example = "2024-03-31", requiredMode = Schema.RequiredMode.REQUIRED)
         String due,
+        @Schema(description = "Recruitment target", example = "All students")
+        String target,
         @NotBlank(message = "Notice is required.")
         @Schema(description = "Recruitment notice", nullable = false, example = "Interview after document submission", requiredMode = Schema.RequiredMode.REQUIRED)
         String notice,

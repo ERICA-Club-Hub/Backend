@@ -23,7 +23,7 @@ public interface ClubQueryService {
             int size);
 
     // 동아리 상세 조회
-    ClubResponse findClubDetail(Long clubId);
+    ClubDetailResponse findClubDetail(Long clubId);
 
     ClubOverviewResponse findClubOverview(Long clubId);
 

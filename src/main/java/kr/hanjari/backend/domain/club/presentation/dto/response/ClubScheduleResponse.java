@@ -17,7 +17,7 @@ public record ClubScheduleResponse(
         return new ClubScheduleResponse(
                 schedules.stream().map(ScheduleResponse::of).toList(),
                 schedules.size(),
-                club.getMeetingSchedule()
+                club.getScheduleDescription()
         );
     }
 }

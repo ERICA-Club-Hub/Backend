@@ -26,7 +26,7 @@ public record ClubResponse(
         @Schema(description = "Leader's phone number", nullable = true, example = "010-1234-5678")
         String leaderPhone,
         @Schema(description = "Membership fee", nullable = true, example = "10000")
-        Integer membershipFee,
+        String  membershipFee,
         @Schema(description = "SNS URL", nullable = true, example = "https://www.instagram.com/hanjari_")
         String snsUrl,
         @Schema(description = "Application URL", nullable = true, example = "https://forms.gle/...")
@@ -41,7 +41,7 @@ public record ClubResponse(
                 club.getOneLiner(),
                 club.getRecruitmentStatus(),
                 profileImageUrl,
-                club.getMeetingSchedule(),
+                club.getScheduleDescription(),
                 club.getLeaderName(),
                 club.getLeaderEmail(),
                 club.getLeaderPhone(),

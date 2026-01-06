@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.club.application.command;
 
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
@@ -20,7 +21,7 @@ public interface ClubCommandService {
     void deleteClubRegistration(Long clubRegistrationId);
 
     // 동아리 기본 정보
-    ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request,
+    ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                    MultipartFile file);
 
     // 동아리 상세 정보

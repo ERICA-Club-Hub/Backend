@@ -14,7 +14,7 @@ public record ClubBasicInfoResponse(
         @Schema(description = "Club activities", nullable = true, example = "Regular meeting every Monday")
         String activities,
         @Schema(description = "Membership fee", nullable = true, example = "10000")
-        Integer membershipFee,
+        String membershipFee,
         @Schema(description = "SNS URL", nullable = true, example = "https://www.instagram.com/hanjari_")
         String snsUrl
 ) {
@@ -23,7 +23,7 @@ public record ClubBasicInfoResponse(
                 club.getLeaderName(),
                 club.getLeaderEmail(),
                 club.getLeaderPhone(),
-                club.getMeetingSchedule(),
+                club.getScheduleDescription(),
                 club.getMembershipFee(),
                 club.getSnsUrl()
         );
