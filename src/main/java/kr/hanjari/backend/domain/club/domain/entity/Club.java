@@ -29,7 +29,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "club")
+@Table(name = "club",
+    uniqueConstraints = {
+        @jakarta.persistence.UniqueConstraint(columnNames = "code"),
+        @jakarta.persistence.UniqueConstraint(columnNames = "name")
+    })
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
