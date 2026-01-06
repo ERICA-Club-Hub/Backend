@@ -326,9 +326,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return s3Service.getDownloadUrl(club.getImageFile().getId());
     }
 
-    private List<Club> getRandomClubsByLimit(int limit) {
-        return clubRepository.findRandomClubsByLimit(limit);
+    private String resolveImageUrl(ClubRegistration clubRegistration) {
+        if (clubRegistration.getImageFile() == null) {
+            return null;
+        }
+        return s3Service.getDownloadUrl(clubRegistration.getImageFile().getId());
     }
+
+
 
     private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
         Page<ClubSearchResult> dtoPage = clubs.map(club ->
@@ -345,9 +350,30 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return ClubSearchResponse.of(dtoPage);
     }
 
+    private ClubSearchResponse getClubSearchResponseDTOForUpdate(Page<ClubRegistration> clubRegistrations) {
+        Page<ClubSearchResult> dtoPage = clubRegistrations.map(clubRegistration ->
+            ClubSearchResult.of(
+                clubRegistration.getId(),
+                clubRegistration.getName(),
+                clubRegistration.getOneLiner(),
+                resolveImageUrl(clubRegistration),
+                clubRegistration.getCategoryInfo().getClubType().getDescription(),
+                null
+            )
+        );
+
+        return ClubSearchResponse.of(dtoPage);
+    }
+
     @Override
     public Club getReference(Long clubId) {
         return clubRepository.getReferenceById(clubId);
+    }
+
+    @Override
+    public ClubSearchResponse findUpdateRequests(int page, int size) {
+        Page<ClubRegistration> all = clubRegistrationRepository.findAll(PageRequest.of(page, size));
+        return getClubSearchResponseDTOForUpdate(all);
     }
 
     @Override

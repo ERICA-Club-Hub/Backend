@@ -176,4 +176,17 @@ public class ClubSearchController {
         return ApiResponse.onSuccess(
                 clubQueryService.findThreeRecentUpdatedClubs());
     }
+
+    @GetMapping("/service-admin/update")
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 조회", description = """
+            ## 동아리 수정 요청을 조회합니다.
+            """)
+    public ApiResponse<ClubSearchResponse> getClubUpdateList(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "10") int size
+    ) {
+        return ApiResponse.onSuccess(
+            clubQueryService.findUpdateRequests(page, size));
+    }
 }
