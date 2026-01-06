@@ -1,5 +1,6 @@
 package kr.hanjari.backend.domain.club.application.command;
 
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
@@ -24,6 +25,7 @@ public interface ClubCommandService {
     ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                    MultipartFile file);
 
+    void updateClubRecruitmentStatus(Long clubId, int status);
     // 동아리 상세 정보
     ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO);
 

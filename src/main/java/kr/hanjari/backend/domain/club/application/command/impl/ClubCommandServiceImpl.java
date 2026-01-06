@@ -16,6 +16,7 @@ import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDescriptionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
@@ -141,6 +142,13 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         Club saved = clubRepository.save(club);
         return ClubCommandResponse.of(saved.getId());
+    }
+
+    @Override
+    public void updateClubRecruitmentStatus(Long clubId, int status) {
+        Club club = getClub(clubId);
+        club.updateRecruitmentStatus(status);
+        clubRepository.save(club);
     }
 
     @Override

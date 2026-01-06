@@ -150,6 +150,27 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
     }
 
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 기본] 동아리 모집 상태 변경", description = """
+            ## 동아리 모집 상태를 변경합니다.
+            ### Path Variable
+            - **clubId**: 변경할 동아리의 ID
+            ### Request Param
+            - **option**: 변경할 모집 상태 (0: 모집예정, 1: 모집중, 2: 모집마감)
+            """)
+    @PostMapping("{clubId}/recruitment-status")
+    public ApiResponse<Void> updateClubRecruitmentStatus(
+            @PathVariable Long clubId,
+            @RequestParam int option,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+        clubCommandService.updateClubRecruitmentStatus(clubId, option);
+        return ApiResponse.onSuccess();
+    }
+
 
     /*----------------------------- 동아리 상세 -----------------------------*/    // 조회
     @Tag(name = "Club Detail", description = "Club Detail API")
