@@ -68,6 +68,8 @@ public interface ClubQueryService {
 
     Club getReference(Long clubId);
 
+    ClubSearchResponse findUpdateRequests(int page, int size);
+
     // 인스타그램 조회
 
     GetInstagrams findInstagramsByCategory(ClubType type, int page, int size);
