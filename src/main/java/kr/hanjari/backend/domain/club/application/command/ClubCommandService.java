@@ -25,6 +25,11 @@ public interface ClubCommandService {
     ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                    MultipartFile file);
 
+    ClubCommandResponse acceptClubUpdate(Long clubRegistrationId);
+
+    void deleteClubUpdate(Long clubRegistrationId);
+
+
     void updateClubRecruitmentStatus(Long clubId, int status);
     // 동아리 상세 정보
     ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO);
