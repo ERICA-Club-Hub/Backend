@@ -109,6 +109,13 @@ public class Club extends BaseEntity {
         return club;
     }
 
+    public void update(ClubRegistration clubRegistration) {
+        this.name = clubRegistration.getName();
+        this.oneLiner = clubRegistration.getOneLiner();
+        this.categoryInfo = clubRegistration.getCategoryInfo();
+        this.imageFile = clubRegistration.getImageFile();
+    }
+
     public void updateClubImage(File imageFile) {
         this.imageFile = imageFile;
     }

@@ -131,18 +131,47 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                           MultipartFile file) {
         Club club = getClub(clubId);
-        club.updateClubCommonInfo(request, request.toCategoryCommand());
+        ClubRegistration clubRegistration = ClubRegistration.update(
+                clubId,
+                request.clubName(),
+                club.getLeaderEmail(),
+                request.toCategoryCommand(),
+                request.oneLiner(),
+                club.getBriefIntroduction()
+        );
 
         if (file != null) {
             Long fileId = fileService.uploadObjectAndSaveFile(file);
-            fileService.deleteObjectAndFile(club.getImageFile().getId());
             File imageFile = fileRepository.getReferenceById(fileId);
-            club.updateClubImage(imageFile);
+            clubRegistration.updateImageFile(imageFile);
         }
 
-        Club saved = clubRepository.save(club);
-        return ClubCommandResponse.of(saved.getId());
+        clubRegistrationRepository.save(clubRegistration);
+
+        return ClubCommandResponse.of(clubRegistration.getId());
     }
+
+    @Override
+    public ClubCommandResponse acceptClubUpdate(Long clubRegistrationId) {
+
+        ClubRegistration clubRegistration = getClubRegistration(clubRegistrationId);
+        Club clubToUpdate = getClub(clubRegistration.getClubId());
+
+        fileService.deleteObjectAndFile(clubToUpdate.getImageFile().getId());
+        clubToUpdate.update(clubRegistration);
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+
+        return ClubCommandResponse.of(clubToUpdate.getId());
+    }
+
+    @Override
+    public void deleteClubUpdate(Long clubRegistrationId) {
+        ClubRegistration clubRegistrationToDelete = getClubRegistration(clubRegistrationId);
+
+        fileService.deleteObjectAndFile(clubRegistrationToDelete.getImageFile().getId());
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+    }
+
 
     @Override
     public void updateClubRecruitmentStatus(Long clubId, int status) {

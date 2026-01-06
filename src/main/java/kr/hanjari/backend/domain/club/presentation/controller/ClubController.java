@@ -127,7 +127,7 @@ public class ClubController {
 
     /*------------------------ 동아리 기본 ----------------------------*/
     @Tag(name = "Club Basic", description = "Club Basic API")
-    @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
+    @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정 요청", description = """
             ## 동아리 기본 정보를 수정합니다.
             ### RequestBody
             - **name**: 동아리명
@@ -148,6 +148,37 @@ public class ClubController {
         }
 
         return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 수락", description = """
+            ## 동아리 수정 요청을 수락합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 수락하려는 clubRegistration의 ID
+            ### Response
+            - **수락 후 수정된 club의 id**
+            """)
+    @PostMapping("/service-admin/updates/{clubRegistrationId}")
+    public ApiResponse<ClubCommandResponse> acceptClubUpdate(@PathVariable Long clubRegistrationId) {
+
+        ClubCommandResponse result = clubCommandService.acceptClubUpdate(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 삭제", description = """
+            ## 동아리 수정 요청을 삭제합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 삭제하려는 clubRegistration의 ID
+            ### Response
+            - 없음
+            """)
+    @DeleteMapping("/service-admin/updates/{clubRegistrationId}")
+    public ApiResponse<Void> deleteClubUpdate(@PathVariable Long clubRegistrationId) {
+
+        clubCommandService.deleteClubUpdate(clubRegistrationId);
+
+        return ApiResponse.onSuccess();
     }
 
     @Tag(name = "Club Basic", description = "Club Basic API")
