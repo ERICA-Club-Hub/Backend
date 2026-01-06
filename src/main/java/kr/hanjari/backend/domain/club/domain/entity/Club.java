@@ -111,12 +111,12 @@ public class Club extends BaseEntity {
     }
 
     public void updateClubDetails(ClubDetailRequest detail) {
-        this.recruitmentStatus = detail.recruitmentStatus();
+        this.oneLiner = detail.oneLiner();
         this.leaderName = detail.leaderName();
         this.leaderPhone = detail.leaderPhone();
+        this.leaderEmail = detail.contactEmail();
         this.membershipFee = detail.membershipFee();
-        this.meetingSchedule = detail.activities();
-        this.snsUrl = detail.snsUrl();
+        this.snsUrl = detail.snsAccount();
         this.applicationUrl = detail.applicationUrl();
     }
 
