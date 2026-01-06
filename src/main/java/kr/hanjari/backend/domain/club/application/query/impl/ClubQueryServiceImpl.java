@@ -93,8 +93,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public GetRegistrationsResponse getRegistrations() {
-        List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+    public GetRegistrationsResponse getRegistrations(int page, int size) {
+        Page<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAllByCommand(
+                PageRequest.of(page, size), Command.REGISTER
+        );
 
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
                 .map(ClubRegistrationResponse::from)
@@ -372,7 +374,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubSearchResponse findUpdateRequests(int page, int size) {
-        Page<ClubRegistration> all = clubRegistrationRepository.findAll(PageRequest.of(page, size));
+        Page<ClubRegistration> all = clubRegistrationRepository.findAllByCommand(PageRequest.of(page, size), Command.UPDATE);
         return getClubSearchResponseDTOForUpdate(all);
     }
 

@@ -88,8 +88,11 @@ public class ClubController {
             - clubRegistrationDTOList: 등록 요청한 동아리 리스트
             """)
     @GetMapping("/service-admin/registrations")
-    public ApiResponse<GetRegistrationsResponse> getAllClubRegistrations() {
-        GetRegistrationsResponse result = clubQueryService.getRegistrations();
+    public ApiResponse<GetRegistrationsResponse> getAllClubRegistrations(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "10") int size
+    ) {
+        GetRegistrationsResponse result = clubQueryService.getRegistrations(page, size);
 
         return ApiResponse.onSuccess(result);
     }

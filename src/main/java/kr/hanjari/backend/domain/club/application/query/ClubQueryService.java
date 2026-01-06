@@ -15,7 +15,7 @@ public interface ClubQueryService {
     ClubIdResponse getAllClubIds();
 
     // 등록 요청 동아리 조회
-    GetRegistrationsResponse getRegistrations();
+    GetRegistrationsResponse getRegistrations(int page, int size);
 
     // 조건 별 동아리 검색
     ClubDetailListResponse findClubsByCondition(
