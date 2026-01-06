@@ -38,6 +38,7 @@ import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.infrastructure.slack.SlackWebhookSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final CodeGenerator codeGenerator;
     private final MailSender mailSender;
     private final FileService fileService;
+    private final SlackWebhookSender slackWebhookSender;
 
     @Override
     public ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
@@ -82,6 +84,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         clubRegistrationRepository.save(clubRegistration);
 
+        slackWebhookSender.sendMessage(createSlackMessage(clubRegistration));
         return ClubCommandResponse.of(clubRegistration.getId());
     }
 
@@ -276,6 +279,20 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     // ======= Private Methods ======= //
+
+    private String createSlackMessage(ClubRegistration clubRegistration) {
+        return "📩 *새로운 동아리 등록 신청이 접수되었습니다!*\n\n"
+            + "🏷️ *동아리 이름*\n"
+            + clubRegistration.getName() + "\n\n"
+            + "👤 *대표 이메일*\n"
+            + clubRegistration.getLeaderEmail() + "\n\n"
+            + "💬 *한 줄 소개*\n"
+            + clubRegistration.getOneLiner() + "\n\n"
+            + "📝 *간단 소개*\n"
+            + clubRegistration.getBriefIntroduction() + "\n\n"
+            + "📚 *카테고리*\n"
+            + clubRegistration.getCategoryInfo().getClubType().getDescription();
+    }
 
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId)
