@@ -119,9 +119,22 @@ public class ClubController {
             """)
     @DeleteMapping("/service-admin/registrations/{clubRegistrationId}")
     public ApiResponse<Void> deleteClubRegistration(@PathVariable Long clubRegistrationId) {
-
         clubCommandService.deleteClubRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess();
+    }
 
+    @Tag(name = "Club Registration", description = "Club Registration API")
+    @Operation(summary = "[동아리 삭제] 동아리 삭제", description = """
+            ## 동아리를 삭제합니다.
+            ### PathVariable
+            - **clubId**: 삭제하려는 club의 ID
+            ### Response
+            - 없음
+            """)
+    @DeleteMapping("/service-admin/"
+        + "{clubId}")
+    public ApiResponse<Void> deleteClub(@PathVariable Long clubId) {
+        clubCommandService.deleteClub(clubId);
         return ApiResponse.onSuccess();
     }
 
