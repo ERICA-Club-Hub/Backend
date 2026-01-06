@@ -140,6 +140,10 @@ public class Club extends BaseEntity {
         }
     }
 
+    public void updateMeetingSchedule(String meetingSchedule) {
+        this.meetingSchedule = meetingSchedule;
+    }
+
     public void incrementViewCount() {
         this.viewCount++;
     }
