@@ -59,6 +59,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _SCHEDULE_IS_NOT_BELONG_TO_CLUB(HttpStatus.BAD_REQUEST, "SCHEDULE400", "해당 동아리에 속한 일정이 아닙니다."),
     _SCHEDULE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SCHEDULE400", "해당 월에 일정이 이미 존재합니다."),
     _SCHEDULE_TO_CHANGE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SCHEDULE400", "변경할 월에 일정이 이미 존재합니다."),
+    _SCHEDULE_DESCRIPTION_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404", "임시 저장 된 일정 설명을 찾을 수 없습니다."),
 
     _INTRODUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "소개를 찾을 수 없습니다."),
     _INTRODUCTION_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "INTRODUCTION404", "임시 저장 된 소개를 찾을 수 없습니다."),

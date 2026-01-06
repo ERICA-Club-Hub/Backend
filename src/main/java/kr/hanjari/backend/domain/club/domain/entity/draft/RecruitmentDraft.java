@@ -31,19 +31,23 @@ public class RecruitmentDraft {
     @JoinColumn(name = "club_id")
     private Club club;
 
-    @Column(name = "content1")
-    private String content1;
+    @Column(name = "content1", length = 600)
+    private String due;
 
-    @Column(name = "content2")
-    private String content2;
+    @Column(name = "content2", length = 600)
+    private String target;
 
-    @Column(name = "content3")
-    private String content3;
+    @Column(name = "content3", length = 600)
+    private String notice;
+
+    @Column(name = "content4", length = 600)
+    private String etc;
 
     public void updateRecruitment(ClubRecruitmentRequest clubRecruitmentDTO) {
-        this.content1 = clubRecruitmentDTO.due();
-        this.content2 = clubRecruitmentDTO.notice();
-        this.content3 = clubRecruitmentDTO.etc();
+        this.due = clubRecruitmentDTO.due();
+        this.target = clubRecruitmentDTO.target();
+        this.notice = clubRecruitmentDTO.notice();
+        this.etc = clubRecruitmentDTO.etc();
     }
 
 }

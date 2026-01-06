@@ -11,7 +11,7 @@ public record ClubOverviewResponse(
         @Schema(description = "Club name", nullable = false, example = "Hanjari")
         String name,
         @Schema(description = "Club description (one-liner)", nullable = false, example = "The best central club at Hanyang University ERICA")
-        String description,
+        String oneLiner,
         @Schema(description = "Recruitment status", nullable = false, example = "RECRUITING")
         RecruitmentStatus recruitmentStatus,
         @Schema(description = "Club profile image URL", nullable = true, example = "https://.../profile.png")

@@ -14,15 +14,15 @@ public record ClubRecruitmentResponse(
         @Schema(description = "Other recruitment information", nullable = true, example = "For further questions...")
         String etc
 ) {
-    public static ClubRecruitmentResponse of(Recruitment recruitment, String target) {
+    public static ClubRecruitmentResponse of(Recruitment recruitment) {
         if (recruitment == null) {
             return new ClubRecruitmentResponse(null, null, null, null);
         }
         return new ClubRecruitmentResponse(
-                recruitment.getContent1(),
-                target,
-                recruitment.getContent2(),
-                recruitment.getContent3()
+                recruitment.getDue(),
+                recruitment.getTarget(),
+                recruitment.getNotice(),
+                recruitment.getEtc()
         );
     }
 

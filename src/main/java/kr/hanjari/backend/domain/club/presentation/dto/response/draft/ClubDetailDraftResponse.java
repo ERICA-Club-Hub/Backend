@@ -17,7 +17,7 @@ public record ClubDetailDraftResponse(
         @Schema(description = "Contact email", nullable = false, example = "hanjari@hanjari.com")
         String contactEmail,
         @Schema(description = "Membership fee", nullable = false, example = "10000")
-        Integer membershipFee,
+        String membershipFee,
         @Schema(description = "SNS URL", nullable = true, example = "https://www.instagram.com/hanjari_")
         String snsAccount,
         @Schema(description = "Application URL", nullable = true, example = "https://forms.gle/...")

@@ -26,8 +26,8 @@ public class ClubDetailDraft {
     @Column(name = "club_id")
     private Long clubId;
 
-    @Column(name = "one_liner")
-    String oneLiner;
+    @Column(name = "description")
+    String description;
 
     @Enumerated(EnumType.STRING)
     RecruitmentStatus recruitmentStatus;
@@ -42,7 +42,7 @@ public class ClubDetailDraft {
     String leaderPhone;
 
     @Column(name = "membership_fee")
-    Integer membershipFee;
+    String membershipFee;
 
     @Column(name = "sns_account")
     String snsAccount;
@@ -52,7 +52,7 @@ public class ClubDetailDraft {
 
     public void updateClubDetails(ClubDetailRequest request) {
         this.leaderName = request.leaderName();
-        this.oneLiner = request.oneLiner();
+        this.description = request.description();
         this.leaderPhone = request.leaderPhone();
         this.contactEmail = request.contactEmail();
         this.membershipFee = request.membershipFee();

@@ -27,6 +27,7 @@ public class ClubSearchController {
     private final ClubQueryService clubQueryService;
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
+    @Deprecated
     @Tag(name = "Club Search v1", description = "Club Search v1 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
             ## 입력한 조건에 맞는 동아리를 검색합니다. 
