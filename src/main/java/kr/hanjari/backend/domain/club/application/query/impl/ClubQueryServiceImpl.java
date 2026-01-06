@@ -131,9 +131,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubScheduleResponse findAllClubActivities(Long clubId) {
         validateIsClubExistsById(clubId);
+        Club club = getClub(clubId);
         List<Schedule> schedules = scheduleRepository.findAllByClubId(clubId);
 
-        return ClubScheduleResponse.of(schedules);
+        return ClubScheduleResponse.of(schedules, club);
     }
 
     @Override

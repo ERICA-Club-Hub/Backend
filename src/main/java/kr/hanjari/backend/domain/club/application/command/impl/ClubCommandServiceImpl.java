@@ -151,6 +151,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ScheduleListResponse saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequest clubScheduleDTO) {
         Club club = getClub(clubId);
+        club.updateMeetingSchedule(clubScheduleDTO.scheduleDescription());
+
         List<Schedule> schedules = new ArrayList<>();
 
         for (ClubScheduleRequest request : clubScheduleDTO.schedules()) {
@@ -175,7 +177,6 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ClubScheduleDraftResponse saveAndUpdateClubScheduleDraft(Long clubId,
                                                                     ClubScheduleListRequest clubActivityDTO) {
-
         Club club = getClub(clubId);
         List<ScheduleDraft> scheduleDrafts = new ArrayList<>();
 
