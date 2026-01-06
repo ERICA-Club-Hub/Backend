@@ -125,8 +125,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = getClub(clubId);
         ClubDetailDraft clubDetailDraft = getClubDetailDraft(clubId);
 
-        return ClubDetailDraftResponse.of(clubDetailDraft, club,
-                s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubDetailDraftResponse.of(clubDetailDraft, club);
     }
 
     @Override

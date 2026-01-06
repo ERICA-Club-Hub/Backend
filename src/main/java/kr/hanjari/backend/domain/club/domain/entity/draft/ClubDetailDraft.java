@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 
 @Getter
 @Entity
@@ -34,27 +35,28 @@ public class ClubDetailDraft {
     @Column(name = "leader_name")
     String leaderName;
 
+    @Column(name = "contact_email")
+    String contactEmail;
+
     @Column(name = "leader_phone")
     String leaderPhone;
-
-    @Column(name = "activities")
-    String activities;
 
     @Column(name = "membership_fee")
     Integer membershipFee;
 
-    @Column(name = "sns_url")
-    String snsUrl;
+    @Column(name = "sns_account")
+    String snsAccount;
 
     @Column(name = "application_url")
     String applicationUrl;
 
     public void updateClubDetails(ClubDetailRequest request) {
         this.leaderName = request.leaderName();
+        this.oneLiner = request.oneLiner();
         this.leaderPhone = request.leaderPhone();
-        this.activities = request.activities();
+        this.contactEmail = request.contactEmail();
         this.membershipFee = request.membershipFee();
-        this.snsUrl = request.snsUrl();
+        this.snsAccount = request.snsAccount();
         this.applicationUrl = request.applicationUrl();
     }
 }

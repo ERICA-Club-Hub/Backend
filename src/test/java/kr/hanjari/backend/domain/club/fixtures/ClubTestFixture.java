@@ -178,9 +178,8 @@ public class ClubTestFixture {
                 .recruitmentStatus(DRAFT_RECRUITMENT_STATUS)
                 .leaderName(DRAFT_LEADER_NAME)
                 .leaderPhone(DRAFT_LEADER_PHONE)
-                .activities(DRAFT_ACTIVITIES)
                 .membershipFee(DRAFT_MEMBERSHIP_FEE)
-                .snsUrl(DRAFT_SNS_URL)
+                .snsAccount(DRAFT_SNS_URL)
                 .applicationUrl(DRAFT_APPLICATION_URL)
                 .build();
     }
@@ -234,7 +233,7 @@ public class ClubTestFixture {
 
     public static ClubDetailRequest clubDetailRequest() {
         return new ClubDetailRequest(
-                RecruitmentStatus.OPEN,
+                CLUB_ONE_LINER,
                 CLUB_LEADER_NAME,
                 CLUB_LEADER_PHONE,
                 CLUB_MEETING_SCHEDULE,
