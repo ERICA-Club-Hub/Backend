@@ -118,6 +118,14 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
+    public void deleteClub(Long clubId) {
+        Club clubToDelete = getClub(clubId);
+
+        clubRepository.deleteById(clubId);
+        fileService.deleteObjectAndFile(clubToDelete.getImageFile().getId());
+    }
+
+    @Override
     public ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO) {
         Club club = getClub(clubId);
         club.updateClubDetails(clubDetailDTO);
