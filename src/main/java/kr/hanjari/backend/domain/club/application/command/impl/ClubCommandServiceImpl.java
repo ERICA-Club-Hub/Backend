@@ -37,6 +37,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleReque
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.util.CategoryUtils;
 import kr.hanjari.backend.domain.file.application.FileService;
 import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
@@ -81,7 +82,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
-                requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
+            CategoryUtils.toCategoryCommand(requestBody.clubType(), requestBody.category()), requestBody.oneLiner(), requestBody.briefIntroduction());
 
         Long fileId = fileService.uploadObjectAndSaveFile(file);
         File imageFile = fileRepository.getReferenceById(fileId);
@@ -143,7 +144,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
                 clubId,
                 request.clubName(),
                 club.getLeaderEmail(),
-                request.toCategoryCommand(),
+                CategoryUtils.toCategoryCommand(request.clubType(), request.category()),
                 request.oneLiner(),
                 club.getBriefIntroduction()
         );

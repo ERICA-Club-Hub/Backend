@@ -18,6 +18,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetail
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecruitmentDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.util.CategoryUtils;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
@@ -76,7 +77,7 @@ public class ClubController {
     public ApiResponse<ClubCommandResponse> requestClubRegistration(
             @RequestPart ClubBasicInformationRequest requestBody,
             @RequestPart MultipartFile image) {
-        requestBody.validate();
+        CategoryUtils.validate(requestBody.clubType(), requestBody.category());
         ClubCommandResponse result = clubCommandService.requestClubRegistration(requestBody, image);
         return ApiResponse.onSuccess(result);
     }
@@ -159,6 +160,7 @@ public class ClubController {
                                                            @RequestPart MultipartFile image,
                                                            @PathVariable Long clubId,
                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        CategoryUtils.validate(requestBody.clubType(), requestBody.category());
         if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
