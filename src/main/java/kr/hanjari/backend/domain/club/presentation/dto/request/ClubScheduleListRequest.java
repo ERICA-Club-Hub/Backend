@@ -11,6 +11,9 @@ public record ClubScheduleListRequest(
         @NotEmpty(message = "Schedule list cannot be empty.")
         @Valid
         @Schema(description = "List of club schedules", requiredMode = Schema.RequiredMode.REQUIRED)
-        List<ClubScheduleRequest> schedules
+        List<ClubScheduleRequest> schedules,
+
+        @Schema(description = "Description of the schedule", nullable = true, example = "Weekly meetings will be held every Friday at 5 PM.")
+        String scheduleDescription
 ) {
 }

@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
-import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.common.command.CategoryCommand;
@@ -29,7 +29,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "club")
+@Table(name = "club",
+    uniqueConstraints = {
+        @jakarta.persistence.UniqueConstraint(columnNames = "code"),
+        @jakarta.persistence.UniqueConstraint(columnNames = "name")
+    })
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -59,16 +63,19 @@ public class Club extends BaseEntity {
     private String leaderPhone;
 
     @Column(name = "one_liner", nullable = false, length = 40)
-    private String oneLiner;
+    private String oneLiner; // 동아리 한 줄 소개
 
     @Column(name = "brief_introduction", nullable = false, length = 120)
-    private String briefIntroduction;
+    private String briefIntroduction; // 한자리 관리자 참고용
 
-    @Column(name = "meeting_schedule", length = 30)
-    private String meetingSchedule;
+    @Column(name = "description", length = 2000)
+    private String description; // 동아리 상세 설명
+
+    @Column(name = "meeting_schedule")
+    private String scheduleDescription; // 동아리 활동 설명 (월 별 일정 페이지)
 
     @Column(name = "membership_fee")
-    private Integer membershipFee;
+    private String membershipFee;
 
     @Column(name = "sns_url", length = 30)
     private String snsUrl;
@@ -102,25 +109,30 @@ public class Club extends BaseEntity {
         return club;
     }
 
+    public void update(ClubRegistration clubRegistration) {
+        this.name = clubRegistration.getName();
+        this.oneLiner = clubRegistration.getOneLiner();
+        this.categoryInfo = clubRegistration.getCategoryInfo();
+        this.imageFile = clubRegistration.getImageFile();
+    }
+
     public void updateClubImage(File imageFile) {
         this.imageFile = imageFile;
     }
 
     public void updateClubDetails(ClubDetailRequest detail) {
-        this.recruitmentStatus = detail.recruitmentStatus();
+        this.description = detail.description();
         this.leaderName = detail.leaderName();
         this.leaderPhone = detail.leaderPhone();
+        this.leaderEmail = detail.contactEmail();
         this.membershipFee = detail.membershipFee();
-        this.meetingSchedule = detail.activities();
-        this.snsUrl = detail.snsUrl();
+        this.snsUrl = detail.snsAccount();
         this.applicationUrl = detail.applicationUrl();
     }
 
-    public void updateClubCommonInfo(ClubBasicInformationRequest commonInfo, CategoryCommand categoryCommand) {
+    public void updateClubCommonInfo(ClubBasicInformationUpdateRequest commonInfo, CategoryCommand categoryCommand) {
         this.name = commonInfo.clubName();
-        this.leaderEmail = commonInfo.leaderEmail();
         this.oneLiner = commonInfo.oneLiner();
-        this.briefIntroduction = commonInfo.briefIntroduction();
         this.categoryInfo.apply(categoryCommand);
     }
 
@@ -134,6 +146,10 @@ public class Club extends BaseEntity {
             case 1 -> this.recruitmentStatus = RecruitmentStatus.OPEN;
             case 2 -> this.recruitmentStatus = RecruitmentStatus.CLOSED;
         }
+    }
+
+    public void updateScheduleDescription(String scheduleDescription) {
+        this.scheduleDescription = scheduleDescription;
     }
 
     public void incrementViewCount() {

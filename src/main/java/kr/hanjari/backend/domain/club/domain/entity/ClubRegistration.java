@@ -3,6 +3,8 @@ package kr.hanjari.backend.domain.club.domain.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import kr.hanjari.backend.domain.club.domain.enums.Command;
 import kr.hanjari.backend.domain.common.BaseEntity;
 import kr.hanjari.backend.domain.common.command.CategoryCommand;
 import kr.hanjari.backend.domain.file.domain.entity.File;
@@ -49,6 +52,11 @@ public class ClubRegistration extends BaseEntity {
     @Embedded
     private ClubCategoryInfo categoryInfo;
 
+    @Enumerated(EnumType.STRING)
+    private Command command;
+
+    private Long clubId; // 수정 시에만 사용
+
     // 팩토리 메서드
     public static ClubRegistration create(
             String name,
@@ -63,6 +71,27 @@ public class ClubRegistration extends BaseEntity {
                 .leaderEmail(leaderEmail)
                 .oneLiner(oneLiner)
                 .briefIntroduction(briefIntroduction)
+                .command(Command.REGISTER)
+                .categoryInfo(ClubCategoryInfo.from(categoryCommand))
+                .build();
+    }
+
+    public static ClubRegistration update(
+            Long clubId,
+            String name,
+            String leaderEmail,
+            CategoryCommand categoryCommand,
+            String oneLiner,
+            String briefIntroduction
+    ) {
+
+        return ClubRegistration.builder()
+                .clubId(clubId)
+                .name(name)
+                .leaderEmail(leaderEmail)
+                .oneLiner(oneLiner)
+                .briefIntroduction(briefIntroduction)
+                .command(Command.UPDATE)
                 .categoryInfo(ClubCategoryInfo.from(categoryCommand))
                 .build();
     }

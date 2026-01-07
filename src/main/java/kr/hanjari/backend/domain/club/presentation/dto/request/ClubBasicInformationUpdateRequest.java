@@ -12,14 +12,10 @@ import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.common.command.CategoryCommand;
 
 @Schema(description = "DTO for basic club information request")
-public record ClubBasicInformationRequest(
+public record ClubBasicInformationUpdateRequest(
         @NotBlank(message = "Club name is required.")
         @Schema(description = "Club name", nullable = false, example = "Hanjari", requiredMode = Schema.RequiredMode.REQUIRED)
         String clubName,
-        @NotBlank(message = "Leader's email is required.")
-        @Email(message = "Invalid email format.")
-        @Schema(description = "Leader's email", nullable = false, example = "leader@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
-        String leaderEmail,
         @NotNull(message = "Club type is required.")
         @Schema(description = "Club type", nullable = false, example = "CENTRAL", requiredMode = Schema.RequiredMode.REQUIRED)
         ClubType clubType,
@@ -28,10 +24,7 @@ public record ClubBasicInformationRequest(
         CategoryRequest category,
         @NotBlank(message = "One-liner is required.")
         @Schema(description = "A short introduction of the club", nullable = false, example = "The best central club at Hanyang University ERICA", requiredMode = Schema.RequiredMode.REQUIRED)
-        String oneLiner,
-        @NotBlank(message = "Brief introduction is required.")
-        @Schema(description = "A brief introduction of the club", nullable = false, example = "Hanjari is a central club at Hanyang University ERICA.", requiredMode = Schema.RequiredMode.REQUIRED)
-        String briefIntroduction
+        String oneLiner
 ) {
 
 }

@@ -7,6 +7,7 @@ import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
@@ -17,6 +18,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetail
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecruitmentDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.util.CategoryUtils;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
@@ -75,7 +77,7 @@ public class ClubController {
     public ApiResponse<ClubCommandResponse> requestClubRegistration(
             @RequestPart ClubBasicInformationRequest requestBody,
             @RequestPart MultipartFile image) {
-        requestBody.validate();
+        CategoryUtils.validate(requestBody.clubType(), requestBody.category());
         ClubCommandResponse result = clubCommandService.requestClubRegistration(requestBody, image);
         return ApiResponse.onSuccess(result);
     }
@@ -87,8 +89,11 @@ public class ClubController {
             - clubRegistrationDTOList: 등록 요청한 동아리 리스트
             """)
     @GetMapping("/service-admin/registrations")
-    public ApiResponse<GetRegistrationsResponse> getAllClubRegistrations() {
-        GetRegistrationsResponse result = clubQueryService.getRegistrations();
+    public ApiResponse<GetRegistrationsResponse> getAllClubRegistrations(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "10") int size
+    ) {
+        GetRegistrationsResponse result = clubQueryService.getRegistrations(page, size);
 
         return ApiResponse.onSuccess(result);
     }
@@ -118,37 +123,101 @@ public class ClubController {
             """)
     @DeleteMapping("/service-admin/registrations/{clubRegistrationId}")
     public ApiResponse<Void> deleteClubRegistration(@PathVariable Long clubRegistrationId) {
-
         clubCommandService.deleteClubRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess();
+    }
 
+    @Tag(name = "Club Registration", description = "Club Registration API")
+    @Operation(summary = "[동아리 삭제] 동아리 삭제", description = """
+            ## 동아리를 삭제합니다.
+            ### PathVariable
+            - **clubId**: 삭제하려는 club의 ID
+            ### Response
+            - 없음
+            """)
+    @DeleteMapping("/service-admin/"
+        + "{clubId}")
+    public ApiResponse<Void> deleteClub(@PathVariable Long clubId) {
+        clubCommandService.deleteClub(clubId);
         return ApiResponse.onSuccess();
     }
 
     /*------------------------ 동아리 기본 ----------------------------*/
     @Tag(name = "Club Basic", description = "Club Basic API")
-    @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정", description = """
+    @Operation(summary = "[동아리 기본] 동아리 기본 정보 수정 요청", description = """
             ## 동아리 기본 정보를 수정합니다.
             ### RequestBody
             - **name**: 동아리명
-            - **leaderEmail**: 대표자 이메일(승인 관련 메일 받을 이메일)
             - **category**: 동아리 카테고리(SPORTS, ART)
             - **oneLiner**: 동아리 한줄소개
-            - **briefIntroduction**: 동아리 간단소개
             - **clubType**: 동아리 유형(CENTRAL, UNION, COLLEGE, DEPARTMENT)
             + 카테고리와 관련된 디테일한 내용은 슬랙을 참고해주세요.
             ### Multipart/form-data
             - **image**: 동아리 대표 사진
             """)
     @PostMapping("{clubId}/update")
-    public ApiResponse<ClubCommandResponse> updateClubInfo(@RequestPart ClubBasicInformationRequest requestBody,
+    public ApiResponse<ClubCommandResponse> updateClubInfo(@RequestPart ClubBasicInformationUpdateRequest requestBody,
                                                            @RequestPart MultipartFile image,
                                                            @PathVariable Long clubId,
                                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        CategoryUtils.validate(requestBody.clubType(), requestBody.category());
         if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
 
         return ApiResponse.onSuccess(clubCommandService.updateClubBasicInformation(clubId, requestBody, image));
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 수락", description = """
+            ## 동아리 수정 요청을 수락합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 수락하려는 clubRegistration의 ID
+            ### Response
+            - **수락 후 수정된 club의 id**
+            """)
+    @PostMapping("/service-admin/updates/{clubRegistrationId}")
+    public ApiResponse<ClubCommandResponse> acceptClubUpdate(@PathVariable Long clubRegistrationId) {
+
+        ClubCommandResponse result = clubCommandService.acceptClubUpdate(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 삭제", description = """
+            ## 동아리 수정 요청을 삭제합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 삭제하려는 clubRegistration의 ID
+            ### Response
+            - 없음
+            """)
+    @DeleteMapping("/service-admin/updates/{clubRegistrationId}")
+    public ApiResponse<Void> deleteClubUpdate(@PathVariable Long clubRegistrationId) {
+
+        clubCommandService.deleteClubUpdate(clubRegistrationId);
+
+        return ApiResponse.onSuccess();
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 기본] 동아리 모집 상태 변경", description = """
+            ## 동아리 모집 상태를 변경합니다.
+            ### Path Variable
+            - **clubId**: 변경할 동아리의 ID
+            ### Request Param
+            - **option**: 변경할 모집 상태 (0: 모집예정, 1: 모집중, 2: 모집마감)
+            """)
+    @PostMapping("{clubId}/recruitment-status")
+    public ApiResponse<Void> updateClubRecruitmentStatus(
+            @PathVariable Long clubId,
+            @RequestParam int option,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        if (!Objects.equals(customUserDetails.getClubId(), clubId)) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+        clubCommandService.updateClubRecruitmentStatus(clubId, option);
+        return ApiResponse.onSuccess();
     }
 
 
@@ -159,7 +228,7 @@ public class ClubController {
             - **clubId**: 조회할 동아리의 ID
             """)
     @GetMapping("/{clubId}")
-    public ApiResponse<ClubResponse> getSpecificClub(@PathVariable Long clubId) {
+    public ApiResponse<ClubDetailResponse> getSpecificClub(@PathVariable Long clubId) {
         return ApiResponse.onSuccess(clubQueryService.findClubDetail(clubId));
     }
 
@@ -174,6 +243,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubOverview(clubId));
     }
 
+    @Deprecated
     @Tag(name = "Club Detail", description = "Club Detail API")
     @Operation(summary = "[동아리 정보] 동아리 기본 정보 조회", description = """
             ## 동아리 기본 정보 를 조회합니다.
@@ -189,15 +259,6 @@ public class ClubController {
             ## 동아리 상세 정보를 입력합니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
-            
-            ### Request Body
-            - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
-            - **leaderName**: 동아리 대표자 이름 (string) \n
-            - **leaderPhone**: 동아리 대표자 연락처 (string) \n
-            - **activities**: 정기 모임 일정 (string) \n
-            - **membershipFee**: 회비 (integer) \n
-            - **snsUrl**: SNS 링크 (string) \n
-            - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/club-admin/{clubId}")
     public ApiResponse<ClubCommandResponse> postSpecificClub(
@@ -215,7 +276,6 @@ public class ClubController {
     @Operation(summary = "[동아리 상세] 임시 저장된 동아리 상세 정보 조회", description = """
             ## 동아리 상세 정보를 조회합니다.
             - **clubId**: 조회할 동아리의 ID
-            
             """)
     @GetMapping("/{clubId}/draft")
     public ApiResponse<ClubDetailDraftResponse> getSpecificClubDraft(@PathVariable Long clubId) {
@@ -227,15 +287,6 @@ public class ClubController {
             ## 동아리 상세 정보를 임시저장합니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
-            
-            ### Request Body
-            - **recruitmentStatus**: 동아리 모집 상태 (enum, {UPCOMING, OPEN, CLOSED}) \n
-            - **leaderName**: 동아리 대표자 이름 (string) \n
-            - **leaderPhone**: 동아리 대표자 연락처 (string) \n
-            - **activities**: 정기 모임 일정 (string) \n
-            - **membershipFee**: 회비 (integer) \n
-            - **snsUrl**: SNS 링크 (string) \n
-            - **applicationUrl**: 동아리 지원 링크 (string) \n
             """)
     @PostMapping("/club-admin/{clubId}/draft")
     public ApiResponse<ClubCommandResponse> postSpecificClubDraft(
@@ -265,7 +316,8 @@ public class ClubController {
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
             - **content**: 일정 내용 (string, 30자 미만) \n
-            - **scheduleId**: 일정 ID (수정 시에만 필요)
+            - **scheduleId**: 일정 ID (수정 시에만 필요) \n
+            - **scheduleDescription** : 동아리 활동 설명
             """)
     @PostMapping("/club-admin/{clubId}/schedules")
     public ApiResponse<ScheduleListResponse> postClubSchedules(
@@ -318,7 +370,8 @@ public class ClubController {
             ### Request Body
             - **month**: 월 (integer, 1~12 사이) \n
             - **content**: 일정 내용 (string, 30자 미만) \n
-            - **scheduleId**: 일정 ID (수정 시에만 필요)
+            - **scheduleId**: 일정 ID (수정 시에만 필요) \n
+            - **scheduleDescription** : 동아리 활동 설명
             """)
     @PostMapping("/club-admin/{clubId}/schedules/draft")
     public ApiResponse<ClubScheduleDraftResponse> postClubSchedulesDraft(
@@ -329,6 +382,7 @@ public class ClubController {
 
 
     /*----------------------------- 동아리 소개글 ------------------------------*/
+    @Deprecated
     @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 조회", description = """
             ## 동아리 소개글을 조회합니다.
@@ -339,6 +393,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroduction(clubId));
     }
 
+    @Deprecated
     @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 입력 및 수정", description = """
             ## 동아리 소개글을 입력 및 수정합니다. 입력된 동아리 소개글이 없을 경우 새로 생성됩니다.
@@ -362,6 +417,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubCommandService.saveClubIntroduction(clubId, clubIntroductionDTO));
     }
 
+    @Deprecated
     @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 임시 저장된 동아리 소개 조회", description = """
             ## 임시 저장 된 동아리 소개글을 조회합니다.
@@ -372,6 +428,7 @@ public class ClubController {
         return ApiResponse.onSuccess(clubQueryService.findClubIntroductionDraft(clubId));
     }
 
+    @Deprecated
     @Tag(name = "Club Intro - Introduction", description = "Club Intro - Introduction API")
     @Operation(summary = "[동아리 소개] 동아리 소개 임시 저장", description = """
             ## 동아리 소개글을 임시 저장 합니다. 
@@ -407,11 +464,11 @@ public class ClubController {
             ## 동아리 모집 안내를 입력 및 수정합니다. 입력된 동아리 모집 안내가 없을 경우 새로 생성됩니다.
             ### Path Variable
             - **clubId**: 입력할 동아리의 ID  \n
-            
             ### Request Body
-            - **due**: 동아리 모집 기간 (string, 500자 미만) \n
-            - **notice**: 유의사항 (string, 500자 미만) \n
-            - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
+            - **due**: 모집 기간 \n
+            - **target**: 모집 대상 \n
+            - **notice**: 유의사항 \n
+            - **etc**: 기타사항 \n
             """)
     @PostMapping("/club-admin/{clubId}/recruitment")
     public ApiResponse<ClubCommandResponse> postClubRecruitment(
@@ -442,9 +499,10 @@ public class ClubController {
             - **clubId**: 입력할 동아리의 ID  \n
             
             ### Request Body
-            - **due**: 동아리 모집 기간 (string, 500자 미만) \n
-            - **notice**: 유의사항 (string, 500자 미만) \n
-            - **etc**: 기타 동아리 모집 안내 (string, 500자 미만) \n
+            - **due**: 모집 기간 \n
+            - **target**: 모집 대상 \n
+            - **notice**: 유의사항 \n
+            - **etc**: 기타사항 \n
             """)
     @PostMapping("/club-admin/{clubId}/recruitment/draft")
     public ApiResponse<ClubCommandResponse> postClubRecruitmentDraft(

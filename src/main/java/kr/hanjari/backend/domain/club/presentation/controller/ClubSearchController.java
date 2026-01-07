@@ -27,6 +27,7 @@ public class ClubSearchController {
     private final ClubQueryService clubQueryService;
 
     /*------------------------ 동아리 조건 별 조회 ----------------------------*/
+    @Deprecated
     @Tag(name = "Club Search v1", description = "Club Search v1 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
             ## 입력한 조건에 맞는 동아리를 검색합니다. 
@@ -174,5 +175,18 @@ public class ClubSearchController {
     public ApiResponse<ClubSearchResponse> getRecentUpdatedClubs() {
         return ApiResponse.onSuccess(
                 clubQueryService.findThreeRecentUpdatedClubs());
+    }
+
+    @GetMapping("/service-admin/update")
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 수정] 동아리 수정 요청 조회", description = """
+            ## 동아리 수정 요청을 조회합니다.
+            """)
+    public ApiResponse<ClubSearchResponse> getClubUpdateList(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "10") int size
+    ) {
+        return ApiResponse.onSuccess(
+            clubQueryService.findUpdateRequests(page, size));
     }
 }
