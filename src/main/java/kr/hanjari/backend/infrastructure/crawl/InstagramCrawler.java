@@ -81,6 +81,8 @@ public class InstagramCrawler {
     }
 
     private WebDriver getDriver() {
+
+        // Chrome
         ChromeOptions options = new ChromeOptions();
         // 백그라운드 실행
         options.addArguments("--headless");

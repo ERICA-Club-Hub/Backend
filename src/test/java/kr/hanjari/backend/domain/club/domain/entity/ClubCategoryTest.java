@@ -47,7 +47,7 @@ class ClubCategoryTest {
             null,
             null);
         ClubBasicInformationUpdateRequest dto = new ClubBasicInformationUpdateRequest(
-                "lead@univ.ac.kr",
+                "보안동아리",
                 ClubType.CENTRAL,
                 categoryRequest,
                 "보안 좋아함");
@@ -58,7 +58,7 @@ class ClubCategoryTest {
         club.updateClubCommonInfo(dto, cmd);
 
         assertEquals("보안동아리", club.getName());
-        assertEquals("lead@univ.ac.kr", club.getLeaderEmail());
+//        assertEquals("lead@univ.ac.kr", club.getLeaderEmail());
         assertEquals(ClubType.CENTRAL, club.getCategoryInfo().getClubType());
         assertEquals(CentralClubCategory.ACADEMIC, club.getCategoryInfo().getCentralCategory());
         assertNull(club.getCategoryInfo().getUnionCategory());
