@@ -15,7 +15,7 @@ public interface ClubQueryService {
     ClubIdResponse getAllClubIds();
 
     // 등록 요청 동아리 조회
-    GetRegistrationsResponse getRegistrations();
+    GetRegistrationsResponse getRegistrations(int page, int size);
 
     // 조건 별 동아리 검색
     ClubDetailListResponse findClubsByCondition(
@@ -23,7 +23,7 @@ public interface ClubQueryService {
             int size);
 
     // 동아리 상세 조회
-    ClubResponse findClubDetail(Long clubId);
+    ClubDetailResponse findClubDetail(Long clubId);
 
     ClubOverviewResponse findClubOverview(Long clubId);
 
@@ -67,6 +67,8 @@ public interface ClubQueryService {
     ClubSearchResponse findThreeRecentUpdatedClubs();
 
     Club getReference(Long clubId);
+
+    ClubSearchResponse findUpdateRequests(int page, int size);
 
     // 인스타그램 조회
 

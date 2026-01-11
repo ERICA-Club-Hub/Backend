@@ -13,6 +13,7 @@ import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
+import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDescriptionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
 import kr.hanjari.backend.domain.club.domain.enums.*;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
@@ -24,6 +25,7 @@ import kr.hanjari.backend.domain.club.domain.repository.detail.ScheduleRepositor
 import kr.hanjari.backend.domain.club.domain.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRepository;
+import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDescriptionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
@@ -72,6 +74,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final RecruitmentDraftRepository recruitmentDraftRepository;
     private final ClubDetailDraftRepository clubDetailDraftRepository;
     private final ScheduleDraftRepository scheduleDraftRepository;
+    private final ScheduleDescriptionDraftRepository scheduleDescriptionDraftRepository;
 
     private final ClubSearchRepository clubSearchRepository;
 
@@ -90,8 +93,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public GetRegistrationsResponse getRegistrations() {
-        List<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAll();
+    public GetRegistrationsResponse getRegistrations(int page, int size) {
+        Page<ClubRegistration> clubRegistrationList = clubRegistrationRepository.findAllByCommand(
+                PageRequest.of(page, size), Command.REGISTER
+        );
 
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
                 .map(ClubRegistrationResponse::from)
@@ -101,11 +106,19 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public ClubResponse findClubDetail(Long clubId) {
+    public ClubDetailResponse findClubDetail(Long clubId) {
         Club club = getClub(clubId);
         clubCommandService.incrementClubViewCount(clubId);
 
-        return ClubResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubDetailResponse.of(
+            club.getId(),
+            club.getDescription(),
+            club.getLeaderName(),
+            club.getLeaderPhone(),
+            club.getLeaderEmail(),
+            club.getMembershipFee(),
+            club.getSnsUrl(),
+            club.getApplicationUrl());
     }
 
     @Override
@@ -125,24 +138,25 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         Club club = getClub(clubId);
         ClubDetailDraft clubDetailDraft = getClubDetailDraft(clubId);
 
-        return ClubDetailDraftResponse.of(clubDetailDraft, club,
-                s3Service.getDownloadUrl(club.getImageFile().getId()));
+        return ClubDetailDraftResponse.of(clubDetailDraft, club);
     }
 
     @Override
     public ClubScheduleResponse findAllClubActivities(Long clubId) {
         validateIsClubExistsById(clubId);
+        Club club = getClub(clubId);
         List<Schedule> schedules = scheduleRepository.findAllByClubId(clubId);
 
-        return ClubScheduleResponse.of(schedules);
+        return ClubScheduleResponse.of(schedules, club);
     }
 
     @Override
     public ClubScheduleDraftResponse findAllClubActivitiesDraft(Long clubId) {
         validateIsClubExistsById(clubId);
+        ScheduleDescriptionDraft scheduleDescriptionDraft = getScheduleDescriptionDraft(clubId);
         List<ScheduleDraft> schedules = scheduleDraftRepository.findAllByClubIdOrderByMonth(clubId);
 
-        return ClubScheduleDraftResponse.of(schedules);
+        return ClubScheduleDraftResponse.of(schedules, scheduleDescriptionDraft.getDescription());
     }
 
 
@@ -166,10 +180,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubRecruitmentResponse findClubRecruitment(Long clubId) {
         Recruitment recruitment = getRecruitmentOrElseNull(clubId);
-        Introduction introduction = getIntroductionOrElseNull(clubId);
-
-        String target = (introduction != null) ? introduction.getContent2() : null;
-        return ClubRecruitmentResponse.of(recruitment, target);
+        return ClubRecruitmentResponse.of(recruitment);
     }
 
     @Override
@@ -285,6 +296,11 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_DETAIL_DRAFT_NOT_FOUND));
     }
 
+    private ScheduleDescriptionDraft getScheduleDescriptionDraft(Long clubId) {
+        return scheduleDescriptionDraftRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SCHEDULE_DESCRIPTION_DRAFT_NOT_FOUND));
+    }
+
     private Introduction getIntroductionOrElseNull(Long clubId) {
         return introductionRepository.findByClubId(clubId)
                 .orElse(null);
@@ -312,9 +328,14 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return s3Service.getDownloadUrl(club.getImageFile().getId());
     }
 
-    private List<Club> getRandomClubsByLimit(int limit) {
-        return clubRepository.findRandomClubsByLimit(limit);
+    private String resolveImageUrl(ClubRegistration clubRegistration) {
+        if (clubRegistration.getImageFile() == null) {
+            return null;
+        }
+        return s3Service.getDownloadUrl(clubRegistration.getImageFile().getId());
     }
+
+
 
     private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
         Page<ClubSearchResult> dtoPage = clubs.map(club ->
@@ -331,9 +352,30 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return ClubSearchResponse.of(dtoPage);
     }
 
+    private ClubSearchResponse getClubSearchResponseDTOForUpdate(Page<ClubRegistration> clubRegistrations) {
+        Page<ClubSearchResult> dtoPage = clubRegistrations.map(clubRegistration ->
+            ClubSearchResult.of(
+                clubRegistration.getId(),
+                clubRegistration.getName(),
+                clubRegistration.getOneLiner(),
+                resolveImageUrl(clubRegistration),
+                clubRegistration.getCategoryInfo().getClubType().getDescription(),
+                null
+            )
+        );
+
+        return ClubSearchResponse.of(dtoPage);
+    }
+
     @Override
     public Club getReference(Long clubId) {
         return clubRepository.getReferenceById(clubId);
+    }
+
+    @Override
+    public ClubSearchResponse findUpdateRequests(int page, int size) {
+        Page<ClubRegistration> all = clubRegistrationRepository.findAllByCommand(PageRequest.of(page, size), Command.UPDATE);
+        return getClubSearchResponseDTOForUpdate(all);
     }
 
     @Override

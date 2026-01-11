@@ -11,6 +11,8 @@ public record ClubRecruitmentDraftResponse(
         ClubResponse club,
         @Schema(description = "Recruitment due date", nullable = true, example = "2024-03-31")
         String due,
+        @Schema(description = "Recruitment target", nullable = true, example = "Undergraduate students")
+        String target,
         @Schema(description = "Recruitment notice", nullable = true, example = "Interview after document submission")
         String notice,
         @Schema(description = "Other recruitment information", nullable = true, example = "For further questions...")
@@ -19,9 +21,10 @@ public record ClubRecruitmentDraftResponse(
     public static ClubRecruitmentDraftResponse of(Club club, RecruitmentDraft recruitment, String profileImageUrl) {
         return new ClubRecruitmentDraftResponse(
                 ClubResponse.of(club, profileImageUrl),
-                recruitment.getContent1(),
-                recruitment.getContent2(),
-                recruitment.getContent3()
+                recruitment.getDue(),
+                recruitment.getTarget(),
+                recruitment.getNotice(),
+                recruitment.getEtc()
         );
     }
 

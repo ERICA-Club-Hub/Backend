@@ -14,7 +14,9 @@ import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ClubDetailDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.IntroductionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
+import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDescriptionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
@@ -23,8 +25,10 @@ import kr.hanjari.backend.domain.club.domain.repository.detail.ScheduleRepositor
 import kr.hanjari.backend.domain.club.domain.repository.draft.ClubDetailDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.IntroductionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRepository;
+import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDescriptionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
@@ -33,11 +37,13 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleReque
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubCommandResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ScheduleListResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.domain.club.presentation.dto.util.CategoryUtils;
 import kr.hanjari.backend.domain.file.application.FileService;
 import kr.hanjari.backend.domain.file.domain.entity.File;
 import kr.hanjari.backend.domain.file.domain.repository.FileRepository;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
+import kr.hanjari.backend.infrastructure.slack.SlackWebhookSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,16 +71,18 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final RecruitmentDraftRepository recruitmentDraftRepository;
     private final ClubDetailDraftRepository clubDetailDraftRepository;
     private final ScheduleDraftRepository scheduleDraftRepository;
+    private final ScheduleDescriptionDraftRepository scheduleDescriptionDraftRepository;
 
     private final CodeGenerator codeGenerator;
     private final MailSender mailSender;
     private final FileService fileService;
+    private final SlackWebhookSender slackWebhookSender;
 
     @Override
     public ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
 
         ClubRegistration clubRegistration = ClubRegistration.create(requestBody.clubName(), requestBody.leaderEmail(),
-                requestBody.toCategoryCommand(), requestBody.oneLiner(), requestBody.briefIntroduction());
+            CategoryUtils.toCategoryCommand(requestBody.clubType(), requestBody.category()), requestBody.oneLiner(), requestBody.briefIntroduction());
 
         Long fileId = fileService.uploadObjectAndSaveFile(file);
         File imageFile = fileRepository.getReferenceById(fileId);
@@ -82,6 +90,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
         clubRegistrationRepository.save(clubRegistration);
 
+        slackWebhookSender.sendMessage(createSlackMessage(clubRegistration));
         return ClubCommandResponse.of(clubRegistration.getId());
     }
 
@@ -110,6 +119,14 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
+    public void deleteClub(Long clubId) {
+        Club clubToDelete = getClub(clubId);
+
+        clubRepository.deleteById(clubId);
+        fileService.deleteObjectAndFile(clubToDelete.getImageFile().getId());
+    }
+
+    @Override
     public ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO) {
         Club club = getClub(clubId);
         club.updateClubDetails(clubDetailDTO);
@@ -120,20 +137,56 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     }
 
     @Override
-    public ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationRequest request,
+    public ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                           MultipartFile file) {
         Club club = getClub(clubId);
-        club.updateClubCommonInfo(request, request.toCategoryCommand());
+        ClubRegistration clubRegistration = ClubRegistration.update(
+                clubId,
+                request.clubName(),
+                club.getLeaderEmail(),
+                CategoryUtils.toCategoryCommand(request.clubType(), request.category()),
+                request.oneLiner(),
+                club.getBriefIntroduction()
+        );
 
         if (file != null) {
             Long fileId = fileService.uploadObjectAndSaveFile(file);
-            fileService.deleteObjectAndFile(club.getImageFile().getId());
             File imageFile = fileRepository.getReferenceById(fileId);
-            club.updateClubImage(imageFile);
+            clubRegistration.updateImageFile(imageFile);
         }
 
-        Club saved = clubRepository.save(club);
-        return ClubCommandResponse.of(saved.getId());
+        clubRegistrationRepository.save(clubRegistration);
+
+        return ClubCommandResponse.of(clubRegistration.getId());
+    }
+
+    @Override
+    public ClubCommandResponse acceptClubUpdate(Long clubRegistrationId) {
+
+        ClubRegistration clubRegistration = getClubRegistration(clubRegistrationId);
+        Club clubToUpdate = getClub(clubRegistration.getClubId());
+
+        fileService.deleteObjectAndFile(clubToUpdate.getImageFile().getId());
+        clubToUpdate.update(clubRegistration);
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+
+        return ClubCommandResponse.of(clubToUpdate.getId());
+    }
+
+    @Override
+    public void deleteClubUpdate(Long clubRegistrationId) {
+        ClubRegistration clubRegistrationToDelete = getClubRegistration(clubRegistrationId);
+
+        fileService.deleteObjectAndFile(clubRegistrationToDelete.getImageFile().getId());
+        clubRegistrationRepository.deleteById(clubRegistrationId);
+    }
+
+
+    @Override
+    public void updateClubRecruitmentStatus(Long clubId, int status) {
+        Club club = getClub(clubId);
+        club.updateRecruitmentStatus(status);
+        clubRepository.save(club);
     }
 
     @Override
@@ -148,6 +201,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ScheduleListResponse saveAndUpdateClubSchedule(Long clubId, ClubScheduleListRequest clubScheduleDTO) {
         Club club = getClub(clubId);
+        club.updateScheduleDescription(clubScheduleDTO.scheduleDescription());
+
         List<Schedule> schedules = new ArrayList<>();
 
         for (ClubScheduleRequest request : clubScheduleDTO.schedules()) {
@@ -172,8 +227,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public ClubScheduleDraftResponse saveAndUpdateClubScheduleDraft(Long clubId,
                                                                     ClubScheduleListRequest clubActivityDTO) {
-
         Club club = getClub(clubId);
+        ScheduleDescriptionDraft descriptionDraft = getScheduleDescriptionDraftOrCreate(clubId);
+        descriptionDraft.updateDescription(clubActivityDTO.scheduleDescription());
+        scheduleDescriptionDraftRepository.save(descriptionDraft);
+
         List<ScheduleDraft> scheduleDrafts = new ArrayList<>();
 
         for (ClubScheduleRequest request : clubActivityDTO.schedules()) {
@@ -191,7 +249,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
             }
             scheduleDrafts.add(scheduleDraftRepository.save(scheduleDraft));
         }
-        return ClubScheduleDraftResponse.of(scheduleDrafts);
+
+        return ClubScheduleDraftResponse.of(scheduleDrafts, descriptionDraft.getDescription());
     }
 
 //    @Override
@@ -277,6 +336,20 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     // ======= Private Methods ======= //
 
+    private String createSlackMessage(ClubRegistration clubRegistration) {
+        return "📩 *새로운 동아리 등록 신청이 접수되었습니다!*\n\n"
+            + "🏷️ *동아리 이름*\n"
+            + clubRegistration.getName() + "\n\n"
+            + "👤 *대표 이메일*\n"
+            + clubRegistration.getLeaderEmail() + "\n\n"
+            + "💬 *한 줄 소개*\n"
+            + clubRegistration.getOneLiner() + "\n\n"
+            + "📝 *간단 소개*\n"
+            + clubRegistration.getBriefIntroduction() + "\n\n"
+            + "📚 *카테고리*\n"
+            + clubRegistration.getCategoryInfo().getClubType().getDescription();
+    }
+
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
@@ -311,6 +384,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private IntroductionDraft getIntroductionDraftOrCreate(Long clubId) {
         return introductionDraftRepository.findById(clubId)
                 .orElseGet(() -> IntroductionDraft.builder().clubId(clubId).build());
+    }
+
+    private ScheduleDescriptionDraft getScheduleDescriptionDraftOrCreate(Long clubId) {
+        return scheduleDescriptionDraftRepository.findById(clubId)
+                .orElseGet(() -> ScheduleDescriptionDraft.builder().clubId(clubId).build());
     }
 
     private Recruitment getRecruitmentOrCreate(Long clubId) {
