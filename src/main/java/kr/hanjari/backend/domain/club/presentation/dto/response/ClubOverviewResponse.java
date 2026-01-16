@@ -19,7 +19,9 @@ public record ClubOverviewResponse(
         @Schema(description = "Application URL", nullable = true, example = "https://forms.gle/...")
         String applicationUrl,
         @Schema(description = "Club category information", nullable = false)
-        CategoryResponse category
+        CategoryResponse category,
+        @Schema(description = "Club category tag", nullable = false, example = "Academic")
+        String tag
 ) {
     public static ClubOverviewResponse of(Club club, String profileImageUrl) {
         return new ClubOverviewResponse(
@@ -29,7 +31,8 @@ public record ClubOverviewResponse(
                 club.getRecruitmentStatus(),
                 profileImageUrl,
                 club.getApplicationUrl(),
-                CategoryResponse.from(club.getCategoryInfo())
+                CategoryResponse.from(club.getCategoryInfo()),
+                CategoryResponse.getTag(club.getCategoryInfo())
         );
     }
 }
