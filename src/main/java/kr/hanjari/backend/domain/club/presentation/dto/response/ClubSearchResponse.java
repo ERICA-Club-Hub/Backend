@@ -45,11 +45,13 @@ public record ClubSearchResponse(
             @Schema(description = "Category name", nullable = false, example = "Academic")
             String categoryName,
             @Schema(description = "Recruitment status", nullable = false, example = "RECRUITING")
-            RecruitmentStatus recruitmentStatus
+            RecruitmentStatus recruitmentStatus,
+            @Schema(description = "Category tag", nullable = false, example = "Academic")
+            String tag
     ) {
         public static ClubSearchResult of(Long id, String name, String oneLiner, String profileImageUrl,
-                                          String categoryName, RecruitmentStatus recruitmentStatus) {
-            return new ClubSearchResult(id, name, oneLiner, profileImageUrl, categoryName, recruitmentStatus);
+                                          String categoryName, RecruitmentStatus recruitmentStatus, String tag) {
+            return new ClubSearchResult(id, name, oneLiner, profileImageUrl, categoryName, recruitmentStatus, tag);
         }
     }
 }
