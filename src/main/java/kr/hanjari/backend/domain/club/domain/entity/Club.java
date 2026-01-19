@@ -145,6 +145,8 @@ public class Club extends BaseEntity {
             case 0 -> this.recruitmentStatus = RecruitmentStatus.UPCOMING;
             case 1 -> this.recruitmentStatus = RecruitmentStatus.OPEN;
             case 2 -> this.recruitmentStatus = RecruitmentStatus.CLOSED;
+            case 3 -> this.recruitmentStatus = RecruitmentStatus.ALWAYS_OPEN;
+            case 4 -> this.recruitmentStatus = RecruitmentStatus.ADDITIONAL;
         }
     }
 
