@@ -32,7 +32,8 @@ public record ClubResponse(
         @Schema(description = "Application URL", nullable = true, example = "https://forms.gle/...")
         String applicationUrl,
         @Schema(description = "Club type", nullable = false, example = "CENTRAL")
-        ClubType clubType
+        ClubType clubType,
+        String tag
 ) {
     public static ClubResponse of(Club club, String profileImageUrl) {
         return new ClubResponse(
@@ -48,7 +49,8 @@ public record ClubResponse(
                 club.getMembershipFee(),
                 club.getSnsUrl(),
                 club.getApplicationUrl(),
-                club.getCategoryInfo().getClubType()
+                club.getCategoryInfo().getClubType(),
+                CategoryResponse.getTag(club.getCategoryInfo())
         );
     }
 }
