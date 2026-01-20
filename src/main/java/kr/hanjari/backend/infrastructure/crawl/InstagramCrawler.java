@@ -10,11 +10,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 
@@ -25,7 +31,11 @@ public class InstagramCrawler {
     private final ClubRepository clubRepository;
     private final ClubInstagramImageRepository clubInstagramImageRepository;
 
+    @Value("${slack.webhook-url}")
+    private String SELENIUM_URL;
+
     private static final String INSTAGRAM_URL = "https://www.instagram.com/";
+
 
     @Scheduled(cron = "0 0 4 * * *")
     public void update() {
@@ -80,7 +90,9 @@ public class InstagramCrawler {
 
     }
 
-    private WebDriver getDriver() {
+    private WebDriver getDriver() throws MalformedURLException {
+
+        // Chrome
         ChromeOptions options = new ChromeOptions();
         // 백그라운드 실행
         options.addArguments("--headless");
@@ -92,8 +104,11 @@ public class InstagramCrawler {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--window-size=1920,1080");
 
-        WebDriver driver = new ChromeDriver(options);
+        URI uri = URI.create(SELENIUM_URL);
 
-        return driver;
+        return new RemoteWebDriver(
+                uri.toURL(),
+                options
+        );
     }
 }
