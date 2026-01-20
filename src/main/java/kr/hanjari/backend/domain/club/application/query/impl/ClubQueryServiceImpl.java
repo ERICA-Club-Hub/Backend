@@ -345,7 +345,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                         club.getOneLiner(),
                         resolveImageUrl(club),
                         club.getCategoryInfo().getClubType().getDescription(),
-                        club.getRecruitmentStatus()
+                        club.getRecruitmentStatus(),
+                        CategoryResponse.getTag(club.getCategoryInfo())
                 )
         );
 
@@ -360,7 +361,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 clubRegistration.getOneLiner(),
                 resolveImageUrl(clubRegistration),
                 clubRegistration.getCategoryInfo().getClubType().getDescription(),
-                null
+                null,
+                CategoryResponse.getTag(clubRegistration.getCategoryInfo())
             )
         );
 

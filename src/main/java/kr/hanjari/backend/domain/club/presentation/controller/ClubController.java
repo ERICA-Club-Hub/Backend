@@ -205,7 +205,7 @@ public class ClubController {
             ### Path Variable
             - **clubId**: 변경할 동아리의 ID
             ### Request Param
-            - **option**: 변경할 모집 상태 (0: 모집예정, 1: 모집중, 2: 모집마감)
+            - **option**: 변경할 모집 상태 (0: 모집예정, 1: 모집중, 2: 모집마감, 3: 상시모집, 4: ADDITIONAL)
             """)
     @PostMapping("{clubId}/recruitment-status")
     public ApiResponse<Void> updateClubRecruitmentStatus(
