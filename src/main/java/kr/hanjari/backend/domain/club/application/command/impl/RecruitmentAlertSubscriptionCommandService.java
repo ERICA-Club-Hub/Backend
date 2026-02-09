@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.club.application.command;
+package kr.hanjari.backend.domain.club.application.command.impl;
 
 import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.RecruitmentAlertSubscription;

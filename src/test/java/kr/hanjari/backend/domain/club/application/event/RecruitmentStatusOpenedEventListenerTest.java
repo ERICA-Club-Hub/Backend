@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kr.hanjari.backend.domain.club.application.command.RecruitmentAlertSubscriptionCommandService;
+import kr.hanjari.backend.domain.club.application.command.impl.RecruitmentAlertSubscriptionCommandService;
 import kr.hanjari.backend.domain.club.application.query.MailSender;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.RecruitmentAlertSubscription;
