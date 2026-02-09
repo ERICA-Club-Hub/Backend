@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>동아리 모집 시작 안내</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+  <h2 style="color: #33639C;">📢 동아리 모집이 시작되었습니다!</h2>
+  <p>안녕하세요!</p>
+  <p><strong><span th:text="${clubName}"></span></strong> 동아리가 현재 <strong>모집중</strong> 상태로 변경되었습니다.</p>
+  <p>아래 버튼을 눌러 동아리 상세 페이지에서 모집 정보를 확인해주세요.</p>
+  <p style="text-align: center; margin-top: 20px;">
+    <a th:href="@{${clubDetailUrl}}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #33639C; text-decoration: none; border-radius: 5px;">
+      동아리 페이지 보기
+    </a>
+  </p>
+  <p>감사합니다.<br><strong>한자리 팀 드림.</strong></p>
+</div>
+</body>
+</html>

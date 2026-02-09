@@ -33,6 +33,7 @@ public interface ClubCommandService {
 
 
     void updateClubRecruitmentStatus(Long clubId, int status);
+    void subscribeRecruitmentAlert(Long clubId, String email);
     // 동아리 상세 정보
     ClubCommandResponse saveClubDetail(Long clubId, ClubDetailRequest clubDetailDTO);
 
@@ -60,4 +61,3 @@ public interface ClubCommandService {
     void incrementClubViewCount(Long clubId);
 
 }
-
