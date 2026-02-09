@@ -22,7 +22,8 @@ public class MailSenderImpl implements MailSender {
     @Value("${spring.mail.username}")
     private String serviceEmail;
 
-    private static final String SUBJECT = "[한자리] 동아리 신청 승인 결과 안내드립니다. ";
+    private static final String APPROVE_SUBJECT = "[한자리] 동아리 신청 승인 결과 안내드립니다.";
+    private static final String RECRUITMENT_OPEN_SUBJECT_FORMAT = "[한자리] %s 동아리 모집이 시작되었습니다.";
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
@@ -35,7 +36,7 @@ public class MailSenderImpl implements MailSender {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(serviceEmail);
             helper.setTo(email);
-            helper.setSubject(SUBJECT);
+            helper.setSubject(APPROVE_SUBJECT);
 
             String htmlContent = createApproveContent(clubName, verificationCode, loginUrl);
 
@@ -43,6 +44,25 @@ public class MailSenderImpl implements MailSender {
 
             javaMailSender.send(message);
 
+        } catch (MessagingException e) {
+            throw new GeneralException(ErrorStatus._FAIL_TO_SEND_EMAIL);
+        }
+    }
+
+    @Override
+    public void sendRecruitmentOpenEmail(String email, String clubName, String clubDetailUrl) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(serviceEmail);
+            helper.setTo(email);
+            helper.setSubject(RECRUITMENT_OPEN_SUBJECT_FORMAT.formatted(clubName));
+
+            String htmlContent = createRecruitmentOpenContent(clubName, clubDetailUrl);
+            helper.setText(htmlContent, true);
+
+            javaMailSender.send(message);
         } catch (MessagingException e) {
             throw new GeneralException(ErrorStatus._FAIL_TO_SEND_EMAIL);
         }
@@ -57,5 +77,12 @@ public class MailSenderImpl implements MailSender {
         context.setVariable("loginUrl", loginUrl);
 
         return templateEngine.process("success", context);
+    }
+
+    private String createRecruitmentOpenContent(String clubName, String clubDetailUrl) {
+        Context context = new Context();
+        context.setVariable("clubName", clubName);
+        context.setVariable("clubDetailUrl", clubDetailUrl);
+        return templateEngine.process("recruitment-open", context);
     }
 }
