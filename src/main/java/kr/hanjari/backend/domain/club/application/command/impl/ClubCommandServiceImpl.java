@@ -10,6 +10,7 @@ import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
 import kr.hanjari.backend.domain.club.application.event.RecruitmentStatusOpenedEvent;
 import kr.hanjari.backend.domain.club.application.query.MailSender;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
+import kr.hanjari.backend.domain.club.domain.entity.ClubCategoryInfo;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
 import kr.hanjari.backend.domain.club.domain.entity.RecruitmentAlertSubscription;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
@@ -150,24 +151,16 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     public ClubCommandResponse updateClubBasicInformation(Long clubId, ClubBasicInformationUpdateRequest request,
                                                           MultipartFile file) {
         Club club = getClub(clubId);
-        ClubRegistration clubRegistration = ClubRegistration.update(
-                clubId,
-                request.clubName(),
-                club.getLeaderEmail(),
-                CategoryUtils.toCategoryCommand(request.clubType(), request.category()),
-                request.oneLiner(),
-                club.getBriefIntroduction()
-        );
+        club.update(request.clubName(), request.oneLiner(),
+            ClubCategoryInfo.from(CategoryUtils.toCategoryCommand(request.clubType(), request.category())));
 
         if (file != null) {
             Long fileId = fileService.uploadObjectAndSaveFile(file);
             File imageFile = fileRepository.getReferenceById(fileId);
-            clubRegistration.updateImageFile(imageFile);
+            club.updateClubImage(imageFile);
         }
 
-        clubRegistrationRepository.save(clubRegistration);
-
-        return ClubCommandResponse.of(clubRegistration.getId());
+        return ClubCommandResponse.of(club.getId());
     }
 
     @Override
