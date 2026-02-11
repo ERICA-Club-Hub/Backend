@@ -29,7 +29,6 @@ public class ServiceAnnouncementQueryServiceImpl implements ServiceAnnouncementQ
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<ServiceAnnouncement> all = serviceAnnouncementRepository.findAll(pageable);
-        if (all.isEmpty()) throw new GeneralException(ErrorStatus._SERVICE_ANNOUNCEMENT_NOT_FOUND);
 
         return ServiceAnnouncementSearchDTO.of(all);
     }

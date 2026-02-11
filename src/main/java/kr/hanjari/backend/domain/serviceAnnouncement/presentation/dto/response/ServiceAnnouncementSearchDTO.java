@@ -13,6 +13,9 @@ public record ServiceAnnouncementSearchDTO(
         Integer totalElements
 ) {
     public static ServiceAnnouncementSearchDTO of(Page<ServiceAnnouncement> serviceAnnouncements) {
+      if (serviceAnnouncements.isEmpty()) {
+          return new ServiceAnnouncementSearchDTO(List.of(), 0);
+      }
         return new ServiceAnnouncementSearchDTO(
                 serviceAnnouncements.map(ServiceAnnouncementDetailDTO::of).getContent(),
                 serviceAnnouncements.getNumberOfElements()
