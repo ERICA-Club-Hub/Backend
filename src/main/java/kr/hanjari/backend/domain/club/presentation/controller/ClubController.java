@@ -12,6 +12,7 @@ import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubIntroductionRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubRecruitmentRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.request.ClubScheduleListRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.RecruitmentAlertSubscribeRequest;
 import kr.hanjari.backend.domain.club.presentation.dto.response.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubBasicInfoResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetailDraftResponse;
@@ -217,6 +218,22 @@ public class ClubController {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
         clubCommandService.updateClubRecruitmentStatus(clubId, option);
+        return ApiResponse.onSuccess();
+    }
+
+    @Tag(name = "Club Basic", description = "Club Basic API")
+    @Operation(summary = "[동아리 기본] 모집 시작 알림 신청", description = """
+            ## 동아리 모집이 시작될 때 받을 이메일을 등록합니다.
+            ### Path Variable
+            - **clubId**: 알림을 신청할 동아리 ID
+            ### Request Body
+            - **email**: 알림 수신 이메일
+            """)
+    @PostMapping("{clubId}/recruitment-alerts")
+    public ApiResponse<Void> subscribeRecruitmentAlert(
+            @PathVariable Long clubId,
+            @RequestBody RecruitmentAlertSubscribeRequest requestBody) {
+        clubCommandService.subscribeRecruitmentAlert(clubId, requestBody.email());
         return ApiResponse.onSuccess();
     }
 

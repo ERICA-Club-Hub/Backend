@@ -3,11 +3,15 @@ package kr.hanjari.backend.domain.club.application.command.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.application.command.CodeGenerator;
+import kr.hanjari.backend.domain.club.application.event.RecruitmentStatusOpenedEvent;
 import kr.hanjari.backend.domain.club.application.query.MailSender;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.ClubRegistration;
+import kr.hanjari.backend.domain.club.domain.entity.RecruitmentAlertSubscription;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Introduction;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Recruitment;
 import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
@@ -17,6 +21,7 @@ import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDescriptionDraft;
 import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.domain.repository.RecruitmentAlertSubscriptionRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRegistrationRepository;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import kr.hanjari.backend.domain.club.domain.repository.detail.IntroductionRepository;
@@ -46,6 +51,7 @@ import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.infrastructure.slack.SlackWebhookSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,11 +63,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ClubCommandServiceImpl implements ClubCommandService {
 
+    private static final Pattern SIMPLE_EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+
     @Value("${login.url}")
     private String loginURL;
 
     private final FileRepository fileRepository;
     private final ClubRepository clubRepository;
+    private final RecruitmentAlertSubscriptionRepository recruitmentAlertSubscriptionRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
     private final IntroductionRepository introductionRepository;
     private final RecruitmentRepository recruitmentRepository;
@@ -77,6 +86,7 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     private final MailSender mailSender;
     private final FileService fileService;
     private final SlackWebhookSender slackWebhookSender;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public ClubCommandResponse requestClubRegistration(ClubBasicInformationRequest requestBody, MultipartFile file) {
@@ -185,8 +195,27 @@ public class ClubCommandServiceImpl implements ClubCommandService {
     @Override
     public void updateClubRecruitmentStatus(Long clubId, int status) {
         Club club = getClub(clubId);
+        RecruitmentStatus before = club.getRecruitmentStatus();
         club.updateRecruitmentStatus(status);
+        RecruitmentStatus after = club.getRecruitmentStatus();
         clubRepository.save(club);
+
+        if (before == RecruitmentStatus.UPCOMING && after == RecruitmentStatus.OPEN) {
+            applicationEventPublisher.publishEvent(new RecruitmentStatusOpenedEvent(clubId, club.getName()));
+        }
+    }
+
+    @Override
+    public void subscribeRecruitmentAlert(Long clubId, String email) {
+        Club club = getClub(clubId);
+        String normalizedEmail = normalizeAndValidateEmail(email);
+
+        if (recruitmentAlertSubscriptionRepository.existsByClub_IdAndEmail(clubId, normalizedEmail)) {
+            return;
+        }
+
+        RecruitmentAlertSubscription subscription = RecruitmentAlertSubscription.create(club, normalizedEmail);
+        recruitmentAlertSubscriptionRepository.save(subscription);
     }
 
     @Override
@@ -374,6 +403,18 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         if (!clubRepository.existsById(clubId)) {
             throw new GeneralException(ErrorStatus._CLUB_NOT_FOUND);
         }
+    }
+
+    private String normalizeAndValidateEmail(String email) {
+        if (email == null) {
+            throw new GeneralException(ErrorStatus._INVALID_INPUT);
+        }
+
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        if (!SIMPLE_EMAIL_PATTERN.matcher(normalized).matches()) {
+            throw new GeneralException(ErrorStatus._INVALID_INPUT);
+        }
+        return normalized;
     }
 
     private Introduction getIntroductionOrCreate(Long clubId) {
