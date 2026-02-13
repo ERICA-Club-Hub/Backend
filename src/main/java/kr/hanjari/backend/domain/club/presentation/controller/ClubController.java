@@ -100,6 +100,23 @@ public class ClubController {
     }
 
     @Tag(name = "Club Registration", description = "Club Registration API")
+    @Operation(summary = "[동아리 등록] 등록 요청 동아리 상세 조회", description = """
+            ## 등록 요청된 동아리를 조회합니다.
+            ### PathVariable
+            - **clubRegistrationId**: 조회하려는 clubRegistration의 ID
+            """)
+    @GetMapping("/service-admin/registrations/{clubRegistrationId}")
+    public ApiResponse<GetRegistrationResponse> getClubRegistration(
+            @PathVariable Long clubRegistrationId
+    ) {
+
+        GetRegistrationResponse result = clubQueryService.getRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
+    }
+
+
+
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
             ### PathVariable
