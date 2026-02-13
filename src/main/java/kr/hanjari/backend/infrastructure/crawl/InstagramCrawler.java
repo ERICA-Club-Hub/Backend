@@ -28,7 +28,6 @@ public class InstagramCrawler {
     private final ClubRepository clubRepository;
     private final ClubInstagramImageRepository clubInstagramImageRepository;
 
-    @Value("${slack.webhook-url}")
     private String SELENIUM_URL;
 
     private static final String INSTAGRAM_URL = "https://www.instagram.com/";
