@@ -36,14 +36,14 @@ public record ClubRegistrationResponse(
             Long clubRegistrationId,
             String clubName,
             String briefIntroduction,
-            ClubCategoryInfo category,
+            ClubCategoryInfo categoryInfo,
             String profileImageUrl
     ) {
         return new ClubRegistrationResponse(
                 clubRegistrationId,
                 clubName,
                 briefIntroduction,
-                CategoryResponse.from(category),
+                CategoryResponse.from(categoryInfo),
                 profileImageUrl
         );
     }

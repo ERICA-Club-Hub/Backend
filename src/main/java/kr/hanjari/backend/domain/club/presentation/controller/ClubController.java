@@ -99,6 +99,17 @@ public class ClubController {
         return ApiResponse.onSuccess(result);
     }
 
+    @GetMapping("/service-admin/registrations/{clubRegistrationId}")
+    public ApiResponse<GetRegistrationResponse> getClubRegistration(
+            @PathVariable Long clubRegistrationId
+    ) {
+
+        GetRegistrationResponse result = clubQueryService.getRegistration(clubRegistrationId);
+        return ApiResponse.onSuccess(result);
+    }
+
+
+
     @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
