@@ -19,14 +19,14 @@ services:
     ports:
       - "6379:6379"
 
-  selenium:
-    image: selenium/standalone-chrome:143.0-20251212
-    container_name: "selenium-container"
-    shm_size: 2g
-    networks:
-      - dev-db-network
-    ports:
-      - "4444:4444"
+#  selenium:
+#    image: selenium/standalone-chrome:143.0-20251212
+#    container_name: "selenium-container"
+#    shm_size: 2g
+#    networks:
+#      - dev-db-network
+#    ports:
+#      - "4444:4444"
 
   hanjari:
     image: hanjari-dev:latest

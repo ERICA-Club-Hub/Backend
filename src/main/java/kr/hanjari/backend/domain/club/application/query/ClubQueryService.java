@@ -82,5 +82,5 @@ public interface ClubQueryService {
 
     GetInstagrams findInstagramsDepartment(Department department, int page, int size);
 
-    GetInstagrams findInstagramsByRandom();
+    GetInstagramsMain findInstagramsMain();
 }
