@@ -94,10 +94,31 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         );
 
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
-                .map(ClubRegistrationResponse::from)
+                .map(clubRegistration -> ClubRegistrationResponse.of(
+                        clubRegistration.getId(),
+                        clubRegistration.getName(),
+                        clubRegistration.getBriefIntroduction(),
+                        clubRegistration.getCategoryInfo(),
+                        resolveImageUrl(clubRegistration)
+                ))
                 .toList();
 
         return GetRegistrationsResponse.of(clubRegistrationResponseDTOList);
+    }
+
+    @Override
+    public GetRegistrationResponse getRegistration(Long clubRegistrationId) {
+        ClubRegistration clubRegistration = getClubRegistrationOrElseNull(clubRegistrationId);
+
+        return GetRegistrationResponse.of(
+                clubRegistrationId,
+                clubRegistration.getName(),
+                clubRegistration.getLeaderEmail(),
+                clubRegistration.getCategoryInfo(),
+                clubRegistration.getOneLiner(),
+                clubRegistration.getBriefIntroduction(),
+                resolveImageUrl(clubRegistration)
+        );
     }
 
     @Override
@@ -304,6 +325,11 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private Recruitment getRecruitmentOrElseNull(Long clubId) {
         return recruitmentRepository.findByClubId(clubId)
                 .orElse(null);
+    }
+
+    private ClubRegistration getClubRegistrationOrElseNull(Long clubRegistrationId) {
+        return clubRegistrationRepository.findById(clubRegistrationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_REGISTRATION_NOT_FOUND));
     }
 
     private String getInstagramProfileUrlOrElseNull(Long clubId) {
