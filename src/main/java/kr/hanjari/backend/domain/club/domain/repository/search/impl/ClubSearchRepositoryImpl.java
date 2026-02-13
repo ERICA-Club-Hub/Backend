@@ -4,6 +4,7 @@ import static org.springframework.data.domain.PageRequest.of;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
@@ -190,6 +191,18 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         Long totalElement = getTotalElement(club);
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
+    }
+
+    @Override
+    public List<Club> findClubByRandom(int size) {
+        QClub club = QClub.club;
+
+        return query
+                .select(club)
+                .from(club)
+                .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
+                .limit(size)
+                .fetch();
     }
 
     private long getTotal(Long totalElement) {

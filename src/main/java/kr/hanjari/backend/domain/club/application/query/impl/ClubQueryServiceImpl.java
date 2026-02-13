@@ -39,11 +39,9 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecrui
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
-import kr.hanjari.backend.infrastructure.crawl.InstagramCrawler;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +57,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     public static final int FIRST_PAGE = 0;
     public static final int MAIN_PAGE_OFFSET = 3;
-    public static final int MAIN_ACCOUNT_OFFSET = 3;
+    public static final int MAIN_INSTAGRAM_OFFSET = 3;
 
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
 
@@ -80,9 +78,6 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     private final S3Service s3Service;
     private final ClubCommandService clubCommandService;
-
-    private final InstagramCrawler instagramCrawler;
-
 
     @Override
     public ClubIdResponse getAllClubIds() {
@@ -428,22 +423,30 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
-    public GetInstagrams findInstagramsByRandom() {
-        Page<Club> clubs = clubSearchRepository.findRecentUpdateClubs(FIRST_PAGE, MAIN_ACCOUNT_OFFSET);
+    public GetInstagramsMain findInstagramsMain() {
+        List<Club> clubs = clubSearchRepository.findClubByRandom(MAIN_INSTAGRAM_OFFSET);
 
-        return getGetInstagramsDTO(clubs);
+        return getGetInstagramsMainDTO(clubs);
     }
 
+
+    private GetInstagramsMain getGetInstagramsMainDTO(List<Club> clubs) {
+        List<ClubInstagramDTO> dtoList = clubs.stream().map(this::getClubInstagramDTO).toList();
+
+        return GetInstagramsMain.of(dtoList);
+    }
     private GetInstagrams getGetInstagramsDTO(Page<Club> clubs) {
 
-        Page<ClubInstagramDTO> dtoPage = clubs.map(club -> {
-            String clubName = club.getName();
-            String account = club.getSnsUrl();
-            String profileImageUrl = getInstagramProfileUrlOrElseNull(club.getId());
-            String profileUrl = INSTAGRAM_URL + account;
-            return ClubInstagramDTO.of(clubName, account, profileImageUrl, profileUrl);
-        });
+        Page<ClubInstagramDTO> dtoPage = clubs.map(this::getClubInstagramDTO);
 
         return GetInstagrams.from(dtoPage);
+    }
+
+    private ClubInstagramDTO getClubInstagramDTO(Club club) {
+        String clubName = club.getName();
+        String account = club.getSnsUrl();
+        String profileImageUrl = getInstagramProfileUrlOrElseNull(club.getId());
+        String profileUrl = INSTAGRAM_URL + account;
+        return ClubInstagramDTO.of(clubName, account, profileImageUrl, profileUrl);
     }
 }

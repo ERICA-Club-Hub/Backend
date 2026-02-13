@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class InstagramCrawler {
     private static final String INSTAGRAM_URL = "https://www.instagram.com/";
 
 
-    @Scheduled(cron = "0 0 4 * * *")
+//    @Scheduled(cron = "0 0 4 * * *")
     public void update() {
 
         WebDriver driver = null;

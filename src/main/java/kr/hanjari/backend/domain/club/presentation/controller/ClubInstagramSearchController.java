@@ -3,6 +3,7 @@ package kr.hanjari.backend.domain.club.presentation.controller;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.enums.*;
 import kr.hanjari.backend.domain.club.presentation.dto.response.GetInstagrams;
+import kr.hanjari.backend.domain.club.presentation.dto.response.GetInstagramsMain;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,9 +73,9 @@ public class ClubInstagramSearchController {
         return ApiResponse.onSuccess(result);
     }
 
-    @GetMapping("/instagram/popular")
-    public ApiResponse<GetInstagrams> getInstagramPopular() {
-        GetInstagrams result = clubQueryService.findInstagramsByRandom();
+    @GetMapping("/instagram/main")
+    public ApiResponse<GetInstagramsMain> getInstagramMain() {
+        GetInstagramsMain result = clubQueryService.findInstagramsMain();
 
         return ApiResponse.onSuccess(result);
     }
