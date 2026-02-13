@@ -4,6 +4,8 @@ import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.*;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface ClubSearchRepository {
 
     Page<Club> findCentralClubsByCondition(
@@ -27,4 +29,6 @@ public interface ClubSearchRepository {
     Page<Club> findRecentUpdateClubs(int page, int size);
 
     Page<Club> findClubsByType(ClubType type, int page, int size);
+
+    List<Club> findClubByRandom(int size);
 }
