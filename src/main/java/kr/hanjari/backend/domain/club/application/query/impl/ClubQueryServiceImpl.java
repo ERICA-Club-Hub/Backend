@@ -445,7 +445,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private ClubInstagramDTO getClubInstagramDTO(Club club) {
         String clubName = club.getName();
         String account = club.getSnsUrl();
-        String profileImageUrl = getInstagramProfileUrlOrElseNull(club.getId());
+        String profileImageUrl = resolveImageUrl(club);
         String profileUrl = INSTAGRAM_URL + account;
         return ClubInstagramDTO.of(clubName, account, profileImageUrl, profileUrl);
     }
