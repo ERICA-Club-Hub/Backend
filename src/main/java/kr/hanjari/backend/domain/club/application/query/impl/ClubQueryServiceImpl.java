@@ -94,7 +94,13 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         );
 
         List<ClubRegistrationResponse> clubRegistrationResponseDTOList = clubRegistrationList.stream()
-                .map(ClubRegistrationResponse::from)
+                .map(clubRegistration -> ClubRegistrationResponse.of(
+                        clubRegistration.getId(),
+                        clubRegistration.getName(),
+                        clubRegistration.getBriefIntroduction(),
+                        clubRegistration.getCategoryInfo(),
+                        resolveImageUrl(clubRegistration)
+                ))
                 .toList();
 
         return GetRegistrationsResponse.of(clubRegistrationResponseDTOList);
