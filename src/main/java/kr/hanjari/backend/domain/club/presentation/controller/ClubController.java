@@ -117,6 +117,13 @@ public class ClubController {
 
 
     @Tag(name = "Club Registration", description = "Club Registration API")
+    @Operation(summary = "[서비스 어드민] 동아리 관리 상세 조회")
+    @GetMapping("/service-admin/{clubId}")
+    public ApiResponse<ClubAdminDetailResponse> getClubAdminDetail(@PathVariable Long clubId) {
+        return ApiResponse.onSuccess(clubQueryService.findClubAdminDetail(clubId));
+    }
+
+    @Tag(name = "Club Registration", description = "Club Registration API")
     @Operation(summary = "[동아리 등록] 동아리 등록 요청 수락", description = """
             ## 동아리 등록 요청을 수락하여 동아리로 등록합니다.
             ### PathVariable
