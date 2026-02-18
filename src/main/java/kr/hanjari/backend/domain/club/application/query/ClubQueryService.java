@@ -29,6 +29,8 @@ public interface ClubQueryService {
 
     ClubOverviewResponse findClubOverview(Long clubId);
 
+    ClubAdminDetailResponse findClubAdminDetail(Long clubId);
+
     ClubBasicInfoResponse findClubBasicInfo(Long clubId);
 
     ClubDetailDraftResponse findClubDetailDraft(Long clubId);
