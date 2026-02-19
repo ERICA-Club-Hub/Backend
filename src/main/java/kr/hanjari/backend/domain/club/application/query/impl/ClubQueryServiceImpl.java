@@ -144,6 +144,12 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
+    public ClubAdminDetailResponse findClubAdminDetail(Long clubId) {
+        Club club = getClub(clubId);
+        return ClubAdminDetailResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+    }
+
+    @Override
     public ClubBasicInfoResponse findClubBasicInfo(Long clubId) {
         Club club = getClub(clubId);
         return ClubBasicInfoResponse.of(club);
