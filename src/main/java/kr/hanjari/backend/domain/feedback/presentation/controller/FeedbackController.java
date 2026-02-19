@@ -6,13 +6,10 @@ import kr.hanjari.backend.domain.feedback.application.service.FeedbackService;
 import kr.hanjari.backend.domain.feedback.presentation.dto.FeedbackDTO;
 import kr.hanjari.backend.domain.feedback.presentation.dto.request.FeedbackRequest;
 import kr.hanjari.backend.domain.feedback.presentation.dto.response.FeedbackCommandResponse;
+import kr.hanjari.backend.domain.feedback.presentation.dto.response.GetFeedbacksResponse;
 import kr.hanjari.backend.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/feedbacks")
@@ -31,10 +28,20 @@ public class FeedbackController {
             """
     )
     @PostMapping("")
-    @Transactional
     public ApiResponse<FeedbackCommandResponse> createFeedback(@RequestBody FeedbackRequest requestBody) {
 
         FeedbackCommandResponse result = feedbackService.createFeedback(requestBody);
+        return ApiResponse.onSuccess(result);
+    }
+
+
+    @GetMapping("")
+    public ApiResponse<GetFeedbacksResponse> getAllFeedbacks(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "10") int size
+    ) {
+
+        GetFeedbacksResponse result = feedbackService.getFeedbacks(page, size);
         return ApiResponse.onSuccess(result);
     }
 }
