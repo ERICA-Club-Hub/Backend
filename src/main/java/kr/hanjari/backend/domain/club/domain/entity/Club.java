@@ -1,0 +1,179 @@
+package kr.hanjari.backend.domain.club.domain.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import kr.hanjari.backend.domain.club.domain.entity.detail.Schedule;
+import kr.hanjari.backend.domain.club.domain.entity.draft.ScheduleDraft;
+import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubBasicInformationUpdateRequest;
+import kr.hanjari.backend.domain.club.presentation.dto.request.ClubDetailRequest;
+import kr.hanjari.backend.domain.common.BaseEntity;
+import kr.hanjari.backend.domain.common.command.CategoryCommand;
+import kr.hanjari.backend.domain.file.domain.entity.File;
+import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
+import kr.hanjari.backend.global.payload.exception.GeneralException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "club",
+    uniqueConstraints = {
+        @jakarta.persistence.UniqueConstraint(columnNames = "code"),
+        @jakarta.persistence.UniqueConstraint(columnNames = "name")
+    })
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Club extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "code")
+    private String code;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_file_id")
+    private File imageFile;
+
+    @Column(name = "name", nullable = false, length = 30)
+    private String name;
+
+    @Column(name = "leader_name", length = 30)
+    private String leaderName;
+
+    @Column(name = "leader_email", nullable = false, length = 40)
+    private String leaderEmail;
+
+    @Column(name = "leader_phone")
+    private String leaderPhone;
+
+    @Column(name = "one_liner", nullable = false, length = 40)
+    private String oneLiner; // 동아리 한 줄 소개
+
+    @Column(name = "brief_introduction", nullable = false, length = 120)
+    private String briefIntroduction; // 한자리 관리자 참고용
+
+    @Column(name = "description", length = 2000)
+    private String description; // 동아리 상세 설명
+
+    @Column(name = "meeting_schedule")
+    private String scheduleDescription; // 동아리 활동 설명 (월 별 일정 페이지)
+
+    @Column(name = "membership_fee")
+    private String membershipFee;
+
+    @Column(name = "sns_url", length = 30)
+    private String snsUrl;
+
+    @Column(name = "application_url")
+    private String applicationUrl;
+
+    @Column(name = "view_count", nullable = false)
+    @Builder.Default
+    private Long viewCount = 0L;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recruitment_status", nullable = false)
+    private RecruitmentStatus recruitmentStatus;
+
+    @Embedded
+    private ClubCategoryInfo categoryInfo;
+
+    // 팩토리 메서드
+    public static Club create(ClubRegistration clubRegistration) {
+        Club club = Club.builder()
+                .name(clubRegistration.getName())
+                .leaderEmail(clubRegistration.getLeaderEmail())
+                .oneLiner(clubRegistration.getOneLiner())
+                .briefIntroduction(clubRegistration.getBriefIntroduction())
+                .categoryInfo(clubRegistration.getCategoryInfo())
+                .imageFile(clubRegistration.getImageFile())
+                .build();
+
+        club.updateRecruitmentStatus(0);
+        return club;
+    }
+
+    public void update(String name, String oneLiner, ClubCategoryInfo categoryInfo) {
+        this.name = name;
+        this.oneLiner = oneLiner;
+        this.categoryInfo = categoryInfo;
+    }
+
+    public void update(ClubRegistration clubRegistration) {
+        this.name = clubRegistration.getName();
+        this.oneLiner = clubRegistration.getOneLiner();
+        this.categoryInfo = clubRegistration.getCategoryInfo();
+        this.imageFile = clubRegistration.getImageFile();
+    }
+
+    public void updateClubImage(File imageFile) {
+        this.imageFile = imageFile;
+    }
+
+    public void updateClubDetails(ClubDetailRequest detail) {
+        this.description = detail.description();
+        this.leaderName = detail.leaderName();
+        this.leaderPhone = detail.leaderPhone();
+        this.leaderEmail = detail.contactEmail();
+        this.membershipFee = detail.membershipFee();
+        this.snsUrl = detail.snsAccount();
+        this.applicationUrl = detail.applicationUrl();
+    }
+
+    public void updateClubCommonInfo(ClubBasicInformationUpdateRequest commonInfo, CategoryCommand categoryCommand) {
+        this.name = commonInfo.clubName();
+        this.oneLiner = commonInfo.oneLiner();
+        this.categoryInfo.apply(categoryCommand);
+    }
+
+    public void updateCode(String code) {
+        this.code = code;
+    }
+
+    public void updateRecruitmentStatus(int option) {
+        switch (option) {
+            case 0 -> this.recruitmentStatus = RecruitmentStatus.UPCOMING;
+            case 1 -> this.recruitmentStatus = RecruitmentStatus.OPEN;
+            case 2 -> this.recruitmentStatus = RecruitmentStatus.CLOSED;
+            case 3 -> this.recruitmentStatus = RecruitmentStatus.ALWAYS_OPEN;
+            case 4 -> this.recruitmentStatus = RecruitmentStatus.ADDITIONAL;
+        }
+    }
+
+    public void updateScheduleDescription(String scheduleDescription) {
+        this.scheduleDescription = scheduleDescription;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
+
+    // 해당 동아리에 속하는 월 별 활동인지
+    public void validateIsScheduleContainsInClub(Schedule schedule) {
+        if (!this.getId().equals(schedule.getClub().getId())) {
+            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+        }
+    }
+
+    public void validateIsScheduleDraftContainsInClub(ScheduleDraft scheduleDraft) {
+        if (!this.getId().equals(scheduleDraft.getClub().getId())) {
+            throw new GeneralException(ErrorStatus._SCHEDULE_IS_NOT_BELONG_TO_CLUB);
+        }
+    }
+}

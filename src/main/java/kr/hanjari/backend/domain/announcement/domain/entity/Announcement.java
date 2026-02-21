@@ -1,0 +1,42 @@
+package kr.hanjari.backend.domain.announcement.domain.entity;
+
+import jakarta.persistence.*;
+import kr.hanjari.backend.domain.file.domain.entity.File;
+import kr.hanjari.backend.domain.common.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+
+@Entity
+@Table(name = "announcement")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+public class Announcement extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "thumbnail_image", nullable = false)
+    private File thumbnailImage;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "url", nullable = false)
+    private String url;
+
+    public void updateThumbnailImage(File imageFile) {
+        this.thumbnailImage = imageFile;
+    }
+
+    public void update(String title, String url) {
+        this.title = title;
+        this.url = url;
+    }
+}
