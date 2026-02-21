@@ -193,9 +193,17 @@ public class ClubCommandServiceImpl implements ClubCommandService {
         RecruitmentStatus after = club.getRecruitmentStatus();
         clubRepository.save(club);
 
-        if (before == RecruitmentStatus.UPCOMING && after == RecruitmentStatus.OPEN) {
+        if (isBeforeOpenableStatus(before) && hasBecomeOpen(after)) {
             applicationEventPublisher.publishEvent(new RecruitmentStatusOpenedEvent(clubId, club.getName()));
         }
+    }
+
+    private boolean isBeforeOpenableStatus(RecruitmentStatus before) {
+        return before == RecruitmentStatus.UPCOMING || before == RecruitmentStatus.CLOSED;
+    }
+
+    private boolean hasBecomeOpen(RecruitmentStatus after) {
+        return after == RecruitmentStatus.OPEN;
     }
 
     @Override

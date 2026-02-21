@@ -145,6 +145,24 @@ class ClubCommandServiceImplRecruitmentAlertTest {
     }
 
     @Test
+    @DisplayName("모집상태가 CLOSED에서 OPEN으로 바뀌면 이벤트를 발행한다")
+    void should_publish_event_when_recruitment_changes_closed_to_open() {
+        Long clubId = 171L;
+        Club club = club(clubId, "한자리", RecruitmentStatus.CLOSED);
+        when(clubRepository.findById(clubId)).thenReturn(Optional.of(club));
+
+        clubCommandService.updateClubRecruitmentStatus(clubId, 1);
+
+        ArgumentCaptor<RecruitmentStatusOpenedEvent> captor =
+            ArgumentCaptor.forClass(RecruitmentStatusOpenedEvent.class);
+        verify(applicationEventPublisher).publishEvent(captor.capture());
+        RecruitmentStatusOpenedEvent event = captor.getValue();
+        assertEquals(clubId, event.clubId());
+        assertEquals("한자리", event.clubName());
+        verify(clubRepository).save(club);
+    }
+
+    @Test
     @DisplayName("모집상태가 다른 전이면 이벤트를 발행하지 않는다")
     void should_not_publish_event_when_status_transition_is_not_upcoming_to_open() {
         Long clubId = 171L;
