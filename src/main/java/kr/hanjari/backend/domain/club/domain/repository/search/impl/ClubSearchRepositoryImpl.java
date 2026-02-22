@@ -30,7 +30,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<Club> findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                  CentralClubCategory category, int page, int size) {
+                                                  CentralClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         List<Club> clubs = query.select(club)
                 .from(club)
@@ -38,7 +38,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
                         statusEq(status),
-                        centralCategoryEq(category))
+                        centralCategoryEq(category),
+                        snsNull(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -50,7 +51,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
                         statusEq(status),
-                        centralCategoryEq(category))
+                        centralCategoryEq(category),
+                        snsNull(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElements));
@@ -58,7 +60,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<Club> findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                UnionClubCategory category, int page, int size) {
+                                                UnionClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
         List<Club> clubs = query.select(club)
@@ -67,7 +69,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
                         statusEq(status),
-                        unionCategoryEq(category))
+                        unionCategoryEq(category),
+                        snsNull(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -79,7 +82,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
                         statusEq(status),
-                        unionCategoryEq(category))
+                        unionCategoryEq(category),
+                        snsNull(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
@@ -87,7 +91,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<Club> findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                  College college, int page, int size) {
+                                                  College college, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
         List<Club> clubs = query.select(club)
@@ -96,7 +100,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
                         statusEq(status),
-                        collegeEq(college))
+                        collegeEq(college),
+                        snsNull(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -108,7 +113,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
                         statusEq(status),
-                        collegeEq(college))
+                        collegeEq(college),
+                        snsNull(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
@@ -116,7 +122,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<Club> findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
-                                                     College college, Department departmentName, int page, int size) {
+                                                     College college, Department departmentName, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
         List<Club> clubs = query.select(club)
@@ -126,7 +132,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         collegeEq(college),
-                        departmentEq(departmentName))
+                        departmentEq(departmentName),
+                        snsNull(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -205,6 +212,20 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .fetch();
     }
 
+    @Override
+    public List<Club> findClubByRandomWithSns(int size) {
+
+        QClub club = QClub.club;
+
+        return query
+                .select(club)
+                .from(club)
+                .where(club.snsUrl.isNotNull())
+                .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
+                .limit(size)
+                .fetch();
+    }
+
     private long getTotal(Long totalElement) {
         return totalElement != null ? totalElement : 0;
     }
@@ -245,6 +266,9 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return department != null ? QClub.club.categoryInfo.department.eq(department) : null;
     }
 
+    private BooleanExpression snsNull(boolean flag) {
+        return flag ? QClub.club.snsUrl.isNull() : null;
+    }
 
     private OrderSpecifier<?>[] getOrderSpecifier(SortBy sortBy) {
         if (sortBy == null) {

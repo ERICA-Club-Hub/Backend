@@ -10,19 +10,19 @@ public interface ClubSearchRepository {
 
     Page<Club> findCentralClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
-            CentralClubCategory category, int page, int size);
+            CentralClubCategory category, boolean onlyWithSns, int page, int size);
 
     Page<Club> findUnionClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
-            UnionClubCategory category, int page, int size);
+            UnionClubCategory category, boolean onlyWithSns, int page, int size);
 
     Page<Club> findCollegeClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
-            College college, int page, int size);
+            College college, boolean onlyWithSns, int page, int size);
 
     Page<Club> findDepartmentClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
-            College college, Department departmentName, int page, int size);
+            College college, Department departmentName, boolean onlyWithSns, int page, int size);
 
     Page<Club> findPopularClubs(int page, int size);
 
@@ -31,4 +31,6 @@ public interface ClubSearchRepository {
     Page<Club> findClubsByType(ClubType type, int page, int size);
 
     List<Club> findClubByRandom(int size);
+
+    List<Club> findClubByRandomWithSns(int size);
 }
