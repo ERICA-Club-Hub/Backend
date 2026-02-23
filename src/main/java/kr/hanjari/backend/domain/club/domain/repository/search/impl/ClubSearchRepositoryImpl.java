@@ -39,7 +39,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         centralCategoryEq(category),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -52,7 +52,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         centralCategoryEq(category),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElements));
@@ -70,7 +70,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         unionCategoryEq(category),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -83,7 +83,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         unionCategoryEq(category),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
@@ -101,7 +101,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         collegeEq(college),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -114,7 +114,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         nameContains(keyword),
                         statusEq(status),
                         collegeEq(college),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
@@ -133,7 +133,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         statusEq(status),
                         collegeEq(college),
                         departmentEq(departmentName),
-                        snsNull(onlyWithSns))
+                        snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
                 .offset((long) page * size)
                 .limit(size)
@@ -266,8 +266,10 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return department != null ? QClub.club.categoryInfo.department.eq(department) : null;
     }
 
-    private BooleanExpression snsNull(boolean flag) {
-        return flag ? QClub.club.snsUrl.isNull() : null;
+    private BooleanExpression snsFieldCheck(boolean flag) {
+        return flag ?
+                QClub.club.snsUrl.isNull().or(QClub.club.snsUrl.eq("")) :
+                null;
     }
 
     private OrderSpecifier<?>[] getOrderSpecifier(SortBy sortBy) {
