@@ -7,10 +7,10 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public record GetFeedbacksResponse(
-        int totalElements,
+        long totalElements,
         List<FeedbackDTO> feedbackDTOList
 ) {
     public static GetFeedbacksResponse of(Page<FeedbackDTO> feedbackPage) {
-        return new GetFeedbacksResponse(feedbackPage.getNumberOfElements(), feedbackPage.getContent());
+        return new GetFeedbacksResponse(feedbackPage.getTotalElements(), feedbackPage.getContent());
     }
 }
