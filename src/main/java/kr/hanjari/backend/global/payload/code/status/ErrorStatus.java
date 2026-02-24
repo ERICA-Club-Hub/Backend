@@ -67,7 +67,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _RECRUITMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "동아리 모집 안내를 찾을 수 없습니다."),
     _RECRUITMENT_DRAFT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT404", "임시 저장 된 동아리 모집 안내를 찾을 수 없습니다."),
 
-    _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다.")
+    _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
+
+    _FAQ_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ404", "FAQ를 찾을 수 없습니다.")
 
     ;
     private final HttpStatus httpStatus;
