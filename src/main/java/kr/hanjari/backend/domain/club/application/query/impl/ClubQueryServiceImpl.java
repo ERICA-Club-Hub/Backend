@@ -219,7 +219,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                                                           CentralClubCategory centralClubCategory, int page,
                                                           int size) {
         Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
-                keyword, status, sortBy, centralClubCategory, page, size);
+                keyword, status, sortBy, centralClubCategory, false, page, size);
 
         return getClubSearchResponseDTO(clubs);
     }
@@ -228,7 +228,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubSearchResponse findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                         UnionClubCategory unionCategory, int page, int size) {
         Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
-                keyword, status, sortBy, unionCategory, page, size);
+                keyword, status, sortBy, unionCategory, false, page, size);
 
         return getClubSearchResponseDTO(clubs);
     }
@@ -237,7 +237,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubSearchResponse findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                           College college, int page, int size) {
         Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
-                keyword, status, sortBy, college, page, size);
+                keyword, status, sortBy, college, false, page, size);
 
         return getClubSearchResponseDTO(clubs);
     }
@@ -247,7 +247,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                                                              College college, Department department, int page,
                                                              int size) {
         Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
-                keyword, status, sortBy, college, department, page, size);
+                keyword, status, sortBy, college, department, false, page, size);
 
         return getClubSearchResponseDTO(clubs);
     }
@@ -419,7 +419,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public GetInstagrams findInstagramsCentral(CentralClubCategory category, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
-                null, null, null, category, page, size);
+                null, null, null, category, true, page, size);
 
         return getGetInstagramsDTO(clubs);
     }
@@ -428,7 +428,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public GetInstagrams findInstagramsUnion(UnionClubCategory category, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
-                null, null, null, category, page, size
+                null, null, null, category, true, page, size
         );
 
         return getGetInstagramsDTO(clubs);
@@ -438,7 +438,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public GetInstagrams findInstagramsCollege(College college, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
-                null, null, null, college, page, size
+                null, null, null, college, true, page, size
         );
 
         return getGetInstagramsDTO(clubs);
@@ -448,7 +448,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public GetInstagrams findInstagramsDepartment(Department department, int page, int size) {
 
         Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
-                null, null, null, null, department, page, size
+                null, null, null, null, department, true, page, size
         );
 
         return getGetInstagramsDTO(clubs);
@@ -456,7 +456,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public GetInstagramsMain findInstagramsMain() {
-        List<Club> clubs = clubSearchRepository.findClubByRandom(MAIN_INSTAGRAM_OFFSET);
+        List<Club> clubs = clubSearchRepository.findClubByRandomWithSns(MAIN_INSTAGRAM_OFFSET);
 
         return getGetInstagramsMainDTO(clubs);
     }
