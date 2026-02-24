@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.faq.presentation.controller;
 
 import kr.hanjari.backend.domain.faq.application.service.FaqService;
+import kr.hanjari.backend.domain.faq.presentation.dto.FaqDTO;
 import kr.hanjari.backend.domain.faq.presentation.dto.request.FaqRequest;
 import kr.hanjari.backend.domain.faq.presentation.dto.response.FaqCommandResponse;
 import kr.hanjari.backend.domain.faq.presentation.dto.response.GetAllFaqResponse;
@@ -30,5 +31,21 @@ public class FaqController {
         GetAllFaqResponse result = faqService.getAllFaq(0, 10);
 
         return ApiResponse.onSuccess(result);
+    }
+
+    @GetMapping("/{faqId}")
+    public ApiResponse<FaqDTO> getFaq(@PathVariable Long faqId) {
+
+        FaqDTO result = faqService.getFaq(faqId);
+
+        return ApiResponse.onSuccess(result);
+    }
+
+    @DeleteMapping("/{faqId}")
+    public ApiResponse<Void> deleteFaq(@PathVariable Long faqId) {
+
+        faqService.deleteFaq(faqId);
+
+        return ApiResponse.onSuccess();
     }
 }
