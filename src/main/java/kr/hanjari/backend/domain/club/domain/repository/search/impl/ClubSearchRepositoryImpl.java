@@ -185,12 +185,15 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
-    public Page<Club> findClubsByType(ClubType type, int page, int size) {
+    public Page<Club> findClubsByType(ClubType type, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
         List<Club> clubs = query.select(club)
                 .from(club)
-                .where(clubTypeEq(type))
+                .where(
+                        clubTypeEq(type),
+                        snsFieldCheck(onlyWithSns)
+                )
                 .offset((long) page * size)
                 .limit(size)
                 .fetch();
@@ -220,7 +223,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return query
                 .select(club)
                 .from(club)
-                .where(club.snsUrl.isNotNull())
+                .where(snsFieldCheck(true))
                 .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
                 .limit(size)
                 .fetch();
@@ -268,7 +271,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     private BooleanExpression snsFieldCheck(boolean flag) {
         return flag ?
-                QClub.club.snsUrl.isNull().or(QClub.club.snsUrl.eq("")) :
+                QClub.club.snsUrl.isNotEmpty() :
+//                QClub.club.snsUrl.isNotNull().and(QClub.club.snsUrl.ne("")) :
                 null;
     }
 
