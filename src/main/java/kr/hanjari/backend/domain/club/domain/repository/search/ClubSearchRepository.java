@@ -28,7 +28,7 @@ public interface ClubSearchRepository {
 
     Page<Club> findRecentUpdateClubs(int page, int size);
 
-    Page<Club> findClubsByType(ClubType type, int page, int size);
+    Page<Club> findClubsByType(ClubType type, boolean onlyWithSns, int page, int size);
 
     List<Club> findClubByRandom(int size);
 

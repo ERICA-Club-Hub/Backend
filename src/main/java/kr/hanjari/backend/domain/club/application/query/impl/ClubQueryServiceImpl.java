@@ -410,7 +410,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public GetInstagrams findInstagramsByCategory(ClubType type, int page, int size) {
 
-        Page<Club> clubs = clubSearchRepository.findClubsByType(type, page, size);
+        Page<Club> clubs = clubSearchRepository.findClubsByType(type, true, page, size);
 
         return getGetInstagramsDTO(clubs);
     }
