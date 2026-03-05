@@ -63,7 +63,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
 
-    public static final LocalDate RENEWAL_DATE = LocalDate.of(2025, 3, 2);
+    public static final LocalDate RENEWAL_DATE = LocalDate.of(2026, 3, 2);
 
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
