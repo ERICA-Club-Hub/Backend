@@ -4,6 +4,7 @@ import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.*;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ClubSearchRepository {
@@ -33,4 +34,6 @@ public interface ClubSearchRepository {
     List<Club> findClubByRandom(int size);
 
     List<Club> findClubByRandomWithSns(int size);
+
+    List<Club> findRandomClubsUpdatedAfter(LocalDateTime date, int size);
 }
