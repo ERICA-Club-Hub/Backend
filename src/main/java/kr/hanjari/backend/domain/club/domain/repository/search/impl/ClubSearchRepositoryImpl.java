@@ -6,6 +6,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.QClub;
@@ -210,6 +211,18 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return query
                 .select(club)
                 .from(club)
+                .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
+                .limit(size)
+                .fetch();
+    }
+
+    @Override
+    public List<Club> findRandomClubsUpdatedAfter(LocalDateTime date, int size) {
+        QClub club = QClub.club;
+
+        return query.select(club)
+                .from(club)
+                .where(club.updatedAt.after(date))
                 .orderBy(Expressions.numberTemplate(Double.class, "RAND()").asc())
                 .limit(size)
                 .fetch();

@@ -1,5 +1,7 @@
 package kr.hanjari.backend.domain.club.application.query.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
@@ -60,6 +62,8 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public static final int MAIN_INSTAGRAM_OFFSET = 3;
 
     public static final String INSTAGRAM_URL = "https://www.instagram.com/";
+
+    public static final LocalDate RENEWAL_DATE = LocalDate.of(2025, 3, 2);
 
     private final ClubRepository clubRepository;
     private final ClubRegistrationRepository clubRegistrationRepository;
@@ -261,9 +265,22 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public ClubSearchResponse findThreeRecentUpdatedClubs() {
-        Page<Club> clubs = clubSearchRepository.findRecentUpdateClubs(FIRST_PAGE, MAIN_PAGE_OFFSET);
+        LocalDateTime renewalDateTime = RENEWAL_DATE.atStartOfDay();
+        List<Club> clubs = clubSearchRepository.findRandomClubsUpdatedAfter(renewalDateTime, MAIN_PAGE_OFFSET);
 
-        return getClubSearchResponseDTO(clubs);
+        List<ClubSearchResult> results = clubs.stream()
+                .map(club -> ClubSearchResult.of(
+                        club.getId(),
+                        club.getName(),
+                        club.getOneLiner(),
+                        resolveImageUrl(club),
+                        club.getCategoryInfo().getClubType().getDescription(),
+                        club.getRecruitmentStatus(),
+                        CategoryResponse.getTag(club.getCategoryInfo())
+                ))
+                .toList();
+
+        return ClubSearchResponse.of(results, (long) results.size(), 0, results.size());
     }
 
     @Override
