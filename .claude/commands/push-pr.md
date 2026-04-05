@@ -14,7 +14,7 @@ Git push and create a Pull Request for the current branch.
 6. 사용자 확인 후 GitHub MCP(`mcp__github__create_pull_request`)로 PR 생성
 
 ## PR Title Rules
-- 형식: `[TYPE]: 한글 설명` (e.g. `[FEAT]: 로그인 기능 구현`)
+- 형식: `[TYPE] 한글 설명` (e.g. `[FEAT] 로그인 기능 구현`)
 - type 종류: `FEAT, FIX, REFACTOR, CHORE, DOCS, TEST`
 - type은 대문자, 마침표 없음, 명령형
 - 70자 이하
