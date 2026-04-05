@@ -21,20 +21,20 @@ Git push and create a Pull Request for the current branch.
 
 ## PR Body Format
 ```
-## Summary
-- <변경사항 핵심 요약>
-
 ## Changes
-- <구체적인 변경 내용>
+- <변경사항 요약 및 구체적인 내용>
 
 ## Related Issue
 Closes #<issue number>
+
+## Check List
+- [ ] Local Test
 ```
 
 ## PR Body Guidelines
 - `git log --oneline develop..HEAD` 로 커밋 목록 파악
 - `git diff develop..HEAD` 로 실제 변경 내용 파악 후 body에 반영
-- Summary, Changes 항목은 bullet point로 작성
+- Changes 항목은 bullet point로 작성
 - branch명에 이슈 번호가 포함된 경우(e.g. `feat/180`) 자동으로 Related Issue에 반영
 
 ## Base Branch
