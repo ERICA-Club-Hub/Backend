@@ -126,6 +126,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     @Override
+    @Transactional
     public ClubDetailResponse findClubDetail(Long clubId) {
         Club club = getClub(clubId);
         clubCommandService.incrementClubViewCount(clubId);
