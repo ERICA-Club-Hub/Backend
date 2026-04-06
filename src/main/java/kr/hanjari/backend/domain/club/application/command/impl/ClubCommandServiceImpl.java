@@ -54,6 +54,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +69,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Value("${login.url}")
     private String loginURL;
+
+    private final StringRedisTemplate redisTemplate;
 
     private final FileRepository fileRepository;
     private final ClubRepository clubRepository;
@@ -359,10 +362,8 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public void incrementClubViewCount(Long clubId) {
-//        Club club = getClub(clubId);
-        Club club = getClubWithXLock(clubId);
-        club.incrementViewCount();
-//        clubRepository.save(club);
+        String key = "club:viewCount:" + clubId;
+        redisTemplate.opsForValue().increment(key);
     }
 
     // ======= Private Methods ======= //

@@ -131,15 +131,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         clubCommandService.incrementClubViewCount(clubId);
         Club club = getClub(clubId);
 
-        return ClubDetailResponse.of(
-            club.getId(),
-            club.getDescription(),
-            club.getLeaderName(),
-            club.getLeaderPhone(),
-            club.getLeaderEmail(),
-            club.getMembershipFee(),
-            club.getSnsUrl(),
-            club.getApplicationUrl());
+        return ClubDetailResponse.from(club);
     }
 
     @Override

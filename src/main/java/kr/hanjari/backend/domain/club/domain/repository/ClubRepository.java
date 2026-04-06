@@ -29,6 +29,10 @@ public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificat
     @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1 WHERE c.id = :id")
     int incrementViewCount(Long id);
 
+    @Modifying
+    @Query("UPDATE Club c SET c.viewCount = c.viewCount + :delta WHERE c.id = :id")
+    int incrementViewCountBy(Long id, Long delta);
+
     boolean existsByCode(String code);
 
     @Query("SELECT c FROM Club c WHERE (:name IS NULL OR c.name LIKE %:name%) " +
