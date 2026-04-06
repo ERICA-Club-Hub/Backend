@@ -21,9 +21,9 @@ public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificat
     @Query("SELECT c FROM Club c WHERE c.id = :id")
     Optional<Club> findByIdWithPessimisticLock(Long id);
 
-    @Modifying
-    @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1, c.version = c.version + 1 WHERE c.id = :id AND c.version = :version")
-    int incrementViewCountWithVersionCheck(Long id, Long version);
+//    @Modifying
+//    @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1, c.version = c.version + 1 WHERE c.id = :id AND c.version = :version")
+//    int incrementViewCountWithVersionCheck(Long id, Long version);
 
     @Modifying
     @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1 WHERE c.id = :id")
