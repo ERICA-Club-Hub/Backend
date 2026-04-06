@@ -9,10 +9,7 @@ import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,6 +20,14 @@ public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificat
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM Club c WHERE c.id = :id")
     Optional<Club> findByIdWithPessimisticLock(Long id);
+
+    @Modifying
+    @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1, c.version = c.version + 1 WHERE c.id = :id AND c.version = :version")
+    int incrementViewCountWithVersionCheck(Long id, Long version);
+
+    @Modifying
+    @Query("UPDATE Club c SET c.viewCount = c.viewCount + 1 WHERE c.id = :id")
+    int incrementViewCount(Long id);
 
     boolean existsByCode(String code);
 
