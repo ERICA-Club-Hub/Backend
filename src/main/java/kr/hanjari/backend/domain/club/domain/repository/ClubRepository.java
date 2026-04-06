@@ -2,6 +2,8 @@ package kr.hanjari.backend.domain.club.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.persistence.LockModeType;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +19,10 @@ import org.springframework.stereotype.Repository;
 public interface ClubRepository extends JpaRepository<Club, Long>, JpaSpecificationExecutor<Club> {
 
     Optional<Club> findByCode(String code);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT c FROM Club c WHERE c.id = :id")
+    Optional<Club> findByIdWithPessimisticLock(Long id);
 
     boolean existsByCode(String code);
 

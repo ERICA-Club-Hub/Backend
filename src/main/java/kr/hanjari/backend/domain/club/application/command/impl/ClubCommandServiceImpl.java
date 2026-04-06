@@ -359,9 +359,10 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     @Override
     public void incrementClubViewCount(Long clubId) {
-        Club club = getClub(clubId);
+//        Club club = getClub(clubId);
+        Club club = getClubWithXLock(clubId);
         club.incrementViewCount();
-        clubRepository.save(club);
+//        clubRepository.save(club);
     }
 
     // ======= Private Methods ======= //
@@ -382,6 +383,11 @@ public class ClubCommandServiceImpl implements ClubCommandService {
 
     private Club getClub(Long clubId) {
         return clubRepository.findById(clubId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
+    }
+
+    private Club getClubWithXLock(Long clubId) {
+        return clubRepository.findByIdWithPessimisticLock(clubId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CLUB_NOT_FOUND));
     }
 
