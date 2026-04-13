@@ -39,5 +39,6 @@ Redis INCR is a single-threaded atomic operation that guarantees concurrency wit
 1. **Up to 1-minute staleness**: `viewCount` in API responses is DB-based; unsynced Redis increments are not reflected for up to 1 minute
 2. **Data loss on server restart**: Redis increments not yet synced to DB are lost on restart; no Graceful Shutdown hook for forced sync
 3. **`KEYS` command performance**: `KEYS club:viewCount:*` is O(N) blocking; should be replaced with `SCAN`
+   - resolved: replaced with `SCAN` + cursor in `ClubViewCountSyncScheduler`
 4. **Data loss on Redis failure**: View counts recorded during Redis downtime are unrecoverable; no fallback to direct DB increment
 5. **Cold start**: Idle Redis connection pool causes first requests to stall on connection setup (0–14s outage observed on dev)
