@@ -14,3 +14,9 @@ What other options were evaluated, and why were they not chosen?
 
 ## Consequences
 What becomes easier or more difficult to do because of this change?
+
+**Improvements** *(optional)*
+- ...
+
+**Known Issues / Trade-offs** *(optional)*
+- ...
