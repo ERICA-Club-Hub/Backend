@@ -3,6 +3,7 @@ package kr.hanjari.backend.domain.club.application.command.impl;
 import kr.hanjari.backend.domain.club.domain.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.PreDestroy;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -54,6 +55,13 @@ public class ClubViewCountSyncScheduler {
                 log.error("[ViewCount Sync] failed for key={}", key, e);
             }
         }
+    }
+
+    @PreDestroy
+    @Transactional
+    public void flushOnShutdown() {
+        log.info("[ViewCount Sync] Graceful shutdown triggered — flushing view counts");
+        syncViewCountToDb();
     }
 
     private Long extractClubId(String key) {
