@@ -3,6 +3,7 @@ package kr.hanjari.backend.domain.club.domain.repository.search.impl;
 import static org.springframework.data.domain.PageRequest.of;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.QClub;
+import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchProjection;
+import kr.hanjari.backend.domain.file.domain.entity.QFile;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
 import kr.hanjari.backend.domain.club.domain.enums.College;
@@ -57,6 +60,52 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElements));
+    }
+
+    @Override
+    public Page<ClubSearchProjection> findCentralClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            CentralClubCategory category, boolean onlyWithSns, int page, int size) {
+        QClub club = QClub.club;
+        QFile file = QFile.file;
+
+        List<ClubSearchProjection> results = query
+                .select(Projections.constructor(ClubSearchProjection.class,
+                        club.id,
+                        club.name,
+                        club.oneLiner,
+                        file.fileKey,
+                        club.categoryInfo.clubType,
+                        club.categoryInfo.centralCategory,
+                        club.categoryInfo.unionCategory,
+                        club.categoryInfo.college,
+                        club.categoryInfo.department,
+                        club.recruitmentStatus
+                ))
+                .from(club)
+                .leftJoin(club.imageFile, file)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.CENTRAL),
+                        nameContains(keyword),
+                        statusEq(status),
+                        centralCategoryEq(category),
+                        snsFieldCheck(onlyWithSns))
+                .orderBy(getOrderSpecifier(sortBy))
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElements = query.select(club.count())
+                .from(club)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.CENTRAL),
+                        nameContains(keyword),
+                        statusEq(status),
+                        centralCategoryEq(category),
+                        snsFieldCheck(onlyWithSns))
+                .fetchOne();
+
+        return new PageImpl<>(results, of(page, size), getTotal(totalElements));
     }
 
     @Override
