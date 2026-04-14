@@ -109,6 +109,52 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
+    public Page<ClubSearchProjection> findUnionClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            UnionClubCategory category, boolean onlyWithSns, int page, int size) {
+        QClub club = QClub.club;
+        QFile file = QFile.file;
+
+        List<ClubSearchProjection> results = query
+                .select(Projections.constructor(ClubSearchProjection.class,
+                        club.id,
+                        club.name,
+                        club.oneLiner,
+                        file.fileKey,
+                        club.categoryInfo.clubType,
+                        club.categoryInfo.centralCategory,
+                        club.categoryInfo.unionCategory,
+                        club.categoryInfo.college,
+                        club.categoryInfo.department,
+                        club.recruitmentStatus
+                ))
+                .from(club)
+                .leftJoin(club.imageFile, file)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.UNION),
+                        nameContains(keyword),
+                        statusEq(status),
+                        unionCategoryEq(category),
+                        snsFieldCheck(onlyWithSns))
+                .orderBy(getOrderSpecifier(sortBy))
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElements = query.select(club.count())
+                .from(club)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.UNION),
+                        nameContains(keyword),
+                        statusEq(status),
+                        unionCategoryEq(category),
+                        snsFieldCheck(onlyWithSns))
+                .fetchOne();
+
+        return new PageImpl<>(results, of(page, size), getTotal(totalElements));
+    }
+
+    @Override
     public Page<Club> findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                 UnionClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
@@ -140,6 +186,52 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
+    public Page<ClubSearchProjection> findCollegeClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            College college, boolean onlyWithSns, int page, int size) {
+        QClub club = QClub.club;
+        QFile file = QFile.file;
+
+        List<ClubSearchProjection> results = query
+                .select(Projections.constructor(ClubSearchProjection.class,
+                        club.id,
+                        club.name,
+                        club.oneLiner,
+                        file.fileKey,
+                        club.categoryInfo.clubType,
+                        club.categoryInfo.centralCategory,
+                        club.categoryInfo.unionCategory,
+                        club.categoryInfo.college,
+                        club.categoryInfo.department,
+                        club.recruitmentStatus
+                ))
+                .from(club)
+                .leftJoin(club.imageFile, file)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.COLLEGE),
+                        nameContains(keyword),
+                        statusEq(status),
+                        collegeEq(college),
+                        snsFieldCheck(onlyWithSns))
+                .orderBy(getOrderSpecifier(sortBy))
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElements = query.select(club.count())
+                .from(club)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.COLLEGE),
+                        nameContains(keyword),
+                        statusEq(status),
+                        collegeEq(college),
+                        snsFieldCheck(onlyWithSns))
+                .fetchOne();
+
+        return new PageImpl<>(results, of(page, size), getTotal(totalElements));
+    }
+
+    @Override
     public Page<Club> findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                   College college, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
@@ -168,6 +260,54 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .fetchOne();
 
         return new PageImpl<>(clubs, of(page, size), getTotal(totalElement));
+    }
+
+    @Override
+    public Page<ClubSearchProjection> findDepartmentClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            College college, Department departmentName, boolean onlyWithSns, int page, int size) {
+        QClub club = QClub.club;
+        QFile file = QFile.file;
+
+        List<ClubSearchProjection> results = query
+                .select(Projections.constructor(ClubSearchProjection.class,
+                        club.id,
+                        club.name,
+                        club.oneLiner,
+                        file.fileKey,
+                        club.categoryInfo.clubType,
+                        club.categoryInfo.centralCategory,
+                        club.categoryInfo.unionCategory,
+                        club.categoryInfo.college,
+                        club.categoryInfo.department,
+                        club.recruitmentStatus
+                ))
+                .from(club)
+                .leftJoin(club.imageFile, file)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
+                        nameContains(keyword),
+                        statusEq(status),
+                        collegeEq(college),
+                        departmentEq(departmentName),
+                        snsFieldCheck(onlyWithSns))
+                .orderBy(getOrderSpecifier(sortBy))
+                .offset((long) page * size)
+                .limit(size)
+                .fetch();
+
+        Long totalElements = query.select(club.count())
+                .from(club)
+                .where(
+                        club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
+                        nameContains(keyword),
+                        statusEq(status),
+                        collegeEq(college),
+                        departmentEq(departmentName),
+                        snsFieldCheck(onlyWithSns))
+                .fetchOne();
+
+        return new PageImpl<>(results, of(page, size), getTotal(totalElements));
     }
 
     @Override

@@ -225,29 +225,29 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubSearchResponse findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                         UnionClubCategory unionCategory, int page, int size) {
-        Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
+        Page<ClubSearchProjection> projections = clubSearchRepository.findUnionClubsAsProjection(
                 keyword, status, sortBy, unionCategory, false, page, size);
 
-        return getClubSearchResponseDTO(clubs);
+        return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
     public ClubSearchResponse findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                           College college, int page, int size) {
-        Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
+        Page<ClubSearchProjection> projections = clubSearchRepository.findCollegeClubsAsProjection(
                 keyword, status, sortBy, college, false, page, size);
 
-        return getClubSearchResponseDTO(clubs);
+        return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
     public ClubSearchResponse findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                              College college, Department department, int page,
                                                              int size) {
-        Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
+        Page<ClubSearchProjection> projections = clubSearchRepository.findDepartmentClubsAsProjection(
                 keyword, status, sortBy, college, department, false, page, size);
 
-        return getClubSearchResponseDTO(clubs);
+        return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
