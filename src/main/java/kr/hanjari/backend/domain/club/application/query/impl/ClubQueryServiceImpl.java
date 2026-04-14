@@ -29,6 +29,7 @@ import kr.hanjari.backend.domain.club.domain.repository.draft.IntroductionDraftR
 import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDescriptionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
+import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchProjection;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
 import kr.hanjari.backend.domain.club.presentation.dto.response.*;
@@ -215,10 +216,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubSearchResponse findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
                                                           CentralClubCategory centralClubCategory, int page,
                                                           int size) {
-        Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
+        Page<ClubSearchProjection> projections = clubSearchRepository.findCentralClubsAsProjection(
                 keyword, status, sortBy, centralClubCategory, false, page, size);
 
-        return getClubSearchResponseDTO(clubs);
+        return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
@@ -372,7 +373,26 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return s3Service.getDownloadUrl(clubRegistration.getImageFile().getId());
     }
 
+    private String resolveImageUrlByKey(String key) {
+        return s3Service.getDownloadUrl(key);
+    }
 
+
+
+    private ClubSearchResponse getClubSearchResponseFromProjection(Page<ClubSearchProjection> projections) {
+        Page<ClubSearchResult> dtoPage = projections.map(p ->
+                ClubSearchResult.of(
+                        p.clubId(),
+                        p.name(),
+                        p.oneLiner(),
+                        resolveImageUrlByKey(p.fileKey()),
+                        p.clubType().getDescription(),
+                        p.recruitmentStatus(),
+                        p.getTag()
+                )
+        );
+        return ClubSearchResponse.of(dtoPage);
+    }
 
     private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
         Page<ClubSearchResult> dtoPage = clubs.map(club ->

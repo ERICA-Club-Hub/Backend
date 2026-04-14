@@ -13,6 +13,10 @@ public interface ClubSearchRepository {
             String keyword, RecruitmentStatus status, SortBy sortBy,
             CentralClubCategory category, boolean onlyWithSns, int page, int size);
 
+    Page<ClubSearchProjection> findCentralClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            CentralClubCategory category, boolean onlyWithSns, int page, int size);
+
     Page<Club> findUnionClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
             UnionClubCategory category, boolean onlyWithSns, int page, int size);
