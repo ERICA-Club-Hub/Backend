@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.QClub;
-import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchProjection;
+import kr.hanjari.backend.domain.club.domain.repository.search.projection.ClubSearchProjection;
 import kr.hanjari.backend.domain.file.domain.entity.QFile;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
@@ -80,7 +80,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus
+                        club.recruitmentStatus,
+                        club.snsUrl
                 ))
                 .from(club)
                 .leftJoin(club.imageFile, file)
@@ -126,7 +127,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus
+                        club.recruitmentStatus,
+                        club.snsUrl
                 ))
                 .from(club)
                 .leftJoin(club.imageFile, file)
@@ -203,7 +205,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus
+                        club.recruitmentStatus,
+                        club.snsUrl
                 ))
                 .from(club)
                 .leftJoin(club.imageFile, file)
@@ -280,7 +283,8 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus
+                        club.recruitmentStatus,
+                        club.snsUrl
                 ))
                 .from(club)
                 .leftJoin(club.imageFile, file)

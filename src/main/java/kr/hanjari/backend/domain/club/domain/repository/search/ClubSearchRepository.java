@@ -2,6 +2,7 @@ package kr.hanjari.backend.domain.club.domain.repository.search;
 
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.*;
+import kr.hanjari.backend.domain.club.domain.repository.search.projection.ClubSearchProjection;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;

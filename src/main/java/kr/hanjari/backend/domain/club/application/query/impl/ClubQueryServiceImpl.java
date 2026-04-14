@@ -29,7 +29,7 @@ import kr.hanjari.backend.domain.club.domain.repository.draft.IntroductionDraftR
 import kr.hanjari.backend.domain.club.domain.repository.draft.RecruitmentDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDescriptionDraftRepository;
 import kr.hanjari.backend.domain.club.domain.repository.draft.ScheduleDraftRepository;
-import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchProjection;
+import kr.hanjari.backend.domain.club.domain.repository.search.projection.ClubSearchProjection;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSpecifications;
 import kr.hanjari.backend.domain.club.presentation.dto.response.*;
@@ -374,7 +374,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     private String resolveImageUrlByKey(String key) {
-        return s3Service.getDownloadUrl(key);
+        return key == null ? null : s3Service.getDownloadUrl(key);
     }
 
 
@@ -447,41 +447,34 @@ public class ClubQueryServiceImpl implements ClubQueryService {
 
     @Override
     public GetInstagrams findInstagramsCentral(CentralClubCategory category, int page, int size) {
-
-        Page<Club> clubs = clubSearchRepository.findCentralClubsByCondition(
+        Page<ClubSearchProjection> projections = clubSearchRepository.findCentralClubsAsProjection(
                 null, null, null, category, true, page, size);
 
-        return getGetInstagramsDTO(clubs);
+        return getGetInstagramsDTOFromProjection(projections);
     }
 
     @Override
     public GetInstagrams findInstagramsUnion(UnionClubCategory category, int page, int size) {
+        Page<ClubSearchProjection> projections = clubSearchRepository.findUnionClubsAsProjection(
+                null, null, null, category, true, page, size);
 
-        Page<Club> clubs = clubSearchRepository.findUnionClubsByCondition(
-                null, null, null, category, true, page, size
-        );
-
-        return getGetInstagramsDTO(clubs);
+        return getGetInstagramsDTOFromProjection(projections);
     }
 
     @Override
     public GetInstagrams findInstagramsCollege(College college, int page, int size) {
+        Page<ClubSearchProjection> projections = clubSearchRepository.findCollegeClubsAsProjection(
+                null, null, null, college, true, page, size);
 
-        Page<Club> clubs = clubSearchRepository.findCollegeClubsByCondition(
-                null, null, null, college, true, page, size
-        );
-
-        return getGetInstagramsDTO(clubs);
+        return getGetInstagramsDTOFromProjection(projections);
     }
 
     @Override
     public GetInstagrams findInstagramsDepartment(Department department, int page, int size) {
+        Page<ClubSearchProjection> projections = clubSearchRepository.findDepartmentClubsAsProjection(
+                null, null, null, null, department, true, page, size);
 
-        Page<Club> clubs = clubSearchRepository.findDepartmentClubsByCondition(
-                null, null, null, null, department, true, page, size
-        );
-
-        return getGetInstagramsDTO(clubs);
+        return getGetInstagramsDTOFromProjection(projections);
     }
 
     @Override
@@ -498,9 +491,12 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return GetInstagramsMain.of(dtoList);
     }
     private GetInstagrams getGetInstagramsDTO(Page<Club> clubs) {
-
         Page<ClubInstagramDTO> dtoPage = clubs.map(this::getClubInstagramDTO);
+        return GetInstagrams.from(dtoPage);
+    }
 
+    private GetInstagrams getGetInstagramsDTOFromProjection(Page<ClubSearchProjection> projections) {
+        Page<ClubInstagramDTO> dtoPage = projections.map(this::getClubInstagramDTOFromProjection);
         return GetInstagrams.from(dtoPage);
     }
 
@@ -510,5 +506,11 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         String profileImageUrl = resolveImageUrl(club);
         String profileUrl = INSTAGRAM_URL + account;
         return ClubInstagramDTO.of(clubName, account, profileImageUrl, profileUrl);
+    }
+
+    private ClubInstagramDTO getClubInstagramDTOFromProjection(ClubSearchProjection p) {
+        String profileImageUrl = p.fileKey() != null ? resolveImageUrlByKey(p.fileKey()) : null;
+        String profileUrl = INSTAGRAM_URL + p.snsUrl();
+        return ClubInstagramDTO.of(p.name(), p.snsUrl(), profileImageUrl, profileUrl);
     }
 }
