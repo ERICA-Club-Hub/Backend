@@ -1,4 +1,4 @@
-package kr.hanjari.backend.domain.club.domain.repository.search;
+package kr.hanjari.backend.domain.club.domain.repository.search.projection;
 
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
@@ -17,7 +17,8 @@ public record ClubSearchProjection(
         UnionClubCategory unionCategory,
         College college,
         Department department,
-        RecruitmentStatus recruitmentStatus
+        RecruitmentStatus recruitmentStatus,
+        String snsUrl
 ) {
     public String getTag() {
         return switch (clubType) {
