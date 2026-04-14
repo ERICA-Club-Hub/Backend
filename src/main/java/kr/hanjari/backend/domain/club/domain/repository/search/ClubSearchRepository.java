@@ -21,11 +21,23 @@ public interface ClubSearchRepository {
             String keyword, RecruitmentStatus status, SortBy sortBy,
             UnionClubCategory category, boolean onlyWithSns, int page, int size);
 
+    Page<ClubSearchProjection> findUnionClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            UnionClubCategory category, boolean onlyWithSns, int page, int size);
+
     Page<Club> findCollegeClubsByCondition(
             String keyword, RecruitmentStatus status, SortBy sortBy,
             College college, boolean onlyWithSns, int page, int size);
 
+    Page<ClubSearchProjection> findCollegeClubsAsProjection(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            College college, boolean onlyWithSns, int page, int size);
+
     Page<Club> findDepartmentClubsByCondition(
+            String keyword, RecruitmentStatus status, SortBy sortBy,
+            College college, Department departmentName, boolean onlyWithSns, int page, int size);
+
+    Page<ClubSearchProjection> findDepartmentClubsAsProjection(
             String keyword, RecruitmentStatus status, SortBy sortBy,
             College college, Department departmentName, boolean onlyWithSns, int page, int size);
 
