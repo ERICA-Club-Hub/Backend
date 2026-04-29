@@ -6,6 +6,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +18,10 @@ import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
 import kr.hanjari.backend.domain.club.domain.enums.College;
 import kr.hanjari.backend.domain.club.domain.enums.Department;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.enums.SortBy;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.domain.repository.search.ClubSearchRepository;
+import kr.hanjari.backend.domain.tag.domain.entity.QClubTag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,7 +34,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     private final JPAQueryFactory query;
 
     @Override
-    public Page<Club> findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public Page<Club> findCentralClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                   CentralClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         List<Club> clubs = query.select(club)
@@ -41,7 +42,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         centralCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -54,7 +55,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         centralCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -64,7 +65,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<ClubSearchProjection> findCentralClubsAsProjection(
-            String keyword, RecruitmentStatus status, SortBy sortBy,
+            String keyword, Long tagId, SortBy sortBy,
             CentralClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         QFile file = QFile.file;
@@ -80,7 +81,6 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus,
                         club.snsUrl
                 ))
                 .from(club)
@@ -88,7 +88,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         centralCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -101,7 +101,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.CENTRAL),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         centralCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -111,7 +111,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<ClubSearchProjection> findUnionClubsAsProjection(
-            String keyword, RecruitmentStatus status, SortBy sortBy,
+            String keyword, Long tagId, SortBy sortBy,
             UnionClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         QFile file = QFile.file;
@@ -127,7 +127,6 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus,
                         club.snsUrl
                 ))
                 .from(club)
@@ -135,7 +134,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         unionCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -148,7 +147,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         unionCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -157,7 +156,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
-    public Page<Club> findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public Page<Club> findUnionClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                 UnionClubCategory category, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
@@ -166,7 +165,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         unionCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -179,7 +178,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.UNION),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         unionCategoryEq(category),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -189,7 +188,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<ClubSearchProjection> findCollegeClubsAsProjection(
-            String keyword, RecruitmentStatus status, SortBy sortBy,
+            String keyword, Long tagId, SortBy sortBy,
             College college, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         QFile file = QFile.file;
@@ -205,7 +204,6 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus,
                         club.snsUrl
                 ))
                 .from(club)
@@ -213,7 +211,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -226,7 +224,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -235,7 +233,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
-    public Page<Club> findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public Page<Club> findCollegeClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                   College college, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
@@ -244,7 +242,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         snsFieldCheck(onlyWithSns))
                 .orderBy(getOrderSpecifier(sortBy))
@@ -257,7 +255,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.COLLEGE),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         snsFieldCheck(onlyWithSns))
                 .fetchOne();
@@ -267,7 +265,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
 
     @Override
     public Page<ClubSearchProjection> findDepartmentClubsAsProjection(
-            String keyword, RecruitmentStatus status, SortBy sortBy,
+            String keyword, Long tagId, SortBy sortBy,
             College college, Department departmentName, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
         QFile file = QFile.file;
@@ -283,7 +281,6 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                         club.categoryInfo.unionCategory,
                         club.categoryInfo.college,
                         club.categoryInfo.department,
-                        club.recruitmentStatus,
                         club.snsUrl
                 ))
                 .from(club)
@@ -291,7 +288,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         departmentEq(departmentName),
                         snsFieldCheck(onlyWithSns))
@@ -305,7 +302,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         departmentEq(departmentName),
                         snsFieldCheck(onlyWithSns))
@@ -315,7 +312,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     }
 
     @Override
-    public Page<Club> findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public Page<Club> findDepartmentClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                      College college, Department departmentName, boolean onlyWithSns, int page, int size) {
         QClub club = QClub.club;
 
@@ -324,7 +321,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         departmentEq(departmentName),
                         snsFieldCheck(onlyWithSns))
@@ -338,7 +335,7 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
                 .where(
                         club.categoryInfo.clubType.eq(ClubType.DEPARTMENT),
                         nameContains(keyword),
-                        statusEq(status),
+                        tagFilter(tagId),
                         collegeEq(college),
                         departmentEq(departmentName))
                 .fetchOne();
@@ -455,8 +452,14 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
         return type != null ? QClub.club.categoryInfo.clubType.eq(type) : null;
     }
 
-    private BooleanExpression statusEq(RecruitmentStatus status) {
-        return status != null ? QClub.club.recruitmentStatus.eq(status) : null;
+    private BooleanExpression tagFilter(Long tagId) {
+        if (tagId == null) return null;
+        QClubTag clubTag = QClubTag.clubTag;
+        return QClub.club.id.in(
+                JPAExpressions.select(clubTag.club.id)
+                        .from(clubTag)
+                        .where(clubTag.tag.id.eq(tagId))
+        );
     }
 
     private BooleanExpression centralCategoryEq(CentralClubCategory category) {
@@ -478,7 +481,6 @@ public class ClubSearchRepositoryImpl implements ClubSearchRepository {
     private BooleanExpression snsFieldCheck(boolean flag) {
         return flag ?
                 QClub.club.snsUrl.isNotEmpty() :
-//                QClub.club.snsUrl.isNotNull().and(QClub.club.snsUrl.ne("")) :
                 null;
     }
 

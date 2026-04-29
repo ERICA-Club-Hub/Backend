@@ -1,9 +1,9 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 
 @Schema(description = "DTO for club response")
 public record ClubResponse(
@@ -13,8 +13,8 @@ public record ClubResponse(
         String name,
         @Schema(description = "Club description (one-liner)", nullable = false, example = "The best central club at Hanyang University ERICA")
         String description,
-        @Schema(description = "Recruitment status", nullable = false, example = "RECRUITING")
-        RecruitmentStatus recruitmentStatus,
+        @Schema(description = "Club tags (max 2, ordered by priority)", nullable = false)
+        List<String> tags,
         @Schema(description = "Club profile image URL", nullable = true, example = "https://.../profile.png")
         String profileImageUrl,
         @Schema(description = "Club activities", nullable = true, example = "Regular meeting every Monday")
@@ -26,7 +26,7 @@ public record ClubResponse(
         @Schema(description = "Leader's phone number", nullable = true, example = "010-1234-5678")
         String leaderPhone,
         @Schema(description = "Membership fee", nullable = true, example = "10000")
-        String  membershipFee,
+        String membershipFee,
         @Schema(description = "SNS URL", nullable = true, example = "https://www.instagram.com/hanjari_")
         String snsUrl,
         @Schema(description = "Application URL", nullable = true, example = "https://forms.gle/...")
@@ -35,12 +35,12 @@ public record ClubResponse(
         ClubType clubType,
         String tag
 ) {
-    public static ClubResponse of(Club club, String profileImageUrl) {
+    public static ClubResponse of(Club club, String profileImageUrl, List<String> tags) {
         return new ClubResponse(
                 club.getId(),
                 club.getName(),
                 club.getOneLiner(),
-                club.getRecruitmentStatus(),
+                tags,
                 profileImageUrl,
                 club.getScheduleDescription(),
                 club.getLeaderName(),

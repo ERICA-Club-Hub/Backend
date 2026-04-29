@@ -2,7 +2,7 @@ package kr.hanjari.backend.domain.club.presentation.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
+import org.springframework.data.domain.Page;
 
 @Schema(description = "DTO for club search response")
 public record ClubSearchResponse(
@@ -22,7 +22,7 @@ public record ClubSearchResponse(
         return new ClubSearchResponse(content, totalElements, page, size, totalPages);
     }
 
-    public static ClubSearchResponse of(org.springframework.data.domain.Page<ClubSearchResult> page) {
+    public static ClubSearchResponse of(Page<ClubSearchResult> page) {
         return new ClubSearchResponse(
                 page.getContent(),
                 page.getTotalElements(),
@@ -44,14 +44,14 @@ public record ClubSearchResponse(
             String profileImageUrl,
             @Schema(description = "Category name", nullable = false, example = "Academic")
             String categoryName,
-            @Schema(description = "Recruitment status", nullable = false, example = "RECRUITING")
-            RecruitmentStatus recruitmentStatus,
+            @Schema(description = "Club tags (max 2, ordered by priority)", nullable = false)
+            List<String> tags,
             @Schema(description = "Category tag", nullable = false, example = "Academic")
             String tag
     ) {
         public static ClubSearchResult of(Long id, String name, String oneLiner, String profileImageUrl,
-                                          String categoryName, RecruitmentStatus recruitmentStatus, String tag) {
-            return new ClubSearchResult(id, name, oneLiner, profileImageUrl, categoryName, recruitmentStatus, tag);
+                                          String categoryName, List<String> tags, String tag) {
+            return new ClubSearchResult(id, name, oneLiner, profileImageUrl, categoryName, tags, tag);
         }
     }
 }

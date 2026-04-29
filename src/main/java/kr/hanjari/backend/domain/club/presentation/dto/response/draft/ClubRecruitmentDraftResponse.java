@@ -1,6 +1,7 @@
 package kr.hanjari.backend.domain.club.presentation.dto.response.draft;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
 import kr.hanjari.backend.domain.club.domain.entity.draft.RecruitmentDraft;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubResponse;
@@ -18,9 +19,10 @@ public record ClubRecruitmentDraftResponse(
         @Schema(description = "Other recruitment information", nullable = true, example = "For further questions...")
         String etc
 ) {
-    public static ClubRecruitmentDraftResponse of(Club club, RecruitmentDraft recruitment, String profileImageUrl) {
+    public static ClubRecruitmentDraftResponse of(Club club, RecruitmentDraft recruitment, String profileImageUrl,
+                                                  List<String> tags) {
         return new ClubRecruitmentDraftResponse(
-                ClubResponse.of(club, profileImageUrl),
+                ClubResponse.of(club, profileImageUrl, tags),
                 recruitment.getDue(),
                 recruitment.getTarget(),
                 recruitment.getNotice(),

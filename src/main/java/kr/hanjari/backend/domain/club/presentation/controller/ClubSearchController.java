@@ -7,7 +7,6 @@ import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.College;
 import kr.hanjari.backend.domain.club.domain.enums.Department;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.enums.SortBy;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 import kr.hanjari.backend.domain.club.presentation.dto.response.ClubDetailListResponse;
@@ -30,12 +29,12 @@ public class ClubSearchController {
     @Deprecated
     @Tag(name = "Club Search v1", description = "Club Search v1 API")
     @Operation(summary = "[동아리 검색] 동아리 검색", description = """
-            ## 입력한 조건에 맞는 동아리를 검색합니다. 
-            - **keyword**: 동아리 이름에서 서 검색할 키워드 \n
+            ## 입력한 조건에 맞는 동아리를 검색합니다.
+            - **keyword**: 동아리 이름에서 검색할 키워드 \n
             - **category**: 동아리 카테고리 \n
-            - **status**: 동아리 모집 상태 \n
+            - **tagId**: 태그 ID \n
             - **sortBy**: 정렬 기준 \n
-            
+
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
@@ -43,13 +42,13 @@ public class ClubSearchController {
     public ApiResponse<ClubDetailListResponse> getClubsByCondition(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) CentralClubCategory category,
-            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) Long tagId,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
-                clubQueryService.findClubsByCondition(keyword, category, status, sortBy, page, size));
+                clubQueryService.findClubsByCondition(keyword, category, tagId, sortBy, page, size));
     }
 
     @GetMapping("/central")
@@ -57,23 +56,23 @@ public class ClubSearchController {
     @Operation(summary = "[동아리 검색] 중앙 동아리 검색", description = """
             ## 중앙 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
-            - **status**: 동아리 모집 상태 \n
+            - **tagId**: 태그 ID \n
             - **sortBy**: 정렬 기준 \n
             - **category**: 중앙 동아리 카테고리 \n
-            
+
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 중앙 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
     public ApiResponse<ClubSearchResponse> getCentralClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) Long tagId,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(required = false) CentralClubCategory category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
-                clubQueryService.findCentralClubsByCondition(keyword, status, sortBy, category, page, size));
+                clubQueryService.findCentralClubsByCondition(keyword, tagId, sortBy, category, page, size));
     }
 
 
@@ -82,67 +81,67 @@ public class ClubSearchController {
     @Operation(summary = "[동아리 검색] 연합 동아리 검색", description = """
             ## 연합 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
-            - **status**: 동아리 모집 상태 \n
+            - **tagId**: 태그 ID \n
             - **sortBy**: 정렬 기준 \n
             - **category**: 연합 동아리 카테고리 \n
-            
+
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 연합 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
     public ApiResponse<ClubSearchResponse> getUnionClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) Long tagId,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(required = false) UnionClubCategory category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
-                clubQueryService.findUnionClubsByCondition(keyword, status, sortBy, category, page, size));
+                clubQueryService.findUnionClubsByCondition(keyword, tagId, sortBy, category, page, size));
     }
 
 
     @GetMapping("/college")
     @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 단과대 동아리 검색", description = """
-            ## 중앙 동아리를 검색합니다.
+            ## 단과대 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
-            - **status**: 동아리 모집 상태 \n
+            - **tagId**: 태그 ID \n
             - **sortBy**: 정렬 기준 \n
             - **college**: 단과대 카테고리 \n
-            
+
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
             아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 단과대 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
     public ApiResponse<ClubSearchResponse> getCollageClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) Long tagId,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(required = false) College college,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
-                clubQueryService.findCollegeClubsByCondition(keyword, status, sortBy, college, page, size));
+                clubQueryService.findCollegeClubsByCondition(keyword, tagId, sortBy, college, page, size));
     }
 
 
     @GetMapping("/department")
     @Tag(name = "Club Search v2", description = "Club Search v2 API")
     @Operation(summary = "[동아리 검색] 학과 동아리 검색", description = """
-            ## 중앙 동아리를 검색합니다.
+            ## 학과 동아리를 검색합니다.
             - **keyword**: 동아리 이름에서 검색할 키워드 \n
-            - **status**: 동아리 모집 상태 \n
+            - **tagId**: 태그 ID \n
             - **sortBy**: 정렬 기준 \n
             - **college**: 단과대 카테고리 \n
             - **department**: 학과 카테고리 \n
-            
+
             ### 모든 조건은 선택적으로 입력할 수 있습니다. (필수 X)
-            아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 중앙 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
+            아무 값도 입력 하지 않을 경우, 가나다순으로 정렬하여 전체 학과 동아리를 조회합니다. page의 기본 값은 0, size의 기본 값은 10입니다.
             """)
-    public ApiResponse<ClubSearchResponse> getCentralClubsByCondition(
+    public ApiResponse<ClubSearchResponse> getDepartmentClubsByCondition(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) RecruitmentStatus status,
+            @RequestParam(required = false) Long tagId,
             @RequestParam(required = false) SortBy sortBy,
             @RequestParam(required = false) College college,
             @RequestParam(required = false) Department department,
@@ -150,7 +149,7 @@ public class ClubSearchController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
-                clubQueryService.findDepartmentClubsByCondition(keyword, status, sortBy, college, department, page,
+                clubQueryService.findDepartmentClubsByCondition(keyword, tagId, sortBy, college, department, page,
                         size));
     }
 
@@ -183,8 +182,8 @@ public class ClubSearchController {
             ## 동아리 수정 요청을 조회합니다.
             """)
     public ApiResponse<ClubSearchResponse> getClubUpdateList(
-        @RequestParam (defaultValue = "0") int page,
-        @RequestParam (defaultValue = "10") int size
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
     ) {
         return ApiResponse.onSuccess(
             clubQueryService.findUpdateRequests(page, size));
