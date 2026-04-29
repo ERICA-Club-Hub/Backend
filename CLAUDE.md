@@ -1,6 +1,6 @@
-# CLAUDE.md
+# Hanjari
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This project is Club Information Platform of Hanyang University ERICA
 
 ## Build & Run Commands
 
@@ -10,29 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Run all tests
 ./gradlew test
-
-# Run a single test class
-./gradlew test --tests kr.hanjari.backend.domain.club.application.query.impl.ClubQueryServiceImplTest
-
-# Run a single test method
-./gradlew test --tests "kr.hanjari.backend.domain.club.ClubTest.someMethod"
 ```
-
-## Required Environment Variables
-
-The app requires these env vars (typically set in `.env`):
-
-| Variable | Purpose |
-|----------|---------|
-| `PROFILE` | Active Spring profile (`local`, `dev`, `prod`) |
-| `MYSQL_URL`, `MYSQL_USERNAME`, `MYSQL_PASSWORD` | Database connection |
-| `JPA_DDL` | Hibernate ddl-auto (`create`, `update`, `validate`, `none`) |
-| `AWS_REGION`, `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, `S3_BUCKET_NAME` | S3 file storage |
-| `REDIS_HOST`, `REDIS_PORT` | Redis cache |
-| `MAIL_USERNAME`, `MAIL_PASSWORD` | Gmail SMTP |
-| `JWT_SECRET_KEY`, `JWT_EXPIRATION_TIME` | JWT authentication |
-| `LOGIN_URL`, `SERVICE_ADMIN`, `UNION_ADMIN` | Auth configuration |
-| `SLACK_WEBHOOK_URL` | Slack notifications |
 
 ## Architecture
 
@@ -77,22 +55,7 @@ club/
 - **BaseEntity**: All entities extend `BaseEntity` which provides `createdAt` / `updatedAt` via JPA auditing
 - **Global API response**: Standardized via `global/payload/` (response wrapper + error codes)
 - **Global exception handling**: `ExceptionAdvice` maps domain exceptions to HTTP responses
-
-### Infrastructure Layer
-
-- **JWT**: Stateless authentication; filter registered in `SecurityConfig`
-- **S3**: File uploads via Spring Cloud AWS
-- **Redis**: Caching
-- **Slack**: Webhook-based notifications
-- **Crawl**: Web crawler (used for club data)
-
-### Environment-specific Config
-
-- `application-local.properties` — local dev with local AWS credentials
-- `application-dev.properties` — dev server AWS credentials
-- `application-prod.properties` — production (Swagger disabled, stricter logging)
-
-CORS and Swagger behavior differ per profile (`DevCorsConfig` vs `ProdCorsConfig`; Swagger disabled in prod).
+- **Error Code**: 'ErrorStatus' contains Error type and messages
 
 ## Database
 
