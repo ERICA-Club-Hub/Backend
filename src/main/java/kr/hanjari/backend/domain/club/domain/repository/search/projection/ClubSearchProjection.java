@@ -4,7 +4,6 @@ import kr.hanjari.backend.domain.club.domain.enums.CentralClubCategory;
 import kr.hanjari.backend.domain.club.domain.enums.ClubType;
 import kr.hanjari.backend.domain.club.domain.enums.College;
 import kr.hanjari.backend.domain.club.domain.enums.Department;
-import kr.hanjari.backend.domain.club.domain.enums.RecruitmentStatus;
 import kr.hanjari.backend.domain.club.domain.enums.UnionClubCategory;
 
 public record ClubSearchProjection(
@@ -17,7 +16,6 @@ public record ClubSearchProjection(
         UnionClubCategory unionCategory,
         College college,
         Department department,
-        RecruitmentStatus recruitmentStatus,
         String snsUrl
 ) {
     public String getTag() {

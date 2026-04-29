@@ -21,8 +21,7 @@ public interface ClubQueryService {
 
     // 조건 별 동아리 검색
     ClubDetailListResponse findClubsByCondition(
-            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
-            int size);
+            String name, CentralClubCategory category, Long tagId, SortBy sortBy, int page, int size);
 
     // 동아리 상세 조회
     ClubDetailResponse findClubDetail(Long clubId);
@@ -52,18 +51,16 @@ public interface ClubQueryService {
 
     // 동아리 카테고리 조회
     ClubSearchResponse findCentralClubsByCondition(
-            String keyword, RecruitmentStatus status, SortBy sortBy, CentralClubCategory category, int page, int size);
+            String keyword, Long tagId, SortBy sortBy, CentralClubCategory category, int page, int size);
 
     ClubSearchResponse findUnionClubsByCondition(
-            String keyword, RecruitmentStatus status, SortBy sortBy, UnionClubCategory unionCategory, int page,
-            int size);
+            String keyword, Long tagId, SortBy sortBy, UnionClubCategory unionCategory, int page, int size);
 
     ClubSearchResponse findCollegeClubsByCondition(
-            String keyword, RecruitmentStatus status, SortBy sortBy, College college, int page, int size);
+            String keyword, Long tagId, SortBy sortBy, College college, int page, int size);
 
     ClubSearchResponse findDepartmentClubsByCondition(
-            String keyword, RecruitmentStatus status, SortBy sortBy, College college, Department department, int page,
-            int size);
+            String keyword, Long tagId, SortBy sortBy, College college, Department department, int page, int size);
 
     // 현재 인기있는 동아리 조회
     ClubSearchResponse findPopularClubs(int page, int size);

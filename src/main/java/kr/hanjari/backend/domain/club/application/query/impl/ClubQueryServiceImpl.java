@@ -3,7 +3,10 @@ package kr.hanjari.backend.domain.club.application.query.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import kr.hanjari.backend.domain.club.application.command.ClubCommandService;
 import kr.hanjari.backend.domain.club.application.query.ClubQueryService;
 import kr.hanjari.backend.domain.club.domain.entity.Club;
@@ -40,6 +43,8 @@ import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubDetail
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubIntroductionDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubRecruitmentDraftResponse;
 import kr.hanjari.backend.domain.club.presentation.dto.response.draft.ClubScheduleDraftResponse;
+import kr.hanjari.backend.domain.tag.domain.entity.ClubTag;
+import kr.hanjari.backend.domain.tag.domain.repository.ClubTagRepository;
 import kr.hanjari.backend.global.payload.code.status.ErrorStatus;
 import kr.hanjari.backend.global.payload.exception.GeneralException;
 import kr.hanjari.backend.infrastructure.s3.S3Service;
@@ -80,6 +85,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     private final ScheduleDescriptionDraftRepository scheduleDescriptionDraftRepository;
 
     private final ClubSearchRepository clubSearchRepository;
+    private final ClubTagRepository clubTagRepository;
 
     private final S3Service s3Service;
     private final ClubCommandService clubCommandService;
@@ -138,13 +144,15 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     public ClubOverviewResponse findClubOverview(Long clubId) {
         Club club = getClub(clubId);
-        return ClubOverviewResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+        List<String> tags = getTagsForClub(clubId);
+        return ClubOverviewResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()), tags);
     }
 
     @Override
     public ClubAdminDetailResponse findClubAdminDetail(Long clubId) {
         Club club = getClub(clubId);
-        return ClubAdminDetailResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()));
+        List<String> tags = getTagsForClub(clubId);
+        return ClubAdminDetailResponse.of(club, s3Service.getDownloadUrl(club.getImageFile().getId()), tags);
     }
 
     @Override
@@ -192,9 +200,10 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubIntroductionDraftResponse findClubIntroductionDraft(Long clubId) {
         Club club = getClub(clubId);
         IntroductionDraft introduction = getIntroduction(clubId);
+        List<String> tags = getTagsForClub(clubId);
 
         return ClubIntroductionDraftResponse.of(club, introduction,
-                s3Service.getDownloadUrl(club.getImageFile().getId()));
+                s3Service.getDownloadUrl(club.getImageFile().getId()), tags);
     }
 
     @Override
@@ -207,45 +216,46 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     public ClubRecruitmentDraftResponse findClubRecruitmentDraft(Long clubId) {
         Club club = getClub(clubId);
         RecruitmentDraft recruitment = getRecruitment(clubId);
+        List<String> tags = getTagsForClub(clubId);
 
         return ClubRecruitmentDraftResponse.of(club, recruitment,
-                s3Service.getDownloadUrl(club.getImageFile().getId()));
+                s3Service.getDownloadUrl(club.getImageFile().getId()), tags);
     }
 
     @Override
-    public ClubSearchResponse findCentralClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public ClubSearchResponse findCentralClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                           CentralClubCategory centralClubCategory, int page,
                                                           int size) {
         Page<ClubSearchProjection> projections = clubSearchRepository.findCentralClubsAsProjection(
-                keyword, status, sortBy, centralClubCategory, false, page, size);
+                keyword, tagId, sortBy, centralClubCategory, false, page, size);
 
         return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
-    public ClubSearchResponse findUnionClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public ClubSearchResponse findUnionClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                         UnionClubCategory unionCategory, int page, int size) {
         Page<ClubSearchProjection> projections = clubSearchRepository.findUnionClubsAsProjection(
-                keyword, status, sortBy, unionCategory, false, page, size);
+                keyword, tagId, sortBy, unionCategory, false, page, size);
 
         return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
-    public ClubSearchResponse findCollegeClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public ClubSearchResponse findCollegeClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                           College college, int page, int size) {
         Page<ClubSearchProjection> projections = clubSearchRepository.findCollegeClubsAsProjection(
-                keyword, status, sortBy, college, false, page, size);
+                keyword, tagId, sortBy, college, false, page, size);
 
         return getClubSearchResponseFromProjection(projections);
     }
 
     @Override
-    public ClubSearchResponse findDepartmentClubsByCondition(String keyword, RecruitmentStatus status, SortBy sortBy,
+    public ClubSearchResponse findDepartmentClubsByCondition(String keyword, Long tagId, SortBy sortBy,
                                                              College college, Department department, int page,
                                                              int size) {
         Page<ClubSearchProjection> projections = clubSearchRepository.findDepartmentClubsAsProjection(
-                keyword, status, sortBy, college, department, false, page, size);
+                keyword, tagId, sortBy, college, department, false, page, size);
 
         return getClubSearchResponseFromProjection(projections);
     }
@@ -262,6 +272,9 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         LocalDateTime renewalDateTime = RENEWAL_DATE.atStartOfDay();
         List<Club> clubs = clubSearchRepository.findRandomClubsUpdatedAfter(renewalDateTime, MAIN_PAGE_OFFSET);
 
+        List<Long> clubIds = clubs.stream().map(Club::getId).toList();
+        Map<Long, List<String>> tagsMap = getTagsForClubs(clubIds);
+
         List<ClubSearchResult> results = clubs.stream()
                 .map(club -> ClubSearchResult.of(
                         club.getId(),
@@ -269,7 +282,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                         club.getOneLiner(),
                         resolveImageUrl(club),
                         club.getCategoryInfo().getClubType().getDescription(),
-                        club.getRecruitmentStatus(),
+                        tagsMap.getOrDefault(club.getId(), Collections.emptyList()),
                         CategoryResponse.getTag(club.getCategoryInfo())
                 ))
                 .toList();
@@ -280,26 +293,27 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     @Override
     @Deprecated
     public ClubDetailListResponse findClubsByCondition(
-            String name, CentralClubCategory category, RecruitmentStatus status, SortBy sortBy, int page,
-            int size) {
+            String name, CentralClubCategory category, Long tagId, SortBy sortBy, int page, int size) {
         List<String> profileImageUrls = new ArrayList<>();
-        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
-            Page<Club> clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, status,
-                    PageRequest.of(page, size));
-            for (Club club : clubs) {
-                profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
-            }
+        Page<Club> clubs;
 
-            return ClubDetailListResponse.of(clubs, List.of());
+        if (sortBy != null && sortBy.equals(SortBy.RECRUITMENT_STATUS_ASC)) {
+            clubs = clubRepository.findClubsOrderByRecruitmentStatus(name, category, null,
+                    PageRequest.of(page, size));
+        } else {
+            Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
+            Pageable pageable = PageRequest.of(page, size, sort);
+            clubs = clubRepository.findAll(ClubSpecifications.findByCondition(name, category, tagId), pageable);
         }
 
-        Sort sort = (sortBy != null) ? sortBy.getSort() : SortBy.NAME_ASC.getSort();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Club> clubs = clubRepository.findAll(ClubSpecifications.findByCondition(name, category, status), pageable);
         for (Club club : clubs) {
             profileImageUrls.add(s3Service.getDownloadUrl(club.getImageFile().getId()));
         }
-        return ClubDetailListResponse.of(clubs, profileImageUrls);
+
+        List<Long> clubIds = clubs.getContent().stream().map(Club::getId).toList();
+        Map<Long, List<String>> tagsMap = getTagsForClubs(clubIds);
+
+        return ClubDetailListResponse.of(clubs, profileImageUrls, tagsMap);
     }
 
 
@@ -377,9 +391,34 @@ public class ClubQueryServiceImpl implements ClubQueryService {
         return key == null ? null : s3Service.getDownloadUrl(key);
     }
 
+    private List<String> getTagsForClub(Long clubId) {
+        return clubTagRepository.findByClubIdWithTagsOrderedByPriority(clubId)
+                .stream()
+                .limit(2)
+                .map(ct -> ct.getTag().getName())
+                .toList();
+    }
 
+    private Map<Long, List<String>> getTagsForClubs(List<Long> clubIds) {
+        if (clubIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        List<ClubTag> clubTags = clubTagRepository.findByClubIdsWithTagsOrderedByPriority(clubIds);
+        Map<Long, List<String>> tagsMap = new LinkedHashMap<>();
+        for (ClubTag ct : clubTags) {
+            Long cId = ct.getClub().getId();
+            List<String> tags = tagsMap.computeIfAbsent(cId, k -> new ArrayList<>());
+            if (tags.size() < 2) {
+                tags.add(ct.getTag().getName());
+            }
+        }
+        return tagsMap;
+    }
 
     private ClubSearchResponse getClubSearchResponseFromProjection(Page<ClubSearchProjection> projections) {
+        List<Long> clubIds = projections.getContent().stream().map(ClubSearchProjection::clubId).toList();
+        Map<Long, List<String>> tagsMap = getTagsForClubs(clubIds);
+
         Page<ClubSearchResult> dtoPage = projections.map(p ->
                 ClubSearchResult.of(
                         p.clubId(),
@@ -387,7 +426,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                         p.oneLiner(),
                         resolveImageUrlByKey(p.fileKey()),
                         p.clubType().getDescription(),
-                        p.recruitmentStatus(),
+                        tagsMap.getOrDefault(p.clubId(), Collections.emptyList()),
                         p.getTag()
                 )
         );
@@ -395,6 +434,9 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     private ClubSearchResponse getClubSearchResponseDTO(Page<Club> clubs) {
+        List<Long> clubIds = clubs.getContent().stream().map(Club::getId).toList();
+        Map<Long, List<String>> tagsMap = getTagsForClubs(clubIds);
+
         Page<ClubSearchResult> dtoPage = clubs.map(club ->
                 ClubSearchResult.of(
                         club.getId(),
@@ -402,7 +444,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                         club.getOneLiner(),
                         resolveImageUrl(club),
                         club.getCategoryInfo().getClubType().getDescription(),
-                        club.getRecruitmentStatus(),
+                        tagsMap.getOrDefault(club.getId(), Collections.emptyList()),
                         CategoryResponse.getTag(club.getCategoryInfo())
                 )
         );
@@ -411,6 +453,12 @@ public class ClubQueryServiceImpl implements ClubQueryService {
     }
 
     private ClubSearchResponse getClubSearchResponseDTOForUpdate(Page<ClubRegistration> clubRegistrations) {
+        List<Long> clubIds = clubRegistrations.getContent().stream()
+                .map(ClubRegistration::getClubId)
+                .filter(id -> id != null)
+                .toList();
+        Map<Long, List<String>> tagsMap = getTagsForClubs(clubIds);
+
         Page<ClubSearchResult> dtoPage = clubRegistrations.map(clubRegistration ->
             ClubSearchResult.of(
                 clubRegistration.getId(),
@@ -418,7 +466,7 @@ public class ClubQueryServiceImpl implements ClubQueryService {
                 clubRegistration.getOneLiner(),
                 resolveImageUrl(clubRegistration),
                 clubRegistration.getCategoryInfo().getClubType().getDescription(),
-                null,
+                tagsMap.getOrDefault(clubRegistration.getClubId(), Collections.emptyList()),
                 CategoryResponse.getTag(clubRegistration.getCategoryInfo())
             )
         );

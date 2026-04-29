@@ -69,7 +69,13 @@ public enum ErrorStatus implements BaseErrorCode {
 
     _SERVICE_ANNOUNCEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "SERVICE_ANNOUNCEMENT404", "공지사항을 찾을 수 없습니다."),
 
-    _FAQ_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ404", "FAQ를 찾을 수 없습니다.")
+    _FAQ_NOT_FOUND(HttpStatus.NOT_FOUND, "FAQ404", "FAQ를 찾을 수 없습니다."),
+
+    // 태그 관련
+    _TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG404", "태그를 찾을 수 없습니다."),
+    _TAG_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "TAG400", "이미 존재하는 태그명입니다."),
+    _TAG_ALREADY_ASSIGNED(HttpStatus.BAD_REQUEST, "TAG400", "이미 동아리에 추가된 태그입니다."),
+    _TAG_NOT_ASSIGNED(HttpStatus.NOT_FOUND, "TAG404", "동아리에 등록되지 않은 태그입니다.")
 
     ;
     private final HttpStatus httpStatus;
