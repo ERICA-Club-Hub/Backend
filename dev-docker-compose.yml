@@ -8,16 +8,12 @@ services:
       - dev-db-network
     volumes:
       - hanjari-db-dev:/var/lib/mysql
-    ports:
-      - "3306:3306"
 
   redis:
     image: redis:7.4.2
     container_name: "redis-container"
     networks:
       - dev-db-network
-    ports:
-      - "6379:6379"
 
 #  selenium:
 #    image: selenium/standalone-chrome:143.0-20251212
